@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.geysermc</groupId>
+    <artifactId>geyser-multi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>GeyserMulti</name>
+    <description>Allows for players from Minecraft Bedrock Edition to join Minecraft Java Edition servers via a masterServer list.</description>
+    <url>https://geysermc.org</url>
+
+    <properties>
+        <outputName>GeyserMulti</outputName>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>nukkitx-release-repo</id>
+            <url>https://repo.nukkitx.com/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>nukkitx-snapshot-repo</id>
+            <url>https://repo.nukkitx.com/maven-snapshots/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.geysermc</groupId>
+            <artifactId>connector</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nukkitx.protocol</groupId>
+            <artifactId>bedrock-v390</artifactId>
+            <version>2.5.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.minecrell</groupId>
+            <artifactId>terminalconsoleappender</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.geysermc.multi.GeyserMulti</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
