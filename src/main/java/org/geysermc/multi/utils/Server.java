@@ -1,4 +1,4 @@
-package org.geysermc.multi;
+package org.geysermc.multi.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

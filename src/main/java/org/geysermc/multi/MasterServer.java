@@ -5,6 +5,8 @@ import com.nukkitx.protocol.bedrock.BedrockServer;
 import com.nukkitx.protocol.bedrock.BedrockServerEventHandler;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import lombok.Getter;
+import org.geysermc.multi.utils.Logger;
+import org.geysermc.multi.utils.Player;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;

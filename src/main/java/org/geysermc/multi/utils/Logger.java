@@ -1,9 +1,10 @@
-package org.geysermc.multi;
+package org.geysermc.multi.utils;
 
 import lombok.extern.log4j.Log4j2;
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.geysermc.common.ChatColor;
+import org.geysermc.multi.MasterServer;
 
 @Log4j2
 public class Logger extends SimpleTerminalConsole {

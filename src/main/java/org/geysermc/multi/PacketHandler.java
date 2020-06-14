@@ -11,12 +11,14 @@ import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
-import org.geysermc.multi.UI.UIHandler;
+import org.geysermc.common.window.FormWindow;
+import org.geysermc.common.window.response.SimpleFormResponse;
+import org.geysermc.multi.ui.FormID;
+import org.geysermc.multi.ui.UIHandler;
+import org.geysermc.multi.utils.Player;
 
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PacketHandler implements BedrockPacketHandler {
 
@@ -142,7 +144,7 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
         masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
 
-        player.sendServerList();
+        player.sendWindow(FormID.MAIN, UIHandler.getServerListFormPacket(player.getServers()));;
 
         /*TransferPacket transferPacket = new TransferPacket();
         transferPacket.setAddress("81.174.164.211");
@@ -150,5 +152,31 @@ public class PacketHandler implements BedrockPacketHandler {
         session.sendPacket(transferPacket);*/
 
         return false;
+    }
+
+    @Override
+    public boolean handle(ModalFormResponsePacket packet) {
+        FormID id = FormID.fromId(packet.getFormId());
+        if (id != player.getCurrentWindowId())
+            return false;
+
+        FormWindow window = player.getCurrentWindow();
+        window.setResponse(packet.getFormData().trim());
+
+        if (window.getResponse() == null) {
+            player.resendWindow();
+        } else {
+            switch (id) {
+                case MAIN:
+                    UIHandler.handleServerListResponse(player, (SimpleFormResponse) window.getResponse());
+                    break;
+
+                default:
+                    player.resendWindow();
+                    break;
+            }
+        }
+
+        return true;
     }
 }

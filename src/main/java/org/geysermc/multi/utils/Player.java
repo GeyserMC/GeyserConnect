@@ -1,4 +1,4 @@
-package org.geysermc.multi;
+package org.geysermc.multi.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nukkitx.math.vector.Vector2f;
@@ -8,7 +8,8 @@ import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.*;
 import com.nukkitx.protocol.bedrock.packet.*;
 import lombok.Getter;
-import org.geysermc.multi.UI.UIHandler;
+import org.geysermc.common.window.FormWindow;
+import org.geysermc.multi.ui.FormID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class Player {
 
     private final List<Server> servers = new ArrayList<>();
 
+    private FormWindow currentWindow;
+    private FormID currentWindowId;
+
     public Player(JsonNode extraData, BedrockServerSession session) {
         this.xuid = extraData.get("XUID").asText();
         this.identity = UUID.fromString(extraData.get("identity").asText());
@@ -33,7 +37,7 @@ public class Player {
         this.session = session;
 
         // Should fetch the servers from some form of db
-        servers.add(new Server("mc.hypixel.net"));
+        servers.add(new Server("play.cubecraft.net"));
         servers.add(new Server("81.174.164.211", 25580));
     }
 
@@ -114,7 +118,17 @@ public class Player {
         session.sendPacket(setEntityMotionPacket);
     }
 
-    public void sendServerList() {
-        session.sendPacket(UIHandler.getServerListFormPacket(servers));
+    public void sendWindow(FormID id, FormWindow window) {
+        this.currentWindow = window;
+        this.currentWindowId = id;
+
+        ModalFormRequestPacket modalFormRequestPacket = new ModalFormRequestPacket();
+        modalFormRequestPacket.setFormId(id.ordinal());
+        modalFormRequestPacket.setFormData(window.getJSONData());
+        session.sendPacket(modalFormRequestPacket);
+    }
+
+    public void resendWindow() {
+        sendWindow(currentWindowId, currentWindow);
     }
 }
