@@ -15,6 +15,6 @@ public class Server {
 
     @Override
     public String toString() {
-        return address + ":" + port;
+        return address + (port != 25565 ? ":" + port : "");
     }
 }

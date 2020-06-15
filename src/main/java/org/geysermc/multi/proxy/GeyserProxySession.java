@@ -18,12 +18,15 @@ public class GeyserProxySession extends GeyserSession {
     }
 
     public void authenticate(String username, String password) {
+        // Get the player based on the connection address
         Player player = MasterServer.getInstance().getPlayers().get(bedrockServerSession.getAddress());
-        if (player != null) {
+        if (player != null && player.getCurrentServer() != null) {
+            // Set the remote server info for the player
             connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
             connector.getRemoteServer().setPort(player.getCurrentServer().getPort());
             super.authenticate(username, password);
         }else{
+            // Disconnect the player if they haven't picked a server on the master server list
             bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
         }
     }

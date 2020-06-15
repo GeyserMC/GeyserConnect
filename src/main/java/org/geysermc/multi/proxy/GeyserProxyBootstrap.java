@@ -29,8 +29,10 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
 
     @Override
     public void onEnable() {
+        // Setup a logger
         geyserLogger = new GeyserProxyLogger();
 
+        // Read the static config from resources
         try {
             InputStream configFile = GeyserProxyBootstrap.class.getClassLoader().getResourceAsStream("proxy_config.yml");
             ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
@@ -39,13 +41,18 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
             geyserLogger.severe("Failed to read proxy_config.yml! Make sure it's up to date and/or readable+writable!", ex);
             return;
         }
+
+        // Not sure there is a point in doing this as its a static config
         GeyserConfiguration.checkGeyserConfiguration(geyserConfig, geyserLogger);
 
+        // Create the connector and command manager
         connector = GeyserConnector.start(PlatformType.STANDALONE, this);
         geyserCommandManager = new GeyserProxyCommandManager(connector);
 
+        // Start the ping passthrough thread, again don't think there is a point
         geyserPingPassthrough = GeyserLegacyPingPassthrough.init(connector);
 
+        // Swap the normal handler to our custom handler so we can change some
         connector.getBedrockServer().setHandler(new ProxyConnectorServerEventHandler(connector));
     }
 

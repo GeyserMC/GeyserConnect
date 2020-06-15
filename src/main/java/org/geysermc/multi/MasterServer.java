@@ -1,9 +1,7 @@
 package org.geysermc.multi;
 
-import com.nukkitx.protocol.bedrock.BedrockPong;
-import com.nukkitx.protocol.bedrock.BedrockServer;
-import com.nukkitx.protocol.bedrock.BedrockServerEventHandler;
-import com.nukkitx.protocol.bedrock.BedrockServerSession;
+import com.nukkitx.protocol.bedrock.*;
+import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
 import lombok.Getter;
 import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.utils.Logger;
@@ -19,6 +17,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class MasterServer {
+
+    public static final BedrockPacketCodec CODEC = Bedrock_v390.V390_CODEC;
 
     private final Timer timer;
     private BedrockServer bdServer;
@@ -72,8 +72,8 @@ public class MasterServer {
         bdPong.setMaximumPlayerCount(1337);
         bdPong.setGameType("Survival");
         bdPong.setIpv4Port(port);
-        bdPong.setProtocolVersion(GeyserMulti.CODEC.getProtocolVersion());
-        bdPong.setVersion(GeyserMulti.CODEC.getMinecraftVersion());
+        bdPong.setProtocolVersion(MasterServer.CODEC.getProtocolVersion());
+        bdPong.setVersion(MasterServer.CODEC.getMinecraftVersion());
 
         bdServer.setHandler(new BedrockServerEventHandler() {
             @Override

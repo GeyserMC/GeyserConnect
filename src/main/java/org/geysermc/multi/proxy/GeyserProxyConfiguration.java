@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 public class GeyserProxyConfiguration extends GeyserJacksonConfiguration {
 
     @JsonProperty("floodgate-key-file")
-    private String floodgateKeyFile = "";
+    private String floodgateKeyFile;
 
     @Override
     public Path getFloodgateKeyFile() {

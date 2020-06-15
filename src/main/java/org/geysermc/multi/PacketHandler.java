@@ -48,9 +48,9 @@ public class PacketHandler implements BedrockPacketHandler {
 
         // Check the protocol version is correct
         int protocol = packet.getProtocolVersion();
-        if (protocol != GeyserMulti.CODEC.getProtocolVersion()) {
+        if (protocol != MasterServer.CODEC.getProtocolVersion()) {
             PlayStatusPacket status = new PlayStatusPacket();
-            if (protocol > GeyserMulti.CODEC.getProtocolVersion()) {
+            if (protocol > MasterServer.CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.FAILED_SERVER);
             } else {
                 status.setStatus(PlayStatusPacket.Status.FAILED_CLIENT);
@@ -59,8 +59,9 @@ public class PacketHandler implements BedrockPacketHandler {
         }
 
         // Set the session codec
-        session.setPacketCodec(GeyserMulti.CODEC);
+        session.setPacketCodec(MasterServer.CODEC);
 
+        // Read the raw chain data
         JsonNode rawChainData;
         try {
             rawChainData = OBJECT_MAPPER.readTree(packet.getChainData().toByteArray());
@@ -68,6 +69,7 @@ public class PacketHandler implements BedrockPacketHandler {
             throw new AssertionError("Unable to read chain data!");
         }
 
+        // Get the parsed chain data
         JsonNode chainData = rawChainData.get("chain");
         if (chainData.getNodeType() != JsonNodeType.ARRAY) {
             throw new AssertionError("Invalid chain data!");
@@ -78,22 +80,29 @@ public class PacketHandler implements BedrockPacketHandler {
             JWSObject jwsObject;
             jwsObject = JWSObject.parse(chainData.get(chainData.size() - 1).asText());
 
+            // Read the JWS payload
             JsonNode payload = OBJECT_MAPPER.readTree(jwsObject.getPayload().toBytes());
 
+            // Check the identityPublicKey is there
             if (payload.get("identityPublicKey").getNodeType() != JsonNodeType.STRING) {
                 throw new AssertionError("Missing identity public key!");
             }
 
+            // Create an ECPublicKey from the identityPublicKey
             ECPublicKey identityPublicKey = EncryptionUtils.generateKey(payload.get("identityPublicKey").textValue());
 
+            // Get the skin data to validate the JWS token
             JWSObject skinData = JWSObject.parse(packet.getSkinData().toString());
             if (skinData.verify(new DefaultJWSVerifierFactory().createJWSVerifier(skinData.getHeader(), identityPublicKey))) {
+                // Make sure the client sent over the username, xuid and other info
                 if (payload.get("extraData").getNodeType() != JsonNodeType.OBJECT) {
                     throw new AssertionError("Missing client data");
                 }
 
+                // Fetch the client data
                 JsonNode extraData = payload.get("extraData");
 
+                // Create a new player and add it to the players list
                 player = new Player(extraData, session);
                 masterServer.getPlayers().put(session.getAddress(), player);
 
@@ -145,26 +154,25 @@ public class PacketHandler implements BedrockPacketHandler {
 
         player.sendWindow(FormID.MAIN, UIHandler.getServerListFormPacket(player.getServers()));;
 
-        /*TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress("81.174.164.211");
-        transferPacket.setPort(27040);
-        session.sendPacket(transferPacket);*/
-
         return false;
     }
 
     @Override
     public boolean handle(ModalFormResponsePacket packet) {
+        // Make sure the form is valid
         FormID id = FormID.fromId(packet.getFormId());
         if (id != player.getCurrentWindowId())
             return false;
 
+        // Fetch the form and parse the response
         FormWindow window = player.getCurrentWindow();
         window.setResponse(packet.getFormData().trim());
 
+        // Resend the form if they closed it
         if (window.getResponse() == null) {
             player.resendWindow();
         } else {
+            // Send the response to the correct response function
             switch (id) {
                 case MAIN:
                     UIHandler.handleServerListResponse(player, (SimpleFormResponse) window.getResponse());
@@ -177,11 +185,5 @@ public class PacketHandler implements BedrockPacketHandler {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean handle(NetworkStackLatencyPacket packet) {
-        masterServer.getLogger().debug(packet.toString());
-        return false;
     }
 }

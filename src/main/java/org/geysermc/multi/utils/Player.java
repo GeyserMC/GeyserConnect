@@ -11,10 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.common.window.FormWindow;
 import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.ui.FormID;
 
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +46,11 @@ public class Player {
         servers.add(new Server("81.174.164.211", 25580));
     }
 
+    /**
+     * Send a few different packets to get the client to load in
+     */
     public void sendStartGame() {
+        // A lot of this likely doesn't need to be changed
         StartGamePacket startGamePacket = new StartGamePacket();
         startGamePacket.setUniqueEntityId(1);
         startGamePacket.setRuntimeEntityId(1);
@@ -94,9 +96,7 @@ public class Player {
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
         startGamePacket.setBlockPalette(PalleteManger.BLOCK_PALLETE);
-        //startGamePacket.setItemEntries(ItemRegistry.ITEMS);
         startGamePacket.setVanillaVersion("*");
-        // startGamePacket.setMovementServerAuthoritative(true);
         session.sendPacket(startGamePacket);
 
         // Send an empty chunk
@@ -125,7 +125,13 @@ public class Player {
         session.sendPacket(setEntityMotionPacket);
     }
 
-
+    /**
+     * Send a window with the specified id and content
+     * Also cache it against the player for later use
+     *
+     * @param id The {@link FormID} to use for the form
+     * @param window The {@link FormWindow} to turn into json and send
+     */
     public void sendWindow(FormID id, FormWindow window) {
         this.currentWindow = window;
         this.currentWindowId = id;
@@ -133,16 +139,19 @@ public class Player {
         ModalFormRequestPacket modalFormRequestPacket = new ModalFormRequestPacket();
         modalFormRequestPacket.setFormId(id.ordinal());
         modalFormRequestPacket.setFormData(window.getJSONData());
-        session.sendPacket(modalFormRequestPacket);
+        session.sendPacketImmediately(modalFormRequestPacket);
     }
 
     public void resendWindow() {
         sendWindow(currentWindowId, currentWindow);
     }
 
+    /**
+     * Send the player to the Geyser proxy server
+     */
     public void connectToProxy() {
         TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress("127.0.0.1");
+        transferPacket.setAddress("127.0.0.1"); // Need to find a good way of getting this
         transferPacket.setPort(MasterServer.getInstance().getGeyserProxy().getGeyserConfig().getBedrock().getPort());
         session.sendPacket(transferPacket);
     }
