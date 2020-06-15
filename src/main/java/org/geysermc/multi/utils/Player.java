@@ -9,6 +9,7 @@ import com.nukkitx.protocol.bedrock.data.*;
 import com.nukkitx.protocol.bedrock.packet.*;
 import lombok.Getter;
 import org.geysermc.common.window.FormWindow;
+import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.ui.FormID;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class Player {
 
     private FormWindow currentWindow;
     private FormID currentWindowId;
+
+    private GeyserProxyBootstrap geyserProxy;
 
     public Player(JsonNode extraData, BedrockServerSession session) {
         this.xuid = extraData.get("XUID").asText();
@@ -118,6 +121,13 @@ public class Player {
         session.sendPacket(setEntityMotionPacket);
     }
 
+    public void onDisconnect() {
+        if (geyserProxy != null) {
+            //geyserProxy.onDisable();
+        }
+    }
+
+
     public void sendWindow(FormID id, FormWindow window) {
         this.currentWindow = window;
         this.currentWindowId = id;
@@ -130,5 +140,21 @@ public class Player {
 
     public void resendWindow() {
         sendWindow(currentWindowId, currentWindow);
+    }
+
+    public void createGeyserProxy(Server server) {
+        if (this.geyserProxy == null) {
+            this.geyserProxy = new GeyserProxyBootstrap();
+            geyserProxy.onEnable();
+        }
+
+        geyserProxy.setServer(server);
+    }
+
+    public void connectToProxy() {
+        TransferPacket transferPacket = new TransferPacket();
+        transferPacket.setAddress("127.0.0.1");
+        transferPacket.setPort(geyserProxy.getGeyserConfig().getBedrock().getPort());
+        session.sendPacket(transferPacket);
     }
 }

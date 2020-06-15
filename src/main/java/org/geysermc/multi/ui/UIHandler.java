@@ -27,10 +27,7 @@ public class UIHandler {
         MasterServer.getInstance().getLogger().debug(data.getClickedButton().getText());
 
         Server server = player.getServers().get(data.getClickedButtonId());
-
-        TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress(server.getAddress());
-        transferPacket.setPort(server.getPort());
-        player.getSession().sendPacket(transferPacket);
+        player.createGeyserProxy(server);
+        player.connectToProxy();
     }
 }
