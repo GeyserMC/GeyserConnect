@@ -5,8 +5,10 @@ import com.nukkitx.protocol.bedrock.BedrockServer;
 import com.nukkitx.protocol.bedrock.BedrockServerEventHandler;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import lombok.Getter;
+import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.utils.Logger;
 import org.geysermc.multi.utils.Player;
+import org.geysermc.multi.utils.Server;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -36,6 +38,9 @@ public class MasterServer {
 
     @Getter
     private final Map<InetSocketAddress, Player> players = new HashMap<>();
+
+    @Getter
+    private GeyserProxyBootstrap geyserProxy;
 
     public MasterServer() {
         logger = new Logger();
@@ -95,5 +100,16 @@ public class MasterServer {
     public void shutdown() {
         shuttingDown = true;
         generalThreadPool.shutdown();
+
+        if (geyserProxy != null) {
+            geyserProxy.onDisable();
+        }
+    }
+
+    public void createGeyserProxy() {
+        if (geyserProxy == null) {
+            this.geyserProxy = new GeyserProxyBootstrap();
+            geyserProxy.onEnable();
+        }
     }
 }

@@ -12,4 +12,9 @@ public class Server {
     public Server(String address) {
         this(address, 25565);
     }
+
+    @Override
+    public String toString() {
+        return address + ":" + port;
+    }
 }

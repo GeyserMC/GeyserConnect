@@ -8,10 +8,13 @@ import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.*;
 import com.nukkitx.protocol.bedrock.packet.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.geysermc.common.window.FormWindow;
+import org.geysermc.multi.MasterServer;
 import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.ui.FormID;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +33,8 @@ public class Player {
     private FormWindow currentWindow;
     private FormID currentWindowId;
 
-    private GeyserProxyBootstrap geyserProxy;
+    @Setter
+    private Server currentServer;
 
     public Player(JsonNode extraData, BedrockServerSession session) {
         this.xuid = extraData.get("XUID").asText();
@@ -121,12 +125,6 @@ public class Player {
         session.sendPacket(setEntityMotionPacket);
     }
 
-    public void onDisconnect() {
-        if (geyserProxy != null) {
-            //geyserProxy.onDisable();
-        }
-    }
-
 
     public void sendWindow(FormID id, FormWindow window) {
         this.currentWindow = window;
@@ -142,19 +140,10 @@ public class Player {
         sendWindow(currentWindowId, currentWindow);
     }
 
-    public void createGeyserProxy(Server server) {
-        if (this.geyserProxy == null) {
-            this.geyserProxy = new GeyserProxyBootstrap();
-            geyserProxy.onEnable();
-        }
-
-        geyserProxy.setServer(server);
-    }
-
     public void connectToProxy() {
         TransferPacket transferPacket = new TransferPacket();
         transferPacket.setAddress("127.0.0.1");
-        transferPacket.setPort(geyserProxy.getGeyserConfig().getBedrock().getPort());
+        transferPacket.setPort(MasterServer.getInstance().getGeyserProxy().getGeyserConfig().getBedrock().getPort());
         session.sendPacket(transferPacket);
     }
 }

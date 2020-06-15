@@ -23,11 +23,25 @@ public class UIHandler {
         return window;
     }
 
+    public static FormWindow getWaitingScreen(Server server) {
+        SimpleFormWindow window = new SimpleFormWindow("Servers", "Please wait while we connect you to " + server.toString());
+        return window;
+    }
+
     public static void handleServerListResponse(Player player, SimpleFormResponse data) {
         MasterServer.getInstance().getLogger().debug(data.getClickedButton().getText());
 
+        // Get the server
         Server server = player.getServers().get(data.getClickedButtonId());
-        player.createGeyserProxy(server);
+
+        // Tell the user we are connecting them
+        player.sendWindow(FormID.CONNECTING, getWaitingScreen(server));
+
+        // Create the geyser instance if its not already running
+        MasterServer.getInstance().createGeyserProxy();
+
+        // Send the user over to the serverty
+        player.setCurrentServer(server);
         player.connectToProxy();
     }
 }

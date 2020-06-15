@@ -22,14 +22,14 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
 
     private GeyserProxyCommandManager geyserCommandManager;
     private GeyserProxyConfiguration geyserConfig;
-    private Logger geyserLogger;
+    private GeyserProxyLogger geyserLogger;
     private IGeyserPingPassthrough geyserPingPassthrough;
 
     private GeyserConnector connector;
 
     @Override
     public void onEnable() {
-        geyserLogger = MasterServer.getInstance().getLogger();
+        geyserLogger = new GeyserProxyLogger();
 
         try {
             InputStream configFile = GeyserProxyBootstrap.class.getClassLoader().getResourceAsStream("proxy_config.yml");
@@ -45,6 +45,8 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
         geyserCommandManager = new GeyserProxyCommandManager(connector);
 
         geyserPingPassthrough = GeyserLegacyPingPassthrough.init(connector);
+
+        connector.getBedrockServer().setHandler(new ProxyConnectorServerEventHandler(connector));
     }
 
     @Override
@@ -58,7 +60,7 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
     }
 
     @Override
-    public Logger getGeyserLogger() {
+    public GeyserProxyLogger getGeyserLogger() {
         return geyserLogger;
     }
 
@@ -70,12 +72,6 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
     @Override
     public IGeyserPingPassthrough getGeyserPingPassthrough() {
         return geyserPingPassthrough;
-    }
-
-    public void setServer(Server server) {
-        geyserLogger.debug("Updated remote server info");
-        connector.getRemoteServer().setAddress(server.getAddress());
-        connector.getRemoteServer().setPort(server.getPort());
     }
 }
 

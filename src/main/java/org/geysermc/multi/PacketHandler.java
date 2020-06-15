@@ -38,9 +38,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
     public void disconnect(DisconnectReason reason) {
         if (player != null) {
-            player.onDisconnect();
-            masterServer.getLogger().info(player.getDisplayName() + " has disconnected (" + reason + ")");
-            masterServer.getPlayers().remove(session.getAddress());
+            masterServer.getLogger().info(player.getDisplayName() + " has disconnected from the master server (" + reason + ")");
         }
     }
 
@@ -179,5 +177,11 @@ public class PacketHandler implements BedrockPacketHandler {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean handle(NetworkStackLatencyPacket packet) {
+        masterServer.getLogger().debug(packet.toString());
+        return false;
     }
 }

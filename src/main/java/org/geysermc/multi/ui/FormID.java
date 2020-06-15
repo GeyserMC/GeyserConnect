@@ -5,6 +5,7 @@ public enum FormID {
     DIRECT_CONNECT,
     ADD_SERVER,
     REMOVE_SERVER,
+    CONNECTING,
     ERROR;
 
     private static final FormID[] VALUES = values();
