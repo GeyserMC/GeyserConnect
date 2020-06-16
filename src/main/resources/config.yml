@@ -2,6 +2,12 @@
 # GeyserMulti Configuration File
 # --------------------------------
 
+# The IP address that will listen for connections
+address: 0.0.0.0
+
+# The IP address remote clients use to connect, can be set to 'auto' to fetch from the web
+remote-address: auto
+
 # The port that will listen for connections
 port: 19132
 

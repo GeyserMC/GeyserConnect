@@ -170,7 +170,7 @@ public class PacketHandler implements BedrockPacketHandler {
         window.setResponse(packet.getFormData().trim());
 
         // Resend the form if they closed it
-        if (window.getResponse() == null && id != FormID.DIRECT_CONNECT) {
+        if (window.getResponse() == null && !id.isHandlesNull()) {
             player.resendWindow();
         } else {
             // Send the response to the correct response function

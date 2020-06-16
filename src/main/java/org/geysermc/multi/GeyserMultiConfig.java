@@ -4,6 +4,7 @@ package org.geysermc.multi;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import org.geysermc.connector.utils.WebUtils;
 import org.geysermc.multi.utils.PlayerStorageManager;
 import org.geysermc.multi.utils.Server;
 
@@ -12,6 +13,11 @@ import java.util.List;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GeyserMultiConfig {
+
+    private String address;
+
+    @JsonProperty("remote-address")
+    private String remoteAddress;
 
     private int port;
 
@@ -29,6 +35,13 @@ public class GeyserMultiConfig {
 
     @JsonProperty("custom-servers")
     private CustomServersSection customServers;
+
+    public void checkRemoteIP() {
+        if ("auto".equals(remoteAddress)) {
+            remoteAddress = WebUtils.getBody("https://icanhazip.com/").trim();
+            MasterServer.getInstance().getLogger().debug("Auto set remote IP to: " + remoteAddress);
+        }
+    }
 
     @Getter
     public static class GeyserConfigSection {

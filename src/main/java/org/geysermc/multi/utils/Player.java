@@ -155,8 +155,8 @@ public class Player {
      */
     public void connectToProxy() {
         TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress("127.0.0.1"); // Need to find a good way of getting this
-        transferPacket.setPort(MasterServer.getInstance().getGeyserProxy().getGeyserConfig().getBedrock().getPort());
+        transferPacket.setAddress(MasterServer.getInstance().getGeyserMultiConfig().getRemoteAddress());
+        transferPacket.setPort(MasterServer.getInstance().getGeyserMultiConfig().getGeyser().getPort());
         session.sendPacket(transferPacket);
     }
 

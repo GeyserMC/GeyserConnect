@@ -63,6 +63,8 @@ public class MasterServer {
 
         logger.setDebug(geyserMultiConfig.isDebugMode());
 
+        geyserMultiConfig.checkRemoteIP();
+
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
         // Start a timer to keep the thread running
@@ -80,7 +82,7 @@ public class MasterServer {
     private void start(int port) {
         logger.info("Starting...");
 
-        InetSocketAddress bindAddress = new InetSocketAddress("0.0.0.0", port);
+        InetSocketAddress bindAddress = new InetSocketAddress(geyserMultiConfig.getAddress(), port);
         bdServer = new BedrockServer(bindAddress);
 
         bdPong = new BedrockPong();
@@ -112,7 +114,7 @@ public class MasterServer {
 
         // Start server up
         bdServer.bind().join();
-        logger.info("Server started on 0.0.0.0:" + port);
+        logger.info("Server started on " + geyserMultiConfig.getAddress() + ":" + port);
     }
 
     public void shutdown() {

@@ -26,9 +26,6 @@ public class UIHandler {
     public static FormWindow getServerList(List<Server> servers) {
         SimpleFormWindow window = new SimpleFormWindow("Servers", "");
 
-        window.getButtons().add(new FormButton("Direct connect"));
-        window.getButtons().add(new FormButton("Edit servers"));
-
         // Add a button for each global server
         for (Server server : MasterServer.getInstance().getGeyserMultiConfig().getServers()) {
             window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
@@ -39,6 +36,9 @@ public class UIHandler {
             for (Server server : servers) {
                 window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
             }
+
+            window.getButtons().add(new FormButton("Edit servers"));
+            window.getButtons().add(new FormButton("Direct connect"));
         }
 
         return window;
@@ -69,29 +69,51 @@ public class UIHandler {
     }
 
     /**
+     * Create a list of servers for the client to edit
+     *
+     * @param servers A list of {@link Server} objects
+     * @return A {@link SimpleFormWindow} object
+     */
+    public static FormWindow getEditServerList(List<Server> servers) {
+        SimpleFormWindow window = new SimpleFormWindow("Edit Servers", "Select a server to edit");
+
+        // Add a button for each personal server
+        for (Server server : servers) {
+            window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
+        }
+
+        return window;
+    }
+
+    /**
      * Handle the server list response
      *
      * @param player The player that submitted the response
      * @param data The form response data
      */
     public static void handleServerListResponse(Player player, SimpleFormResponse data) {
-        switch (data.getClickedButtonId()) {
-            case 0:
-                player.sendWindow(FormID.DIRECT_CONNECT, getDirectConnect());
-                break;
-            case 1:
-                break;
-            default:
-                // Get the server
-                List<Server> servers = new ArrayList<>(MasterServer.getInstance().getGeyserMultiConfig().getServers());
-                servers.addAll(player.getServers());
-                Server server = servers.get(data.getClickedButtonId() - 2);
+        List<Server> servers = new ArrayList<>(MasterServer.getInstance().getGeyserMultiConfig().getServers());
+        servers.addAll(player.getServers());
 
-                player.sendToServer(server);
-                break;
+        // Cant be done in a switch as we need to calculate the last 2 buttons
+        if (data.getClickedButtonId() == servers.size()) {
+            player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
+        } else if (data.getClickedButtonId() == servers.size() + 1) {
+            player.sendWindow(FormID.DIRECT_CONNECT, getDirectConnect());
+        } else {
+            // Get the server
+            Server server = servers.get(data.getClickedButtonId());
+
+            player.sendToServer(server);
         }
     }
 
+    /**
+     * Handle the direct connect response
+     *
+     * @param player The player that submitted the response
+     * @param data The form response data
+     */
     public static void handleDirectConnectResponse(Player player, CustomFormResponse data) {
         // Take them back to the main menu if they close the direct connect window
         if (data == null) {
@@ -99,6 +121,36 @@ public class UIHandler {
             return;
         }
 
-        player.sendToServer(new Server(data.getInputResponses().get(0), Integer.valueOf(data.getInputResponses().get(1))));
+        try {
+            String address = data.getInputResponses().get(0);
+            int port = Integer.valueOf(data.getInputResponses().get(1));
+
+            // Make sure we got an address and port
+            if (address == null || "".equals(address) || port <= 0 || port >= 65535) {
+                player.resendWindow();
+                return;
+            }
+
+            player.sendToServer(new Server(address, port));
+        } catch (NumberFormatException e) {
+            player.resendWindow();
+        }
+    }
+
+    /**
+     * Handle the edit server list response
+     *
+     * @param player The player that submitted the response
+     * @param data The form response data
+     */
+    public static void handleEditServerListResponse(Player player, SimpleFormResponse data) {
+        // Take them back to the main menu if they close the edit server list window
+        if (data == null) {
+            player.sendWindow(FormID.MAIN, getServerList(player.getServers()));;
+            return;
+        }
+
+        // Just redisplay the form for now
+        player.resendWindow();
     }
 }
