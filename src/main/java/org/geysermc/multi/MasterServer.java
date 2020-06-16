@@ -3,16 +3,15 @@ package org.geysermc.multi;
 import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
 import lombok.Getter;
+import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.utils.Logger;
 import org.geysermc.multi.utils.Player;
-import org.geysermc.multi.utils.Server;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -42,9 +41,21 @@ public class MasterServer {
     @Getter
     private GeyserProxyBootstrap geyserProxy;
 
+    @Getter
+    private GeyserMultiConfig geyserMultiConfig;
+
     public MasterServer() {
         logger = new Logger();
-        logger.setDebug(true);
+
+        try {
+            File configFile = FileUtils.fileOrCopiedFromResource(new File("config.yml"), "config.yml", (x) -> x);
+            this.geyserMultiConfig = FileUtils.loadConfig(configFile, GeyserMultiConfig.class);
+        } catch (IOException ex) {
+            logger.severe("Failed to read/create config.yml! Make sure it's up to date and/or readable+writable!", ex);
+            ex.printStackTrace();
+        }
+
+        logger.setDebug(geyserMultiConfig.isDebugMode());
 
         this.instance = this;
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
@@ -54,7 +65,7 @@ public class MasterServer {
         TimerTask task = new TimerTask() { public void run() { } };
         timer.scheduleAtFixedRate(task, 0L, 1000L);
 
-        start(19132);
+        start(geyserMultiConfig.getPort());
 
         logger.start();
     }
@@ -67,13 +78,13 @@ public class MasterServer {
 
         bdPong = new BedrockPong();
         bdPong.setEdition("MCPE");
-        bdPong.setMotd("My Server");
+        bdPong.setMotd(geyserMultiConfig.getMotd());
         bdPong.setPlayerCount(0);
-        bdPong.setMaximumPlayerCount(1337);
+        bdPong.setMaximumPlayerCount(geyserMultiConfig.getMaxPlayers());
         bdPong.setGameType("Survival");
         bdPong.setIpv4Port(port);
         bdPong.setProtocolVersion(MasterServer.CODEC.getProtocolVersion());
-        bdPong.setVersion(MasterServer.CODEC.getMinecraftVersion());
+        bdPong.setVersion(null); // Server tries to connect either way and it looks better
 
         bdServer.setHandler(new BedrockServerEventHandler() {
             @Override

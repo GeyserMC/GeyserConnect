@@ -11,10 +11,10 @@ bedrock:
   # The IP address that will listen for connections
   address: 0.0.0.0
   # The port that will listen for connections
-  port: 19133
+  port: PORT
   # The MOTD that will be broadcasted to Minecraft: Bedrock Edition clients. Irrelevant if "passthrough-motd" is set to true
-  motd1: "GeyserMC"
-  motd2: "Another GeyserMC forced host."
+  motd1: "MOTD"
+  motd2: "MOTD"
 remote:
   # The IP address of the remote (Java Edition) server
   address: 127.0.0.1
@@ -58,7 +58,7 @@ legacy-ping-passthrough: false
 ping-passthrough-interval: 3
 
 # Maximum amount of players that can connect
-max-players: 100
+max-players: PLAYERS
 
 # If debug messages should be sent through console
 debug-mode: false

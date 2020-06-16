@@ -1,0 +1,23 @@
+# --------------------------------
+# GeyserMulti Configuration File
+# --------------------------------
+
+# The port that will listen for connections
+port: 19132
+
+# If debug messages should be sent through console
+debug-mode: false
+
+# Maximum amount of players that can connect
+max-players: 100
+
+# MOTD to display
+motd: "GeyserMulti Proxy"
+
+# Config for the geyser listener
+geyser:
+  # The port that will listen for connections
+  port: 19133
+
+  # If debug messages should be sent through console, has to be enabled in both places to work
+  debug-mode: false

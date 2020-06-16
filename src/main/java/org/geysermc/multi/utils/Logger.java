@@ -3,9 +3,13 @@ package org.geysermc.multi.utils;
 import lombok.extern.log4j.Log4j2;
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.message.Message;
 import org.geysermc.common.ChatColor;
 import org.geysermc.connector.GeyserLogger;
 import org.geysermc.multi.MasterServer;
+
+import java.io.IOException;
+import java.util.logging.Level;
 
 @Log4j2
 public class Logger extends SimpleTerminalConsole implements GeyserLogger {
@@ -61,17 +65,5 @@ public class Logger extends SimpleTerminalConsole implements GeyserLogger {
 
     public void setDebug(boolean debug) {
         Configurator.setLevel(log.getName(), debug ? org.apache.logging.log4j.Level.DEBUG : log.getLevel());
-    }
-
-    public String getName() {
-        return "CONSOLE";
-    }
-
-    public void sendMessage(String message) {
-        info(message);
-    }
-
-    public boolean isConsole() {
-        return true;
     }
 }

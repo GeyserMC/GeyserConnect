@@ -7,10 +7,10 @@
 [![Discord](https://img.shields.io/discord/613163671870242838.svg?color=%237289da&label=discord)](http://discord.geysermc.org/)
 [![HitCount](http://hits.dwyl.io/Geyser/GeyserMC.svg)](http://hits.dwyl.io/GeyserMC/GeyserMulti)-->
 
-GeyserMulti is an easy way for bedrock clients to connect to any Java edition servers without having to run anything.
+GeyserMulti is an easy way for Bedrock Edition clients to connect to any Java Edition servers without having to run anything.
 
 ## What is GeyserMulti?
-GeyserMulti is a server that Minecraft: Bedrock Edition clients can connect to that allows for a list of Minecraft: Java Edition servers to be displayed and accessed through 1 public geyser instance. It is effectively a combination of [BedrockConnect](https://github.com/Pugmatt/BedrockConnect) and [Geyser](https://github.com/GeyserMC/Geyser).
+GeyserMulti is a server that Minecraft: Bedrock Edition clients can connect to that allows for a list of Minecraft: Java Edition servers to be displayed and accessed through 1 public Geyser instance. It is effectively a combination of [BedrockConnect](https://github.com/Pugmatt/BedrockConnect) and [Geyser](https://github.com/GeyserMC/Geyser).
 
 **Please note, this project is still a work in progress and should not be used on production. Expect bugs!**
 
@@ -22,6 +22,6 @@ GeyserMulti is a server that Minecraft: Bedrock Edition clients can connect to t
 	- [ ] Add
 	- [ ] Remove
 - [ ] Stop Geyser server after its idle for a while
-- [ ] Config file
+- [x] Config file
 - [ ] Fix server images not loading straight away on Win10
 - [ ] Better logging?
