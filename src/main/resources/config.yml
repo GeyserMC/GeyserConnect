@@ -42,5 +42,14 @@ custom-servers:
   max: 10
 
   # Storage engine for custom servers
-  # Can be json, sqlite
+  # Can be json, sqlite, mysql
   storage-type: json
+
+  # Connection details for the mysql storage type
+  mysql:
+    user: "geyser_connect"
+    pass: ""
+    database: "geyser_connect"
+    host: "localhost"
+    port: 3306
+

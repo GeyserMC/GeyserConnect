@@ -60,5 +60,17 @@ public class GeyserConnectConfig {
 
         @JsonProperty("storage-type")
         private AbstractStorageManager.StorageType storageType;
+
+        private MySQLConnectionSection mysql;
+    }
+
+    @Getter
+    public static class MySQLConnectionSection {
+
+        private String user;
+        private String pass;
+        private String database;
+        private String host;
+        private int port;
     }
 }

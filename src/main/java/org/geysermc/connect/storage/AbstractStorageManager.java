@@ -23,7 +23,8 @@ public class AbstractStorageManager {
     @Getter
     public enum StorageType {
         JSON("json", JsonStorageManager.class),
-        SQLITE("sqlite", SqliteStorageManager.class);
+        SQLITE("sqlite", SQLiteStorageManager.class),
+        MYSQL("mysql", MySQLStorageManager.class);
 
         @JsonValue
         private String name;
