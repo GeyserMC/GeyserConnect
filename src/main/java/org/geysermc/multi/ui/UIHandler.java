@@ -41,6 +41,8 @@ public class UIHandler {
             window.getButtons().add(new FormButton("Direct connect"));
         }
 
+        window.getButtons().add(new FormButton("Disconnect"));
+
         return window;
     }
 
@@ -96,7 +98,10 @@ public class UIHandler {
         servers.addAll(player.getServers());
 
         // Cant be done in a switch as we need to calculate the last 2 buttons
-        if (data.getClickedButtonId() == servers.size()) {
+
+        if ((!MasterServer.getInstance().getGeyserMultiConfig().getCustomServers().isEnabled() && data.getClickedButtonId() == servers.size()) || data.getClickedButtonId() == servers.size() + 2) {
+            player.getSession().disconnect("Bye!"); // Seems to be super slow if we specify an empty string
+        } else if (data.getClickedButtonId() == servers.size()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
         } else if (data.getClickedButtonId() == servers.size() + 1) {
             player.sendWindow(FormID.DIRECT_CONNECT, getDirectConnect());

@@ -40,6 +40,7 @@ public class PacketHandler implements BedrockPacketHandler {
     public void disconnect(DisconnectReason reason) {
         if (player != null) {
             masterServer.getLogger().info(player.getDisplayName() + " has disconnected from the master server (" + reason + ")");
+            masterServer.getStorageManager().saveServers(player);
         }
     }
 

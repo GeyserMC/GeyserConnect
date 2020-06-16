@@ -46,7 +46,7 @@ public class Player {
 
         // Should fetch the servers from some form of db
         if (MasterServer.getInstance().getGeyserMultiConfig().getCustomServers().isEnabled()) {
-            servers.addAll(PlayerStorageManager.loadServers(this));
+            servers.addAll(MasterServer.getInstance().getStorageManager().loadServers(this));
         }
     }
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.geysermc.connector.utils.WebUtils;
-import org.geysermc.multi.utils.PlayerStorageManager;
+import org.geysermc.multi.storage.AbstractStorageManager;
 import org.geysermc.multi.utils.Server;
 
 import java.util.List;
@@ -59,6 +59,6 @@ public class GeyserMultiConfig {
         private int max;
 
         @JsonProperty("storage-type")
-        private PlayerStorageManager.StorageType storageType;
+        private AbstractStorageManager.StorageType storageType;
     }
 }

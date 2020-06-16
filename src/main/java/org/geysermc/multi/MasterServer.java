@@ -5,9 +5,9 @@ import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
 import lombok.Getter;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.multi.proxy.GeyserProxyBootstrap;
+import org.geysermc.multi.storage.AbstractStorageManager;
 import org.geysermc.multi.utils.Logger;
 import org.geysermc.multi.utils.Player;
-import org.geysermc.multi.utils.PlayerStorageManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +48,9 @@ public class MasterServer {
     @Getter
     private GeyserMultiConfig geyserMultiConfig;
 
+    @Getter
+    private AbstractStorageManager storageManager;
+
     public MasterServer() {
         this.instance = this;
 
@@ -72,7 +75,14 @@ public class MasterServer {
         TimerTask task = new TimerTask() { public void run() { } };
         timer.scheduleAtFixedRate(task, 0L, 1000L);
 
-        PlayerStorageManager.setupStorage();
+        try {
+            storageManager = geyserMultiConfig.getCustomServers().getStorageType().getStorageManager().newInstance();
+        } catch (Exception e) {
+            logger.severe("Invalid storage manager class!", e);
+            return;
+        }
+
+        storageManager.setupStorage();
 
         start(geyserMultiConfig.getPort());
 
