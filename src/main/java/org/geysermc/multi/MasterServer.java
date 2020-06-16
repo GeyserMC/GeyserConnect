@@ -7,11 +7,15 @@ import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.multi.proxy.GeyserProxyBootstrap;
 import org.geysermc.multi.utils.Logger;
 import org.geysermc.multi.utils.Player;
+import org.geysermc.multi.utils.PlayerStorageManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -45,6 +49,8 @@ public class MasterServer {
     private GeyserMultiConfig geyserMultiConfig;
 
     public MasterServer() {
+        this.instance = this;
+
         logger = new Logger();
 
         try {
@@ -57,13 +63,14 @@ public class MasterServer {
 
         logger.setDebug(geyserMultiConfig.isDebugMode());
 
-        this.instance = this;
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
         // Start a timer to keep the thread running
         timer = new Timer();
         TimerTask task = new TimerTask() { public void run() { } };
         timer.scheduleAtFixedRate(task, 0L, 1000L);
+
+        PlayerStorageManager.setupStorage();
 
         start(geyserMultiConfig.getPort());
 

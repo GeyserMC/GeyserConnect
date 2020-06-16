@@ -6,7 +6,6 @@ import com.nukkitx.nbt.stream.NBTInputStream;
 import com.nukkitx.nbt.stream.NBTOutputStream;
 import com.nukkitx.nbt.tag.CompoundTag;
 import com.nukkitx.nbt.tag.ListTag;
-import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;

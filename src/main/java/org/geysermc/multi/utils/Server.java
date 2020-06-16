@@ -7,7 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class Server {
     private String address;
-    private int port;
+    private int port = 25565;
+
+    // Added so we can load from config
+    public Server() {
+        super();
+    }
 
     public Server(String address) {
         this(address, 25565);

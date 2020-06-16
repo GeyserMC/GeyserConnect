@@ -5,13 +5,16 @@ import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import com.nukkitx.protocol.bedrock.data.*;
+import com.nukkitx.protocol.bedrock.data.GamePublishSetting;
+import com.nukkitx.protocol.bedrock.data.GameRuleData;
+import com.nukkitx.protocol.bedrock.data.PlayerPermission;
 import com.nukkitx.protocol.bedrock.packet.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.common.window.FormWindow;
 import org.geysermc.multi.MasterServer;
 import org.geysermc.multi.ui.FormID;
+import org.geysermc.multi.ui.UIHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +45,9 @@ public class Player {
         this.session = session;
 
         // Should fetch the servers from some form of db
-        servers.add(new Server("play.cubecraft.net"));
-        servers.add(new Server("81.174.164.211", 25580));
+        if (MasterServer.getInstance().getGeyserMultiConfig().getCustomServers().isEnabled()) {
+            servers.addAll(PlayerStorageManager.loadServers(this));
+        }
     }
 
     /**
@@ -154,5 +158,18 @@ public class Player {
         transferPacket.setAddress("127.0.0.1"); // Need to find a good way of getting this
         transferPacket.setPort(MasterServer.getInstance().getGeyserProxy().getGeyserConfig().getBedrock().getPort());
         session.sendPacket(transferPacket);
+    }
+
+    public void sendToServer(Server server) {
+        // Tell the user we are connecting them
+        // this wont show up in alot of cases as the client connects quite quickly
+        sendWindow(FormID.CONNECTING, UIHandler.getWaitingScreen(server));
+
+        // Create the Geyser instance if its not already running
+        MasterServer.getInstance().createGeyserProxy();
+
+        // Send the user over to the server
+        setCurrentServer(server);
+        connectToProxy();
     }
 }

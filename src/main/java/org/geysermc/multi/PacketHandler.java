@@ -12,6 +12,7 @@ import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import org.geysermc.common.window.FormWindow;
+import org.geysermc.common.window.response.CustomFormResponse;
 import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.multi.ui.FormID;
 import org.geysermc.multi.ui.UIHandler;
@@ -130,7 +131,7 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(ResourcePackClientResponsePacket packet) {
         switch (packet.getStatus()) {
             case COMPLETED:
-                masterServer.getLogger().info("Logged in " + player.getDisplayName() + " (" + player.getXuid() + ")");
+                masterServer.getLogger().info("Logged in " + player.getDisplayName() + " (" + player.getXuid() + ", " + player.getIdentity() + ")");
                 player.sendStartGame();
                 break;
             case HAVE_ALL_PACKS:
@@ -152,7 +153,7 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
         masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
 
-        player.sendWindow(FormID.MAIN, UIHandler.getServerListFormPacket(player.getServers()));;
+        player.sendWindow(FormID.MAIN, UIHandler.getServerList(player.getServers()));;
 
         return false;
     }
@@ -169,13 +170,17 @@ public class PacketHandler implements BedrockPacketHandler {
         window.setResponse(packet.getFormData().trim());
 
         // Resend the form if they closed it
-        if (window.getResponse() == null) {
+        if (window.getResponse() == null && id != FormID.DIRECT_CONNECT) {
             player.resendWindow();
         } else {
             // Send the response to the correct response function
             switch (id) {
                 case MAIN:
                     UIHandler.handleServerListResponse(player, (SimpleFormResponse) window.getResponse());
+                    break;
+
+                case DIRECT_CONNECT:
+                    UIHandler.handleDirectConnectResponse(player, (CustomFormResponse) window.getResponse());
                     break;
 
                 default:

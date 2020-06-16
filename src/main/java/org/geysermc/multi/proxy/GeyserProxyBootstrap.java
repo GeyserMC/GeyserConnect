@@ -2,21 +2,20 @@ package org.geysermc.multi.proxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.geysermc.common.PlatformType;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.bootstrap.GeyserBootstrap;
-import org.geysermc.connector.configuration.GeyserConfiguration;
 import org.geysermc.connector.command.CommandManager;
-import org.geysermc.connector.ping.IGeyserPingPassthrough;
+import org.geysermc.connector.configuration.GeyserConfiguration;
 import org.geysermc.connector.ping.GeyserLegacyPingPassthrough;
-import org.geysermc.connector.utils.FileUtils;
+import org.geysermc.connector.ping.IGeyserPingPassthrough;
 import org.geysermc.multi.GeyserMultiConfig;
 import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.utils.Logger;
-import org.geysermc.multi.utils.Server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
