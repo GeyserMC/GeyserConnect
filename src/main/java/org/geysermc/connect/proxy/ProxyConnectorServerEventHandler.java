@@ -8,6 +8,7 @@ import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
 
 public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandler {
+
     private final GeyserConnector connector;
 
     public ProxyConnectorServerEventHandler(GeyserConnector connector) {

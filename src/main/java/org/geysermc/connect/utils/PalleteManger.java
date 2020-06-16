@@ -16,6 +16,7 @@ import java.io.InputStream;
  * This class is mostly copied from core Geyser
  */
 public class PalleteManger {
+
     public static final ListTag<CompoundTag> BLOCK_PALLETE;
     public static final CompoundTag BIOMES_PALLETE;
     public static final byte[] EMPTY_LEVEL_CHUNK_DATA;

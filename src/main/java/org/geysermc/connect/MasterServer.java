@@ -130,6 +130,7 @@ public class MasterServer {
     public void shutdown() {
         shuttingDown = true;
         generalThreadPool.shutdown();
+        storageManager.closeStorage();
 
         if (geyserProxy != null) {
             geyserProxy.onDisable();

@@ -18,7 +18,7 @@ debug-mode: false
 max-players: 100
 
 # MOTD to display
-motd: "GeyserMulti Proxy"
+motd: "GeyserConnect Proxy"
 
 # Config for the Geyser listener
 geyser:

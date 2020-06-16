@@ -12,6 +12,8 @@ public class AbstractStorageManager {
 
     public void setupStorage() { }
 
+    public void closeStorage() { }
+
     public void saveServers(Player player) { }
 
     public List<Server> loadServers(Player player) {
@@ -21,7 +23,7 @@ public class AbstractStorageManager {
     @Getter
     public enum StorageType {
         JSON("json", JsonStorageManager.class),
-        SQLITE("sqlite", AbstractStorageManager.class);
+        SQLITE("sqlite", SqliteStorageManager.class);
 
         @JsonValue
         private String name;

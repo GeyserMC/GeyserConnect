@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UIHandler {
+
     /**
      * Create a list of servers for the client based on the passed servers list
      *

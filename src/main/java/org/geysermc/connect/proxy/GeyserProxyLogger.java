@@ -6,6 +6,7 @@ import org.geysermc.connect.utils.Logger;
 
 @Log4j2
 public class GeyserProxyLogger extends Logger {
+
     /**
      * Disable debug messages depending on config
      */

@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Server {
+
     private String address;
     private int port = 25565;
 
