@@ -1,4 +1,4 @@
-package org.geysermc.multi.ui;
+package org.geysermc.connect.ui;
 
 import org.geysermc.common.window.CustomFormBuilder;
 import org.geysermc.common.window.CustomFormWindow;
@@ -9,9 +9,9 @@ import org.geysermc.common.window.button.FormImage;
 import org.geysermc.common.window.component.InputComponent;
 import org.geysermc.common.window.response.CustomFormResponse;
 import org.geysermc.common.window.response.SimpleFormResponse;
-import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.utils.Player;
-import org.geysermc.multi.utils.Server;
+import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.utils.Player;
+import org.geysermc.connect.utils.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ public class UIHandler {
         SimpleFormWindow window = new SimpleFormWindow("Servers", "");
 
         // Add a button for each global server
-        for (Server server : MasterServer.getInstance().getGeyserMultiConfig().getServers()) {
+        for (Server server : MasterServer.getInstance().getGeyserConnectConfig().getServers()) {
             window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
         }
 
         // Add a button for each personal server
-        if (MasterServer.getInstance().getGeyserMultiConfig().getCustomServers().isEnabled()) {
+        if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
             for (Server server : servers) {
                 window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
             }
@@ -94,12 +94,12 @@ public class UIHandler {
      * @param data The form response data
      */
     public static void handleServerListResponse(Player player, SimpleFormResponse data) {
-        List<Server> servers = new ArrayList<>(MasterServer.getInstance().getGeyserMultiConfig().getServers());
+        List<Server> servers = new ArrayList<>(MasterServer.getInstance().getGeyserConnectConfig().getServers());
         servers.addAll(player.getServers());
 
         // Cant be done in a switch as we need to calculate the last 2 buttons
 
-        if ((!MasterServer.getInstance().getGeyserMultiConfig().getCustomServers().isEnabled() && data.getClickedButtonId() == servers.size()) || data.getClickedButtonId() == servers.size() + 2) {
+        if ((!MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled() && data.getClickedButtonId() == servers.size()) || data.getClickedButtonId() == servers.size() + 2) {
             player.getSession().disconnect("Bye!"); // Seems to be super slow if we specify an empty string
         } else if (data.getClickedButtonId() == servers.size()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));

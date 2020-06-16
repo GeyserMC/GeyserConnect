@@ -1,4 +1,4 @@
-package org.geysermc.multi;
+package org.geysermc.connect;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,9 +14,9 @@ import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import org.geysermc.common.window.FormWindow;
 import org.geysermc.common.window.response.CustomFormResponse;
 import org.geysermc.common.window.response.SimpleFormResponse;
-import org.geysermc.multi.ui.FormID;
-import org.geysermc.multi.ui.UIHandler;
-import org.geysermc.multi.utils.Player;
+import org.geysermc.connect.ui.FormID;
+import org.geysermc.connect.ui.UIHandler;
+import org.geysermc.connect.utils.Player;
 
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;

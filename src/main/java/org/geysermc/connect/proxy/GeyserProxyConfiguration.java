@@ -1,4 +1,4 @@
-package org.geysermc.multi.proxy;
+package org.geysermc.connect.proxy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,11 +1,11 @@
-package org.geysermc.multi.proxy;
+package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.ConnectorServerEventHandler;
 import org.geysermc.connector.network.UpstreamPacketHandler;
-import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.utils.Player;
+import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.utils.Player;
 
 public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandler {
     private final GeyserConnector connector;

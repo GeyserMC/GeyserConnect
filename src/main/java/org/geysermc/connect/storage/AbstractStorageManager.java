@@ -1,9 +1,9 @@
-package org.geysermc.multi.storage;
+package org.geysermc.connect.storage;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import org.geysermc.multi.utils.Player;
-import org.geysermc.multi.utils.Server;
+import org.geysermc.connect.utils.Player;
+import org.geysermc.connect.utils.Server;
 
 import java.util.ArrayList;
 import java.util.List;

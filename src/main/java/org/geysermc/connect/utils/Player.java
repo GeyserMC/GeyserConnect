@@ -1,4 +1,4 @@
-package org.geysermc.multi.utils;
+package org.geysermc.connect.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nukkitx.math.vector.Vector2f;
@@ -12,9 +12,9 @@ import com.nukkitx.protocol.bedrock.packet.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.common.window.FormWindow;
-import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.ui.FormID;
-import org.geysermc.multi.ui.UIHandler;
+import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.ui.FormID;
+import org.geysermc.connect.ui.UIHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class Player {
         this.session = session;
 
         // Should fetch the servers from some form of db
-        if (MasterServer.getInstance().getGeyserMultiConfig().getCustomServers().isEnabled()) {
+        if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
             servers.addAll(MasterServer.getInstance().getStorageManager().loadServers(this));
         }
     }
@@ -155,8 +155,8 @@ public class Player {
      */
     public void connectToProxy() {
         TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress(MasterServer.getInstance().getGeyserMultiConfig().getRemoteAddress());
-        transferPacket.setPort(MasterServer.getInstance().getGeyserMultiConfig().getGeyser().getPort());
+        transferPacket.setAddress(MasterServer.getInstance().getGeyserConnectConfig().getRemoteAddress());
+        transferPacket.setPort(MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getPort());
         session.sendPacket(transferPacket);
     }
 

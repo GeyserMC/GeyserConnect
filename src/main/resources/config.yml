@@ -1,5 +1,5 @@
 # --------------------------------
-# GeyserMulti Configuration File
+# GeyserConnect Configuration File
 # --------------------------------
 
 # The IP address that will listen for connections
@@ -20,7 +20,7 @@ max-players: 100
 # MOTD to display
 motd: "GeyserMulti Proxy"
 
-# Config for the geyser listener
+# Config for the Geyser listener
 geyser:
   # The port that will listen for connections
   port: 19133

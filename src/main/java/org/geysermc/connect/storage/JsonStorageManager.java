@@ -1,9 +1,9 @@
-package org.geysermc.multi.storage;
+package org.geysermc.connect.storage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.geysermc.multi.utils.Player;
-import org.geysermc.multi.utils.Server;
+import org.geysermc.connect.utils.Player;
+import org.geysermc.connect.utils.Server;
 
 import java.io.File;
 import java.io.IOException;

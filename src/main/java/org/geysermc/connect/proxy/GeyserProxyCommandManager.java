@@ -23,7 +23,7 @@
  * @link https://github.com/GeyserMC/Geyser
  */
 
-package org.geysermc.multi.proxy;
+package org.geysermc.connect.proxy;
 
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.command.CommandManager;

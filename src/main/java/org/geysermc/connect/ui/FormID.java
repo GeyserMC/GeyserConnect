@@ -1,4 +1,4 @@
-package org.geysermc.multi.ui;
+package org.geysermc.connect.ui;
 
 import lombok.Getter;
 

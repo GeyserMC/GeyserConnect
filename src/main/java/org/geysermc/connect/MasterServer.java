@@ -1,13 +1,13 @@
-package org.geysermc.multi;
+package org.geysermc.connect;
 
 import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
 import lombok.Getter;
 import org.geysermc.connector.utils.FileUtils;
-import org.geysermc.multi.proxy.GeyserProxyBootstrap;
-import org.geysermc.multi.storage.AbstractStorageManager;
-import org.geysermc.multi.utils.Logger;
-import org.geysermc.multi.utils.Player;
+import org.geysermc.connect.proxy.GeyserProxyBootstrap;
+import org.geysermc.connect.storage.AbstractStorageManager;
+import org.geysermc.connect.utils.Logger;
+import org.geysermc.connect.utils.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class MasterServer {
     private GeyserProxyBootstrap geyserProxy;
 
     @Getter
-    private GeyserMultiConfig geyserMultiConfig;
+    private GeyserConnectConfig geyserConnectConfig;
 
     @Getter
     private AbstractStorageManager storageManager;
@@ -58,15 +58,15 @@ public class MasterServer {
 
         try {
             File configFile = FileUtils.fileOrCopiedFromResource(new File("config.yml"), "config.yml", (x) -> x);
-            this.geyserMultiConfig = FileUtils.loadConfig(configFile, GeyserMultiConfig.class);
+            this.geyserConnectConfig = FileUtils.loadConfig(configFile, GeyserConnectConfig.class);
         } catch (IOException ex) {
             logger.severe("Failed to read/create config.yml! Make sure it's up to date and/or readable+writable!", ex);
             ex.printStackTrace();
         }
 
-        logger.setDebug(geyserMultiConfig.isDebugMode());
+        logger.setDebug(geyserConnectConfig.isDebugMode());
 
-        geyserMultiConfig.checkRemoteIP();
+        geyserConnectConfig.checkRemoteIP();
 
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
@@ -76,7 +76,7 @@ public class MasterServer {
         timer.scheduleAtFixedRate(task, 0L, 1000L);
 
         try {
-            storageManager = geyserMultiConfig.getCustomServers().getStorageType().getStorageManager().newInstance();
+            storageManager = geyserConnectConfig.getCustomServers().getStorageType().getStorageManager().newInstance();
         } catch (Exception e) {
             logger.severe("Invalid storage manager class!", e);
             return;
@@ -84,7 +84,7 @@ public class MasterServer {
 
         storageManager.setupStorage();
 
-        start(geyserMultiConfig.getPort());
+        start(geyserConnectConfig.getPort());
 
         logger.start();
     }
@@ -92,14 +92,14 @@ public class MasterServer {
     private void start(int port) {
         logger.info("Starting...");
 
-        InetSocketAddress bindAddress = new InetSocketAddress(geyserMultiConfig.getAddress(), port);
+        InetSocketAddress bindAddress = new InetSocketAddress(geyserConnectConfig.getAddress(), port);
         bdServer = new BedrockServer(bindAddress);
 
         bdPong = new BedrockPong();
         bdPong.setEdition("MCPE");
-        bdPong.setMotd(geyserMultiConfig.getMotd());
+        bdPong.setMotd(geyserConnectConfig.getMotd());
         bdPong.setPlayerCount(0);
-        bdPong.setMaximumPlayerCount(geyserMultiConfig.getMaxPlayers());
+        bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
         bdPong.setGameType("Survival");
         bdPong.setIpv4Port(port);
         bdPong.setProtocolVersion(MasterServer.CODEC.getProtocolVersion());
@@ -124,7 +124,7 @@ public class MasterServer {
 
         // Start server up
         bdServer.bind().join();
-        logger.info("Server started on " + geyserMultiConfig.getAddress() + ":" + port);
+        logger.info("Server started on " + geyserConnectConfig.getAddress() + ":" + port);
     }
 
     public void shutdown() {

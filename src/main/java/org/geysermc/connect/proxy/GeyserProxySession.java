@@ -1,10 +1,10 @@
-package org.geysermc.multi.proxy;
+package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.session.GeyserSession;
-import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.utils.Player;
+import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.utils.Player;
 
 public class GeyserProxySession extends GeyserSession {
 

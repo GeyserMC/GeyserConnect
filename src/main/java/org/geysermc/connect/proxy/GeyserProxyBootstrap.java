@@ -1,4 +1,4 @@
-package org.geysermc.multi.proxy;
+package org.geysermc.connect.proxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -9,8 +9,8 @@ import org.geysermc.connector.command.CommandManager;
 import org.geysermc.connector.configuration.GeyserConfiguration;
 import org.geysermc.connector.ping.GeyserLegacyPingPassthrough;
 import org.geysermc.connector.ping.IGeyserPingPassthrough;
-import org.geysermc.multi.GeyserMultiConfig;
-import org.geysermc.multi.MasterServer;
+import org.geysermc.connect.GeyserConnectConfig;
+import org.geysermc.connect.MasterServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
 
             // Grab the config as text and replace static strings to the main config variables
             String text = new BufferedReader(new InputStreamReader(configFile, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
-            GeyserMultiConfig multiConfig = MasterServer.getInstance().getGeyserMultiConfig();
+            GeyserConnectConfig multiConfig = MasterServer.getInstance().getGeyserConnectConfig();
             text = text.replace("PORT", String.valueOf(multiConfig.getGeyser().getPort()));
             text = text.replaceAll("MOTD", multiConfig.getMotd());
             text = text.replace("PLAYERS", String.valueOf(multiConfig.getMaxPlayers()));

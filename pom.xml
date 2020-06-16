@@ -69,7 +69,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.geysermc.multi.GeyserMulti</mainClass>
+                            <mainClass>org.geysermc.connect.GeyserConnect</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

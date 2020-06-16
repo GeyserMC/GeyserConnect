@@ -1,4 +1,4 @@
-package org.geysermc.multi.utils;
+package org.geysermc.connect.utils;
 
 import com.nukkitx.nbt.CompoundTagBuilder;
 import com.nukkitx.nbt.NbtUtils;

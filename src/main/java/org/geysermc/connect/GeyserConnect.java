@@ -1,6 +1,6 @@
-package org.geysermc.multi;
+package org.geysermc.connect;
 
-public class GeyserMulti {
+public class GeyserConnect {
 
     public static void main(String[] args) {
         new MasterServer();

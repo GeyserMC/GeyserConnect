@@ -1,8 +1,8 @@
-package org.geysermc.multi.proxy;
+package org.geysermc.connect.proxy;
 
 import lombok.extern.log4j.Log4j2;
-import org.geysermc.multi.MasterServer;
-import org.geysermc.multi.utils.Logger;
+import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.utils.Logger;
 
 @Log4j2
 public class GeyserProxyLogger extends Logger {
@@ -10,7 +10,7 @@ public class GeyserProxyLogger extends Logger {
      * Disable debug messages depending on config
      */
     public void debug(String message) {
-        if (MasterServer.getInstance().getGeyserMultiConfig().getGeyser().isDebugMode())
+        if (MasterServer.getInstance().getGeyserConnectConfig().getGeyser().isDebugMode())
             super.debug(message);
     }
 }
