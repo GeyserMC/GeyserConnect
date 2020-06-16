@@ -14,10 +14,13 @@ GeyserMulti is a server that Minecraft: Bedrock Edition clients can connect to t
 **Please note, this project is still a work in progress and should not be used on production. Expect bugs!**
 
 ## TODO
+- [x] Auto start Geyser instance
+- [x] Transfer player to Geyser instance and connect to correct server
 - [ ] Server list
 	- [x] View
 	- [ ] Add
 	- [ ] Remove
+- [ ] Stop Geyser server after its idle for a while
 - [ ] Config file
 - [ ] Fix server images not loading straight away on Win10
 - [ ] Better logging?
