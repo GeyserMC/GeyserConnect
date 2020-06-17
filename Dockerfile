@@ -5,4 +5,4 @@ RUN mvn package
 
 FROM openjdk:15-alpine
 COPY --from=build target/geyser-connect-*.jar geyser-connect.jar
-RUN java -jar geyser-connect.jar
+CMD java -jar geyser-connect.jar
