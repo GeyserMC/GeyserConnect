@@ -26,4 +26,4 @@ jobs:
         if: success()
         with:
           name: Build
-          path: target/geyser-connect-*.jar
+          path: target/GeyserConnect.jar

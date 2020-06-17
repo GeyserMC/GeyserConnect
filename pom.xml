@@ -135,7 +135,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>false</minimizeJar>
+                            <finalName>${outputName}</finalName>
                         </configuration>
                     </execution>
                 </executions>
