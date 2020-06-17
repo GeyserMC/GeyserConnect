@@ -129,7 +129,7 @@ public class UIHandler {
         // Cant be done in a switch as we need to calculate the last 2 buttons
 
         if ((!MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled() && data.getClickedButtonId() == servers.size()) || data.getClickedButtonId() == servers.size() + 2) {
-            player.getSession().disconnect("disconnect.disconnected");
+            player.getSession().disconnect("disconnectionScreen.disconnected");
         } else if (data.getClickedButtonId() == servers.size()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
         } else if (data.getClickedButtonId() == servers.size() + 1) {
