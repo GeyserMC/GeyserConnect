@@ -15,7 +15,7 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'target/*.jar', excludes: 'target/original-*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'target/*.jar', excludes: 'target/geyser-connect-*.jar', fingerprint: true
                 }
             }
         }
