@@ -26,4 +26,4 @@ jobs:
         if: success()
         with:
           name: Build
-          path: bungee/target/geyser-connect-*.jar
+          path: target/geyser-connect-*.jar
