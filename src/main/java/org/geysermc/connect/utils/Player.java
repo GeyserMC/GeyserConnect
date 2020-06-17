@@ -31,16 +31,21 @@ import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
+import com.nukkitx.protocol.bedrock.data.Attribute;
 import com.nukkitx.protocol.bedrock.data.GamePublishSetting;
 import com.nukkitx.protocol.bedrock.data.GameRuleData;
 import com.nukkitx.protocol.bedrock.data.PlayerPermission;
 import com.nukkitx.protocol.bedrock.packet.*;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.common.window.FormWindow;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
+import org.geysermc.connector.entity.attribute.AttributeType;
+import org.geysermc.connector.utils.AttributeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +61,7 @@ public class Player {
     private BedrockServerSession session;
 
     private final List<Server> servers = new ArrayList<>();
+    private final Long2ObjectMap<ModalFormRequestPacket> forms = new Long2ObjectOpenHashMap<>();
 
     private FormWindow currentWindow;
     private FormID currentWindowId;
@@ -169,7 +175,13 @@ public class Player {
         ModalFormRequestPacket modalFormRequestPacket = new ModalFormRequestPacket();
         modalFormRequestPacket.setFormId(id.ordinal());
         modalFormRequestPacket.setFormData(window.getJSONData());
-        session.sendPacketImmediately(modalFormRequestPacket);
+        session.sendPacket(modalFormRequestPacket);
+
+        // This packet is used to fix the image loading bug
+        NetworkStackLatencyPacket networkStackLatencyPacket = new NetworkStackLatencyPacket();
+        networkStackLatencyPacket.setSendBack(true);
+        networkStackLatencyPacket.setTimestamp(System.currentTimeMillis());
+        session.sendPacket(networkStackLatencyPacket);
     }
 
     public void resendWindow() {

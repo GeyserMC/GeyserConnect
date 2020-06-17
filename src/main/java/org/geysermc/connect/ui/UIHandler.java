@@ -55,6 +55,8 @@ public class UIHandler {
 
         // Add a button for each global server
         for (Server server : MasterServer.getInstance().getGeyserConnectConfig().getServers()) {
+            // These images would be better if there was a default to fall back on
+            // But that would require a web api as bedrock doesn't support doing that
             window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
         }
 
@@ -127,7 +129,7 @@ public class UIHandler {
         // Cant be done in a switch as we need to calculate the last 2 buttons
 
         if ((!MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled() && data.getClickedButtonId() == servers.size()) || data.getClickedButtonId() == servers.size() + 2) {
-            player.getSession().disconnect("Bye!"); // Seems to be super slow if we specify an empty string
+            player.getSession().disconnect("disconnect.disconnected");
         } else if (data.getClickedButtonId() == servers.size()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
         } else if (data.getClickedButtonId() == servers.size() + 1) {

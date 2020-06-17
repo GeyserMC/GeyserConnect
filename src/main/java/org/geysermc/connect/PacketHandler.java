@@ -34,6 +34,7 @@ import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
 import com.nukkitx.network.util.DisconnectReason;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
+import com.nukkitx.protocol.bedrock.data.Attribute;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
@@ -43,9 +44,13 @@ import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
+import org.geysermc.connector.entity.attribute.AttributeType;
+import org.geysermc.connector.utils.AttributeUtils;
 
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PacketHandler implements BedrockPacketHandler {
 
@@ -210,6 +215,10 @@ public class PacketHandler implements BedrockPacketHandler {
                     UIHandler.handleDirectConnectResponse(player, (CustomFormResponse) window.getResponse());
                     break;
 
+                case EDIT_SERVERS:
+                    UIHandler.handleEditServerListResponse(player, (SimpleFormResponse) window.getResponse());
+                    break;
+
                 default:
                     player.resendWindow();
                     break;
@@ -217,5 +226,18 @@ public class PacketHandler implements BedrockPacketHandler {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean handle(NetworkStackLatencyPacket packet) {
+        // This is to fix a bug in the client where it doesn't load form images
+        UpdateAttributesPacket updateAttributesPacket = new UpdateAttributesPacket();
+        updateAttributesPacket.setRuntimeEntityId(1);
+        List<Attribute> attributes = new ArrayList<>();
+        attributes.add(AttributeUtils.getBedrockAttribute(AttributeType.EXPERIENCE_LEVEL.getAttribute(0f)));
+        updateAttributesPacket.setAttributes(attributes);
+        session.sendPacket(updateAttributesPacket);
+
+        return false;
     }
 }
