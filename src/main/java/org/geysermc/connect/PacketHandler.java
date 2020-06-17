@@ -137,7 +137,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
                 // Create a new player and add it to the players list
                 player = new Player(extraData, session);
-                masterServer.getPlayers().put(session.getAddress(), player);
+                masterServer.getPlayers().put(player.getXuid(), player);
 
                 // Tell the client we have logged in successfully
                 PlayStatusPacket playStatusPacket = new PlayStatusPacket();

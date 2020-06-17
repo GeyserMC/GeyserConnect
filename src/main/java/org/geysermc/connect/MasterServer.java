@@ -66,7 +66,7 @@ public class MasterServer {
     private final ScheduledExecutorService generalThreadPool;
 
     @Getter
-    private final Map<InetSocketAddress, Player> players = new HashMap<>();
+    private final Map<String, Player> players = new HashMap<>();
 
     @Getter
     private GeyserProxyBootstrap geyserProxy;

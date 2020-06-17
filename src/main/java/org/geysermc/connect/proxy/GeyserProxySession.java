@@ -31,6 +31,7 @@ import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.session.GeyserSession;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
+import org.geysermc.connector.network.session.auth.AuthData;
 
 public class GeyserProxySession extends GeyserSession {
 
@@ -43,9 +44,10 @@ public class GeyserProxySession extends GeyserSession {
         this.bedrockServerSession = bedrockServerSession;
     }
 
+    @Override
     public void authenticate(String username, String password) {
         // Get the player based on the connection address
-        Player player = MasterServer.getInstance().getPlayers().get(bedrockServerSession.getAddress());
+        Player player = MasterServer.getInstance().getPlayers().get(getAuthData().getXboxUUID());
         if (player != null && player.getCurrentServer() != null) {
             // Set the remote server info for the player
             connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
@@ -54,6 +56,17 @@ public class GeyserProxySession extends GeyserSession {
         }else{
             // Disconnect the player if they haven't picked a server on the master server list
             bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
+        }
+    }
+
+    @Override
+    public void setAuthenticationData(AuthData authData) {
+        super.setAuthenticationData(authData);
+
+        Player player = MasterServer.getInstance().getPlayers().get(authData.getXboxUUID());
+        if (player == null) {
+            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
+            return;
         }
     }
 }
