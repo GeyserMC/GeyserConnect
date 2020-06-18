@@ -28,21 +28,23 @@ package org.geysermc.connect.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Server {
 
     private String address;
     private int port = 25565;
-
-    // Added so we can load from config
-    public Server() {
-        super();
-    }
+    private boolean online = true;
 
     public Server(String address) {
-        this(address, 25565);
+        this(address, 25565, true);
+    }
+
+    public Server(String address, int port) {
+        this(address, port, true);
     }
 
     @Override

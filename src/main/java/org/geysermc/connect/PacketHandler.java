@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PacketHandler implements BedrockPacketHandler {
 
@@ -219,6 +220,22 @@ public class PacketHandler implements BedrockPacketHandler {
                     UIHandler.handleEditServerListResponse(player, (SimpleFormResponse) window.getResponse());
                     break;
 
+                case ADD_SERVER:
+                    UIHandler.handleAddServerResponse(player, (CustomFormResponse) window.getResponse());
+                    break;
+
+                case SERVER_OPTIONS:
+                    UIHandler.handleServerOptionsResponse(player, (SimpleFormResponse) window.getResponse());
+                    break;
+
+                case REMOVE_SERVER:
+                    UIHandler.handleServerRemoveResponse(player, (SimpleFormResponse) window.getResponse());
+                    break;
+
+                case EDIT_SERVER:
+                    UIHandler.handleEditServerResponse(player, (CustomFormResponse) window.getResponse());
+                    break;
+
                 default:
                     player.resendWindow();
                     break;
@@ -236,7 +253,9 @@ public class PacketHandler implements BedrockPacketHandler {
         List<Attribute> attributes = new ArrayList<>();
         attributes.add(AttributeUtils.getBedrockAttribute(AttributeType.EXPERIENCE_LEVEL.getAttribute(0f)));
         updateAttributesPacket.setAttributes(attributes);
-        session.sendPacket(updateAttributesPacket);
+
+        // Doesn't work 100% of the time but fixes it most of the time
+        MasterServer.getInstance().getGeneralThreadPool().schedule(() -> session.sendPacket(updateAttributesPacket), 500, TimeUnit.MILLISECONDS);
 
         return false;
     }

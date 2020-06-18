@@ -34,8 +34,10 @@ public enum FormID {
     MAIN,
     DIRECT_CONNECT(true),
     EDIT_SERVERS(true),
-    ADD_SERVER,
+    SERVER_OPTIONS(true),
+    ADD_SERVER(true),
     REMOVE_SERVER,
+    EDIT_SERVER(true),
     CONNECTING,
     ERROR;
 

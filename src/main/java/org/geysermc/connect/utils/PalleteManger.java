@@ -51,7 +51,7 @@ public class PalleteManger {
 
     static {
         /* Load block palette */
-        InputStream stream = FileUtils.getResource("runtime_block_states.dat");
+        InputStream stream = FileUtils.getResource("bedrock/runtime_block_states.dat");
 
         try (NBTInputStream nbtInputStream = NbtUtils.createNetworkReader(stream)) {
             BLOCK_PALLETE = (ListTag<CompoundTag>) nbtInputStream.readTag();
@@ -60,7 +60,7 @@ public class PalleteManger {
         }
 
         /* Load biomes */
-        stream = FileUtils.getResource("biome_definitions.dat");
+        stream = FileUtils.getResource("bedrock/biome_definitions.dat");
 
         try (NBTInputStream nbtInputStream = NbtUtils.createNetworkReader(stream)){
             BIOMES_PALLETE = (CompoundTag) nbtInputStream.readTag();

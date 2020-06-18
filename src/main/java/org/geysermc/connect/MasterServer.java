@@ -29,6 +29,7 @@ package org.geysermc.connect;
 import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
 import lombok.Getter;
+import org.geysermc.connect.utils.Server;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
 import org.geysermc.connect.storage.AbstractStorageManager;
@@ -155,12 +156,14 @@ public class MasterServer {
 
     public void shutdown() {
         shuttingDown = true;
-        generalThreadPool.shutdown();
-        storageManager.closeStorage();
 
         if (geyserProxy != null) {
             geyserProxy.onDisable();
         }
+
+        generalThreadPool.shutdown();
+        storageManager.closeStorage();
+        System.exit(0);
     }
 
     public void createGeyserProxy() {
