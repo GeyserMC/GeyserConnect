@@ -189,12 +189,20 @@ public class Player {
     }
 
     /**
-     * Send the player to the Geyser proxy server
+     * Send the player to the Geyser proxy server or straight to the bedrock server if it is
      */
     public void connectToProxy() {
+        String address = MasterServer.getInstance().getGeyserConnectConfig().getRemoteAddress();
+        int port = MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getPort();
+
+        if (currentServer.isBedrock()) {
+            address = currentServer.getAddress();
+            port = currentServer.getPort();
+        }
+
         TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress(MasterServer.getInstance().getGeyserConnectConfig().getRemoteAddress());
-        transferPacket.setPort(MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getPort());
+        transferPacket.setAddress(address);
+        transferPacket.setPort(port);
         session.sendPacket(transferPacket);
     }
 

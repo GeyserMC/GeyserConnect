@@ -133,6 +133,7 @@ public class UIHandler {
                 .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
                 .addComponent(new InputComponent("Port", "25565", "25565"))
                 .addComponent(new ToggleComponent("Online mode", true))
+                .addComponent(new ToggleComponent("Bedrock server", false))
                 .build();
         return window;
     }
@@ -181,6 +182,7 @@ public class UIHandler {
                 .addComponent(new InputComponent("IP", server.getAddress(), server.getAddress()))
                 .addComponent(new InputComponent("Port", port, port))
                 .addComponent(new ToggleComponent("Online mode", server.isOnline()))
+                .addComponent(new ToggleComponent("Bedrock server", server.isBedrock()))
                 .build();
         return window;
     }
@@ -282,6 +284,7 @@ public class UIHandler {
             String address = data.getInputResponses().get(0);
             int port = Integer.valueOf(data.getInputResponses().get(1));
             boolean online = data.getToggleResponses().get(2);
+            boolean bedrock = data.getToggleResponses().get(3);
 
             // Make sure we got an address and port
             if (address == null || "".equals(address) || port <= 0 || port >= 65535) {
@@ -289,7 +292,7 @@ public class UIHandler {
                 return;
             }
 
-            player.getServers().add(new Server(address, port, online));
+            player.getServers().add(new Server(address, port, online, bedrock));
 
             // Send them back to the edit screen
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
@@ -389,6 +392,7 @@ public class UIHandler {
             String address = data.getInputResponses().get(1);
             int port = Integer.valueOf(data.getInputResponses().get(2));
             boolean online = data.getToggleResponses().get(3);
+            boolean bedrock = data.getToggleResponses().get(4);
 
             // Make sure we got an address and port
             if (address == null || "".equals(address) || port <= 0 || port >= 65535) {
@@ -396,7 +400,7 @@ public class UIHandler {
                 return;
             }
 
-            player.getServers().set(serverIndex, new Server(address, port, online));
+            player.getServers().set(serverIndex, new Server(address, port, online, bedrock));
 
             // Send them back to the edit screen
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));

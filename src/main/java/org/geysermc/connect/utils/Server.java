@@ -38,13 +38,18 @@ public class Server {
     private String address;
     private int port = 25565;
     private boolean online = true;
+    private boolean bedrock = false;
 
     public Server(String address) {
-        this(address, 25565, true);
+        this(address, 25565);
     }
 
     public Server(String address, int port) {
         this(address, port, true);
+    }
+
+    public Server(String address, int port, boolean online) {
+        this(address, port, online, false);
     }
 
     @Override

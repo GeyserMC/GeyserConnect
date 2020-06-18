@@ -26,4 +26,4 @@ GeyserConnect is a server that Minecraft: Bedrock Edition clients can connect to
 - [x] Config file
 - [x] Fix server images not loading straight away on Win10
 - [ ] Per server online/offline mode (50%)
-- [ ] Add option to add a bedrock server
+- [x] Add option to add a bedrock server
