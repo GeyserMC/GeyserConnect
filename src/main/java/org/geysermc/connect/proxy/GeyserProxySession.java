@@ -27,6 +27,7 @@
 package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
+import org.geysermc.common.AuthType;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.session.GeyserSession;
 import org.geysermc.connect.MasterServer;
@@ -52,11 +53,22 @@ public class GeyserProxySession extends GeyserSession {
             // Set the remote server info for the player
             connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
             connector.getRemoteServer().setPort(player.getCurrentServer().getPort());
+
+            connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
+
             super.authenticate(username, password);
         }else{
             // Disconnect the player if they haven't picked a server on the master server list
             bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
         }
+    }
+
+    @Override
+    public void login() {
+        Player player = MasterServer.getInstance().getPlayers().get(getAuthData().getXboxUUID());
+        connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
+
+        super.login();
     }
 
     @Override

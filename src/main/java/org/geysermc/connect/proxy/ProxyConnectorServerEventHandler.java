@@ -29,7 +29,6 @@ package org.geysermc.connect.proxy;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.ConnectorServerEventHandler;
-import org.geysermc.connector.network.UpstreamPacketHandler;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
 
@@ -49,7 +48,7 @@ public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandle
 
         // This doesn't clean up the old packet handler, so may cause a memory leak?
         GeyserProxySession session = new GeyserProxySession(connector, bedrockServerSession);
-        bedrockServerSession.setPacketHandler(new UpstreamPacketHandler(connector, session));
+        bedrockServerSession.setPacketHandler(new GeyserProxyUpstreamPacketHandler(connector, session));
 
         // Add another disconnect handler to remove the player on final disconnect
         bedrockServerSession.addDisconnectHandler(disconnectReason -> {
