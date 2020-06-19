@@ -76,6 +76,9 @@ public class GeyserConnectConfig {
 
         @JsonProperty("debug-mode")
         private boolean debugMode;
+
+        @JsonProperty("shutdown-time")
+        private int shutdownTime;
     }
 
     @Getter

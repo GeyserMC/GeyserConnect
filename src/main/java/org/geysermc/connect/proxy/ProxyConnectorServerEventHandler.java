@@ -32,6 +32,8 @@ import org.geysermc.connector.network.ConnectorServerEventHandler;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
 
+import java.util.concurrent.TimeUnit;
+
 public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandler {
 
     private final GeyserConnector connector;
@@ -56,6 +58,21 @@ public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandle
             if (player != null) {
                 MasterServer.getInstance().getLogger().debug("Player disconnected from Geyser proxy: " + player.getDisplayName() + " (" + disconnectReason + ")");
                 MasterServer.getInstance().getPlayers().remove(session.getAuthData().getXboxUUID());
+
+                // Set the last disconnect time
+                MasterServer.getInstance().setLastDisconnectTime(System.currentTimeMillis());
+
+                int shutdownTime = MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getShutdownTime();
+
+                if (shutdownTime != -1) {
+                    MasterServer.getInstance().getGeneralThreadPool().schedule(() -> {
+                        if (System.currentTimeMillis() - MasterServer.getInstance().getLastDisconnectTime() > shutdownTime * 1000
+                                && connector != null
+                                && connector.getPlayers().size() <= 0) {
+                            MasterServer.getInstance().shutdownGeyserProxy();
+                        }
+                    }, shutdownTime, TimeUnit.SECONDS);
+                }
             }
         });
     }

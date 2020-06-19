@@ -28,6 +28,10 @@ geyser:
   # If debug messages should be sent through console, has to be enabled in both places to work
   debug-mode: false
 
+  # The time to wait after the last player disconnects to shutdown the proxy
+  # In seconds, set to -1 to disable
+  shutdown-time: 300
+
 # A global list of servers sent to all clients
 servers:
   - address: "play.cubecraft.net"

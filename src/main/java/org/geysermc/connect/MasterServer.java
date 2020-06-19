@@ -29,6 +29,7 @@ package org.geysermc.connect;
 import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
 import lombok.Getter;
+import lombok.Setter;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
@@ -78,6 +79,10 @@ public class MasterServer {
     @Getter
     private AbstractStorageManager storageManager;
 
+    @Setter
+    @Getter
+    private long lastDisconnectTime = 0l;
+
     public MasterServer() {
         this.instance = this;
 
@@ -96,6 +101,8 @@ public class MasterServer {
         geyserConnectConfig.checkRemoteIP();
 
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
+
+        boolean enableShutdownTimer = geyserConnectConfig.getGeyser().getShutdownTime() != -1;
 
         // Start a timer to keep the thread running
         timer = new Timer();
@@ -157,9 +164,7 @@ public class MasterServer {
     public void shutdown() {
         shuttingDown = true;
 
-        if (geyserProxy != null) {
-            geyserProxy.onDisable();
-        }
+        shutdownGeyserProxy();
 
         generalThreadPool.shutdown();
         storageManager.closeStorage();
@@ -170,6 +175,13 @@ public class MasterServer {
         if (geyserProxy == null) {
             this.geyserProxy = new GeyserProxyBootstrap();
             geyserProxy.onEnable();
+        }
+    }
+
+    public void shutdownGeyserProxy() {
+        if (geyserProxy != null) {
+            geyserProxy.onDisable();
+            geyserProxy = null;
         }
     }
 }
