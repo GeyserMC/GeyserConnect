@@ -1,0 +1,37 @@
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "hivebedrock.network" IN {
+        type master;
+        file "/etc/bind/db.hivebedrock.network";
+        allow-query { any; };
+};
+
+zone "mco.mineplex.com" IN {
+        type master;
+        file "/etc/bind/db.mco.mineplex.com";
+        allow-query { any; };
+};
+
+zone "play.inpvp.net" IN {
+        type master;
+        file "/etc/bind/db.play.inpvp.net";
+        allow-query { any; };
+};
+
+zone "mco.lbsg.net" IN {
+        type master;
+        file "/etc/bind/db.mco.lbsg.net";
+        allow-query { any; };
+};
+
+zone "mco.cubecraft.net" IN {
+        type master;
+        file "/etc/bind/db.mco.cubecraft.net";
+        allow-query { any; };
+};
