@@ -15,8 +15,8 @@ GeyserConnect is a server that Minecraft: Bedrock Edition clients can connect to
 **Please note, this project is still a work in progress and should not be used on production. Expect bugs!**
 
 If you wish to run this in docker and/or use DNS redirection please see the appropriate folders in this repo.
-Docker: [here](docker)
-DNS: [here](bind9)
+#### Docker: [here](docker)
+#### DNS: [here](bind9)
 
 ## TODO
 - [x] Auto start Geyser instance
