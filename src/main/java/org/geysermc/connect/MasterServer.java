@@ -28,6 +28,7 @@ package org.geysermc.connect;
 
 import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v390.Bedrock_v390;
+import com.nukkitx.protocol.bedrock.v407.Bedrock_v407;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.connect.utils.Server;
@@ -49,7 +50,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class MasterServer {
 
-    public static final BedrockPacketCodec CODEC = Bedrock_v390.V390_CODEC;
+    public static final BedrockPacketCodec CODEC = Bedrock_v407.V407_CODEC;
 
     private final Timer timer;
     private BedrockServer bdServer;

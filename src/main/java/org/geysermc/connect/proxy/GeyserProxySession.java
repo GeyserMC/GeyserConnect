@@ -27,8 +27,8 @@
 package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import org.geysermc.common.AuthType;
 import org.geysermc.connector.GeyserConnector;
+import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.session.GeyserSession;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;

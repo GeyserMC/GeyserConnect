@@ -34,7 +34,7 @@ import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
 import com.nukkitx.network.util.DisconnectReason;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import com.nukkitx.protocol.bedrock.data.Attribute;
+import com.nukkitx.protocol.bedrock.data.AttributeData;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
@@ -89,9 +89,9 @@ public class PacketHandler implements BedrockPacketHandler {
         if (protocol != MasterServer.CODEC.getProtocolVersion()) {
             PlayStatusPacket status = new PlayStatusPacket();
             if (protocol > MasterServer.CODEC.getProtocolVersion()) {
-                status.setStatus(PlayStatusPacket.Status.FAILED_SERVER);
+                status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_SERVER_OLD);
             } else {
-                status.setStatus(PlayStatusPacket.Status.FAILED_CLIENT);
+                status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_CLIENT_OLD);
             }
             session.sendPacket(status);
         }
@@ -254,7 +254,7 @@ public class PacketHandler implements BedrockPacketHandler {
         // This is to fix a bug in the client where it doesn't load form images
         UpdateAttributesPacket updateAttributesPacket = new UpdateAttributesPacket();
         updateAttributesPacket.setRuntimeEntityId(1);
-        List<Attribute> attributes = new ArrayList<>();
+        List<AttributeData> attributes = new ArrayList<>();
         attributes.add(AttributeUtils.getBedrockAttribute(AttributeType.EXPERIENCE_LEVEL.getAttribute(0f)));
         updateAttributesPacket.setAttributes(attributes);
 

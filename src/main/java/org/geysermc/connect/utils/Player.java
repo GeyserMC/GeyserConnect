@@ -31,9 +31,9 @@ import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import com.nukkitx.protocol.bedrock.data.Attribute;
 import com.nukkitx.protocol.bedrock.data.GamePublishSetting;
 import com.nukkitx.protocol.bedrock.data.GameRuleData;
+import com.nukkitx.protocol.bedrock.data.GameType;
 import com.nukkitx.protocol.bedrock.data.PlayerPermission;
 import com.nukkitx.protocol.bedrock.packet.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -44,8 +44,6 @@ import org.geysermc.common.window.FormWindow;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
-import org.geysermc.connector.entity.attribute.AttributeType;
-import org.geysermc.connector.utils.AttributeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,18 +88,18 @@ public class Player {
         StartGamePacket startGamePacket = new StartGamePacket();
         startGamePacket.setUniqueEntityId(1);
         startGamePacket.setRuntimeEntityId(1);
-        startGamePacket.setPlayerGamemode(0);
+        startGamePacket.setPlayerGameType(GameType.CREATIVE);
         startGamePacket.setPlayerPosition(Vector3f.from(0, 64 + 2, 0));
         startGamePacket.setRotation(Vector2f.ONE);
 
         startGamePacket.setSeed(-1);
         startGamePacket.setDimensionId(2);
         startGamePacket.setGeneratorId(1);
-        startGamePacket.setLevelGamemode(1);
+        startGamePacket.setLevelGameType(GameType.CREATIVE);
         startGamePacket.setDifficulty(0);
         startGamePacket.setDefaultSpawn(Vector3i.ZERO);
         startGamePacket.setAchievementsDisabled(true);
-        startGamePacket.setTime(-1);
+        startGamePacket.setCurrentTick(-1);
         startGamePacket.setEduEditionOffers(0);
         startGamePacket.setEduFeaturesEnabled(false);
         startGamePacket.setRainLevel(0);
@@ -126,7 +124,7 @@ public class Player {
         startGamePacket.setWorldTemplateOptionLocked(false);
 
         startGamePacket.setLevelId("");
-        startGamePacket.setWorldName("GeyserMulti");
+        startGamePacket.setLevelName("GeyserMulti");
         startGamePacket.setPremiumWorldTemplateId("");
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
@@ -146,7 +144,7 @@ public class Player {
 
         // Send the biomes
         BiomeDefinitionListPacket biomeDefinitionListPacket = new BiomeDefinitionListPacket();
-        biomeDefinitionListPacket.setTag(PalleteManger.BIOMES_PALLETE);
+        biomeDefinitionListPacket.setDefinitions(PalleteManger.BIOMES_PALLETE);
         session.sendPacket(biomeDefinitionListPacket);
 
         // Let the client know the player can spawn
@@ -179,7 +177,7 @@ public class Player {
 
         // This packet is used to fix the image loading bug
         NetworkStackLatencyPacket networkStackLatencyPacket = new NetworkStackLatencyPacket();
-        networkStackLatencyPacket.setSendBack(true);
+        networkStackLatencyPacket.setFromServer(true);
         networkStackLatencyPacket.setTimestamp(System.currentTimeMillis());
         session.sendPacket(networkStackLatencyPacket);
     }

@@ -26,12 +26,7 @@
 
 package org.geysermc.connect.utils;
 
-import com.nukkitx.nbt.CompoundTagBuilder;
-import com.nukkitx.nbt.NbtUtils;
-import com.nukkitx.nbt.stream.NBTInputStream;
-import com.nukkitx.nbt.stream.NBTOutputStream;
-import com.nukkitx.nbt.tag.CompoundTag;
-import com.nukkitx.nbt.tag.ListTag;
+import com.nukkitx.nbt.*;
 import org.geysermc.connector.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -43,18 +38,18 @@ import java.io.InputStream;
  */
 public class PalleteManger {
 
-    public static final ListTag<CompoundTag> BLOCK_PALLETE;
-    public static final CompoundTag BIOMES_PALLETE;
+    public static final NbtList<NbtMap> BLOCK_PALLETE;
+    public static final NbtMap BIOMES_PALLETE;
     public static final byte[] EMPTY_LEVEL_CHUNK_DATA;
 
-    private static final com.nukkitx.nbt.tag.CompoundTag EMPTY_TAG = CompoundTagBuilder.builder().buildRootTag();
+    private static final NbtMap EMPTY_TAG = NbtMap.EMPTY;
 
     static {
         /* Load block palette */
         InputStream stream = FileUtils.getResource("bedrock/runtime_block_states.dat");
 
         try (NBTInputStream nbtInputStream = NbtUtils.createNetworkReader(stream)) {
-            BLOCK_PALLETE = (ListTag<CompoundTag>) nbtInputStream.readTag();
+            BLOCK_PALLETE = (NbtList<NbtMap>) nbtInputStream.readTag();
         } catch (Exception e) {
             throw new AssertionError("Unable to get blocks from runtime block states", e);
         }
@@ -63,7 +58,7 @@ public class PalleteManger {
         stream = FileUtils.getResource("bedrock/biome_definitions.dat");
 
         try (NBTInputStream nbtInputStream = NbtUtils.createNetworkReader(stream)){
-            BIOMES_PALLETE = (CompoundTag) nbtInputStream.readTag();
+            BIOMES_PALLETE = (NbtMap) nbtInputStream.readTag();
         } catch (Exception e) {
             throw new AssertionError("Failed to get biomes from biome definitions", e);
         }
@@ -73,11 +68,11 @@ public class PalleteManger {
             outputStream.write(new byte[258]); // Biomes + Border Size + Extra Data Size
 
             try (NBTOutputStream nbtOutputStream = NbtUtils.createNetworkWriter(outputStream)) {
-                nbtOutputStream.write(EMPTY_TAG);
+                nbtOutputStream.writeTag(EMPTY_TAG);
             }
 
             EMPTY_LEVEL_CHUNK_DATA = outputStream.toByteArray();
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new AssertionError("Unable to generate empty level chunk data");
         }
     }
