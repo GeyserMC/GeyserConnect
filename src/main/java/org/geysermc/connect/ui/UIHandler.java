@@ -39,6 +39,7 @@ import org.geysermc.common.window.component.ToggleComponent;
 import org.geysermc.common.window.response.CustomFormResponse;
 import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.utils.Logger;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 
@@ -231,8 +232,14 @@ public class UIHandler {
             int port = Integer.valueOf(data.getInputResponses().get(1));
             boolean online = data.getToggleResponses().get(2);
 
-            // Make sure we got an address and port
-            if (address == null || "".equals(address) || port <= 0 || port >= 65535) {
+            // Make sure we got an address
+            if (address == null || "".equals(address)) {
+                player.sendWindow(FormID.MAIN, getServerList(player.getServers()));
+                return;
+            }
+
+            // Make sure we got a valid port
+            if (port <= 0 || port >= 65535) {
                 player.resendWindow();
                 return;
             }
@@ -286,8 +293,14 @@ public class UIHandler {
             boolean online = data.getToggleResponses().get(2);
             boolean bedrock = data.getToggleResponses().get(3);
 
-            // Make sure we got an address and port
-            if (address == null || "".equals(address) || port <= 0 || port >= 65535) {
+            // Make sure we got an address
+            if (address == null || "".equals(address)) {
+                player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
+                return;
+            }
+
+            // Make sure we got a valid port
+            if (port <= 0 || port >= 65535) {
                 player.resendWindow();
                 return;
             }
@@ -394,8 +407,14 @@ public class UIHandler {
             boolean online = data.getToggleResponses().get(3);
             boolean bedrock = data.getToggleResponses().get(4);
 
-            // Make sure we got an address and port
-            if (address == null || "".equals(address) || port <= 0 || port >= 65535) {
+            // Make sure we got an address
+            if (address == null || "".equals(address)) {
+                player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
+                return;
+            }
+
+            // Make sure we got a valid port
+            if (port <= 0 || port >= 65535) {
                 player.resendWindow();
                 return;
             }

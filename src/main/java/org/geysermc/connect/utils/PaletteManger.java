@@ -36,7 +36,7 @@ import java.io.InputStream;
 /**
  * This class is mostly copied from core Geyser
  */
-public class PalleteManger {
+public class PaletteManger {
 
     public static final NbtList<NbtMap> BLOCK_PALLETE;
     public static final NbtMap BIOMES_PALLETE;

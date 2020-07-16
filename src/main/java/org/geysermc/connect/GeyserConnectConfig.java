@@ -34,6 +34,7 @@ import org.geysermc.connector.utils.WebUtils;
 import org.geysermc.connect.storage.AbstractStorageManager;
 import org.geysermc.connect.utils.Server;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -57,7 +58,7 @@ public class GeyserConnectConfig {
 
     private GeyserConfigSection geyser;
 
-    private List<Server> servers;
+    private List<Server> servers = new ArrayList<>();
 
     @JsonProperty("custom-servers")
     private CustomServersSection customServers;
