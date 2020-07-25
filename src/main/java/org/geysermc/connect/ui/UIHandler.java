@@ -61,13 +61,13 @@ public class UIHandler {
         for (Server server : MasterServer.getInstance().getGeyserConnectConfig().getServers()) {
             // These images would be better if there was a default to fall back on
             // But that would require a web api as bedrock doesn't support doing that
-            window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
+            window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png?use-fallback-icon=true")));
         }
 
         // Add a button for each personal server
         if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
             for (Server server : servers) {
-                window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
+                window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png?use-fallback-icon=true")));
             }
 
             window.getButtons().add(new FormButton("Edit servers"));
