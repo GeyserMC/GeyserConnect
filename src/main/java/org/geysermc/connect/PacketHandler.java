@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  *
  * @author GeyserMC
- * @link https://github.com/GeyserMC/Geyser
+ * @link https://github.com/GeyserMC/GeyserConnect
  */
 
 package org.geysermc.connect;
