@@ -29,7 +29,7 @@ package org.geysermc.connect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import org.geysermc.connector.utils.WebUtils;
+import org.geysermc.connect.utils.WebUtils;
 import org.geysermc.connect.storage.AbstractStorageManager;
 import org.geysermc.connect.utils.Server;
 
