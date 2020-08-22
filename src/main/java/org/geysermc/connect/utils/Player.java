@@ -128,7 +128,7 @@ public class Player {
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
-        startGamePacket.setBlockPalette(PaletteManger.BLOCK_PALLETE);
+        startGamePacket.setBlockPalette(PaletteManger.BLOCK_PALETTE);
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
 
@@ -143,7 +143,7 @@ public class Player {
 
         // Send the biomes
         BiomeDefinitionListPacket biomeDefinitionListPacket = new BiomeDefinitionListPacket();
-        biomeDefinitionListPacket.setDefinitions(PaletteManger.BIOMES_PALLETE);
+        biomeDefinitionListPacket.setDefinitions(PaletteManger.BIOMES_PALETTE);
         session.sendPacket(biomeDefinitionListPacket);
 
         // Let the client know the player can spawn

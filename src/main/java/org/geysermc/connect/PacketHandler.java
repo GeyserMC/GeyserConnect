@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
 import com.nukkitx.network.util.DisconnectReason;
+import com.nukkitx.protocol.bedrock.BedrockPacketCodec;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.AttributeData;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
@@ -44,7 +45,9 @@ import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connector.entity.attribute.AttributeType;
+import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.utils.AttributeUtils;
+import org.geysermc.connector.utils.LanguageUtils;
 
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
@@ -83,20 +86,20 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(LoginPacket packet) {
         masterServer.getLogger().debug("Login: " + packet.toString());
 
-        // Check the protocol version is correct
-        int protocol = packet.getProtocolVersion();
-        if (protocol != MasterServer.CODEC.getProtocolVersion()) {
+        BedrockPacketCodec packetCodec = BedrockProtocol.getBedrockCodec(packet.getProtocolVersion());
+        if (packetCodec == null) {
+            session.setPacketCodec(BedrockProtocol.DEFAULT_BEDROCK_CODEC);
             PlayStatusPacket status = new PlayStatusPacket();
-            if (protocol > MasterServer.CODEC.getProtocolVersion()) {
+            if (packet.getProtocolVersion() > BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_SERVER_OLD);
-            } else {
+            } else if (packet.getProtocolVersion() < BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_CLIENT_OLD);
             }
             session.sendPacket(status);
         }
 
         // Set the session codec
-        session.setPacketCodec(MasterServer.CODEC);
+        session.setPacketCodec(packetCodec);
 
         // Read the raw chain data
         JsonNode rawChainData;

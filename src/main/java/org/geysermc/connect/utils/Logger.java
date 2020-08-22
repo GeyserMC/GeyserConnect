@@ -28,8 +28,8 @@ package org.geysermc.connect.utils;
 import lombok.extern.log4j.Log4j2;
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.geysermc.connector.GeyserLogger;
 import org.geysermc.connect.MasterServer;
+import org.geysermc.connector.GeyserLogger;
 import org.geysermc.connector.common.ChatColor;
 
 @Log4j2

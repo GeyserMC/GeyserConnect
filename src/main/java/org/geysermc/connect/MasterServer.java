@@ -29,6 +29,7 @@ import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v408.Bedrock_v408;
 import lombok.Getter;
 import lombok.Setter;
+import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
 import org.geysermc.connect.storage.AbstractStorageManager;
@@ -46,8 +47,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class MasterServer {
-
-    public static final BedrockPacketCodec CODEC = Bedrock_v408.V408_CODEC;
 
     private final Timer timer;
     private BedrockServer bdServer;
@@ -134,7 +133,7 @@ public class MasterServer {
         bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
         bdPong.setGameType("Survival");
         bdPong.setIpv4Port(port);
-        bdPong.setProtocolVersion(MasterServer.CODEC.getProtocolVersion());
+        bdPong.setProtocolVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
         bdPong.setVersion(null); // Server tries to connect either way and it looks better
 
         bdServer.setHandler(new BedrockServerEventHandler() {
