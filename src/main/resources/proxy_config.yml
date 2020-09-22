@@ -8,17 +8,27 @@
 # --------------------------------
 
 bedrock:
-  # The IP address that will listen for connections
+  # The IP address that will listen for connections.
+  # There is no reason to change this unless you want to limit what IPs can connect to your server.
   address: 0.0.0.0
   # The port that will listen for connections
   port: PORT
-  # The MOTD that will be broadcasted to Minecraft: Bedrock Edition clients. Irrelevant if "passthrough-motd" is set to true
+  # Some hosting services change your Java port everytime you start the server and require the same port to be used for Bedrock.
+  # This option makes the Bedrock port the same as the Java port every time you start the server.
+  # This option is for the plugin version only.
+  clone-remote-port: false
+  # The MOTD that will be broadcasted to Minecraft: Bedrock Edition clients. This is irrelevant if "passthrough-motd" is set to true
   motd1: "MOTD"
   motd2: "MOTD"
+  # The Server Name that will be sent to Minecraft: Bedrock Edition clients. This is visible in both the pause menu and the settings menu.
+  server-name: "Geyser"
 remote:
   # The IP address of the remote (Java Edition) server
+  # If it is "auto", for standalone version the remote address will be set to 127.0.0.1,
+  # for plugin versions, Geyser will attempt to find the best address to connect to.
   address: 127.0.0.1
   # The port of the remote (Java Edition) server
+  # For plugin versions, if address has been set to "auto", the port will also follow the server's listening port.
   port: 25565
   # Authentication type. Can be offline, online, or floodgate (see https://github.com/GeyserMC/Geyser/wiki/Floodgate).
   auth-type: online
@@ -45,9 +55,12 @@ floodgate-key-file: public-key.pem
 # Disabling this will prevent command suggestions from being sent and solve freezing for Bedrock clients.
 command-suggestions: false
 
-# The following two options enable "ping passthrough" - the MOTD and/or player count gets retrieved from the Java server.
+# The following three options enable "ping passthrough" - the MOTD, player count and/or protocol name gets retrieved from the Java server.
 # Relay the MOTD from the remote server to Bedrock players.
 passthrough-motd: false
+# Relay the protocol name (e.g. BungeeCord [X.X], Paper 1.X) - only really useful when using a custom protocol name!
+# This will also show up on sites like MCSrvStatus. <mcsrvstat.us>
+passthrough-protocol-name: false
 # Relay the player count and max players from the remote server to Bedrock players.
 passthrough-player-counts: false
 # Enable LEGACY ping passthrough. There is no need to enable this unless your MOTD or player count does not appear properly.
@@ -74,23 +87,35 @@ allow-third-party-capes: true
 # MinecraftCapes
 allow-third-party-ears: false
 
-# The default locale if we dont have the one the client requested
-default-locale: en_us
+# Allow a fake cooldown indicator to be sent. Bedrock players do not see a cooldown as they still use 1.8 combat
+show-cooldown: true
+
+# The default locale if we dont have the one the client requested. Uncomment to not use the default system language.
+# default-locale: en_us
 
 # Configures if chunk caching should be enabled or not. This keeps an individual
 # record of each block the client loads in. While this feature does allow for a few
 # things such as block break animations to show up in creative mode and among others,
 # it is HIGHLY recommended you disable this on a production environment as it can eat
-# up a lot of RAM. However, when using the Bukkit version of Geyser, support for features
+# up a lot of RAM. However, when using the Spigot version of Geyser, support for features
 # or implementations this allows is automatically enabled without the additional caching as
 # Geyser has direct access to the server itself.
 cache-chunks: false
+
+# Specify how many days images will be cached to disk to save downloading them from the internet.
+# A value of 0 is disabled. (Default: 0)
+cache-images: 0
 
 # Bedrock prevents building and displaying blocks above Y127 in the Nether -
 # enabling this config option works around that by changing the Nether dimension ID
 # to the End ID. The main downside to this is that the sky will resemble that of
 # the end sky in the nether, but ultimately it's the only way for this feature to work.
 above-bedrock-nether-building: false
+
+# Force clients to load all resource packs if there are any.
+# If set to false it allows the user to disconnect from the server if they don't
+# want to download the resource packs
+force-resource-packs: false
 
 # bStats is a stat tracker that is entirely anonymous and tracks only basic information
 # about Geyser, such as how many people are online, how many servers are using Geyser,
@@ -102,5 +127,20 @@ metrics:
   # UUID of server, don't change!
   uuid: generateduuid
 
-# DO NOT TOUCH!
-config-version: 3
+# ADVANCED OPTIONS - DO NOT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING!
+
+# Geyser updates the Scoreboard after every Scoreboard packet, but when Geyser tries to handle
+# a lot of scoreboard packets per second can cause serious lag.
+# This option allows you to specify after how many Scoreboard packets per seconds
+# the Scoreboard updates will be limited to four updates per second.
+scoreboard-packet-threshold: 20
+
+# Allow connections from ProxyPass and Waterdog.
+# See https://www.spigotmc.org/wiki/firewall-guide/ for assistance - use UDP instead of TCP.
+enable-proxy-connections: false
+
+# The internet supports a maximum MTU of 1492 but could cause issues with packet fragmentation.
+# 1400 is the default.
+# mtu: 1400
+
+config-version: 4

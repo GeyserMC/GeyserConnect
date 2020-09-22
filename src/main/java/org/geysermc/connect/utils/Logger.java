@@ -87,4 +87,8 @@ public class Logger extends SimpleTerminalConsole implements GeyserLogger {
     public void setDebug(boolean debug) {
         Configurator.setLevel(log.getName(), debug ? org.apache.logging.log4j.Level.DEBUG : log.getLevel());
     }
+
+    public boolean isDebug() {
+        return log.isDebugEnabled();
+    }
 }
