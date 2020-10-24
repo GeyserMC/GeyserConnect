@@ -53,6 +53,6 @@ public class Server {
 
     @Override
     public String toString() {
-        return address + (port != 25565 ? ":" + port : "");
+        return address + (port != (bedrock ? 19132 : 25565) ? ":" + port : "");
     }
 }
