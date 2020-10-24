@@ -217,8 +217,10 @@ public class Player {
         // this wont show up in alot of cases as the client connects quite quickly
         sendWindow(FormID.CONNECTING, UIHandler.getWaitingScreen(server));
 
-        // Create the Geyser instance if its not already running
-        MasterServer.getInstance().createGeyserProxy();
+        if (!server.isBedrock()) {
+            // Create the Geyser instance if its not already running
+            MasterServer.getInstance().createGeyserProxy();
+        }
 
         // Send the user over to the server
         setCurrentServer(server);
