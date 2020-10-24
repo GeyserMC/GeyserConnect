@@ -43,6 +43,7 @@ import org.geysermc.common.window.FormWindow;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
+import org.geysermc.connector.network.session.auth.BedrockClientData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,9 @@ public class Player {
 
     @Setter
     private Server currentServer;
+
+    @Setter
+    private BedrockClientData clientData;
 
     public Player(JsonNode extraData, BedrockServerSession session) {
         this.xuid = extraData.get("XUID").asText();
@@ -189,7 +193,12 @@ public class Player {
      * Send the player to the Geyser proxy server or straight to the bedrock server if it is
      */
     public void connectToProxy() {
-        String address = MasterServer.getInstance().getGeyserConnectConfig().getRemoteAddress();
+        // Use the clients connecting IP then fallback to the remote address from config
+        String address = clientData.getServerAddress().split(":")[0].trim();
+        if (address.isEmpty()) {
+            address = MasterServer.getInstance().getGeyserConnectConfig().getRemoteAddress();
+        }
+
         int port = MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getPort();
 
         if (currentServer.isBedrock()) {

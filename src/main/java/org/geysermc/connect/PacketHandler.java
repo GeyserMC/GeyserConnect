@@ -46,6 +46,7 @@ import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connector.entity.attribute.AttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
+import org.geysermc.connector.network.session.auth.BedrockClientData;
 import org.geysermc.connector.utils.AttributeUtils;
 import org.geysermc.connector.utils.LanguageUtils;
 
@@ -145,6 +146,9 @@ public class PacketHandler implements BedrockPacketHandler {
                 // Create a new player and add it to the players list
                 player = new Player(extraData, session);
                 masterServer.getPlayers().put(player.getXuid(), player);
+
+                // Store the full client data
+                player.setClientData(OBJECT_MAPPER.convertValue(OBJECT_MAPPER.readTree(skinData.getPayload().toBytes()), BedrockClientData.class));
 
                 // Tell the client we have logged in successfully
                 PlayStatusPacket playStatusPacket = new PlayStatusPacket();
