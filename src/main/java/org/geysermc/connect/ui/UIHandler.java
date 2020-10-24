@@ -33,12 +33,10 @@ import org.geysermc.common.window.button.FormButton;
 import org.geysermc.common.window.button.FormImage;
 import org.geysermc.common.window.component.InputComponent;
 import org.geysermc.common.window.component.LabelComponent;
-import org.geysermc.common.window.component.SliderComponent;
 import org.geysermc.common.window.component.ToggleComponent;
 import org.geysermc.common.window.response.CustomFormResponse;
 import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.MasterServer;
-import org.geysermc.connect.utils.Logger;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 
@@ -99,6 +97,7 @@ public class UIHandler {
                 .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
                 .addComponent(new InputComponent("Port", "25565", "25565"))
                 .addComponent(new ToggleComponent("Online mode", true))
+                .addComponent(new ToggleComponent("Bedrock server", false))
                 .build();
         return window;
     }
@@ -230,6 +229,7 @@ public class UIHandler {
             String address = data.getInputResponses().get(0);
             int port = Integer.valueOf(data.getInputResponses().get(1));
             boolean online = data.getToggleResponses().get(2);
+            boolean bedrock = data.getToggleResponses().get(3);
 
             // Make sure we got an address
             if (address == null || "".equals(address)) {
@@ -243,7 +243,7 @@ public class UIHandler {
                 return;
             }
 
-            player.sendToServer(new Server(address, port, online));
+            player.sendToServer(new Server(address, port, online, bedrock));
         } catch (NumberFormatException e) {
             player.resendWindow();
         }
