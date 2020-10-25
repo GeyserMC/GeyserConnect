@@ -85,7 +85,7 @@
         <dependency>
             <groupId>com.github.CloudburstMC.Protocol</groupId>
             <artifactId>bedrock-v408</artifactId>
-            <version>250beb2a94</version>
+            <version>02f46a8700</version>
         </dependency>
         <dependency>
             <groupId>net.minecrell</groupId>

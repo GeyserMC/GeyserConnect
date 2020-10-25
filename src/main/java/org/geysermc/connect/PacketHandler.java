@@ -179,7 +179,7 @@ public class PacketHandler implements BedrockPacketHandler {
                 break;
             case HAVE_ALL_PACKS:
                 ResourcePackStackPacket stack = new ResourcePackStackPacket();
-                stack.setExperimental(false);
+                stack.setExperimentsPreviouslyToggled(false);
                 stack.setForcedToAccept(false);
                 stack.setGameVersion("*");
                 session.sendPacket(stack);
