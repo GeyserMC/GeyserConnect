@@ -35,13 +35,13 @@ import lombok.NoArgsConstructor;
 public class Server {
 
     private String address;
-    private int port = -1;
+    private int port = 25565;
     private boolean online = true;
     private boolean bedrock = false;
     private String name = null;
 
     public Server(String address) {
-        this(address, -1);
+        this(address, 25565);
     }
 
     public Server(String address, int port) {
