@@ -29,6 +29,7 @@ import com.nukkitx.protocol.bedrock.*;
 import com.nukkitx.protocol.bedrock.v408.Bedrock_v408;
 import lombok.Getter;
 import lombok.Setter;
+import org.geysermc.connect.storage.DisabledStorageManager;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
@@ -99,18 +100,22 @@ public class MasterServer {
 
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
-        boolean enableShutdownTimer = geyserConnectConfig.getGeyser().getShutdownTime() != -1;
-
         // Start a timer to keep the thread running
         timer = new Timer();
         TimerTask task = new TimerTask() { public void run() { } };
         timer.scheduleAtFixedRate(task, 0L, 1000L);
 
-        try {
-            storageManager = geyserConnectConfig.getCustomServers().getStorageType().getStorageManager().newInstance();
-        } catch (Exception e) {
-            logger.severe("Invalid storage manager class!", e);
-            return;
+        if (!geyserConnectConfig.getCustomServers().isEnabled()) {
+            // Force the storage manager if we have it disabled
+            storageManager = new DisabledStorageManager();
+            logger.info("Disabled custom player servers");
+        } else {
+            try {
+                storageManager = geyserConnectConfig.getCustomServers().getStorageType().getStorageManager().newInstance();
+            } catch (Exception e) {
+                logger.severe("Invalid storage manager class!", e);
+                return;
+            }
         }
 
         storageManager.setupStorage();
