@@ -90,13 +90,20 @@ public class PacketHandler implements BedrockPacketHandler {
         BedrockPacketCodec packetCodec = BedrockProtocol.getBedrockCodec(packet.getProtocolVersion());
         if (packetCodec == null) {
             session.setPacketCodec(BedrockProtocol.DEFAULT_BEDROCK_CODEC);
+
+            String message = "disconnectionScreen.internalError.cantConnect";
             PlayStatusPacket status = new PlayStatusPacket();
             if (packet.getProtocolVersion() > BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_SERVER_OLD);
+                message = "disconnectionScreen.outdatedServer";
             } else if (packet.getProtocolVersion() < BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_CLIENT_OLD);
+                message = "disconnectionScreen.outdatedClient";
             }
             session.sendPacket(status);
+            session.disconnect(message);
+
+            return false;
         }
 
         // Set the session codec
