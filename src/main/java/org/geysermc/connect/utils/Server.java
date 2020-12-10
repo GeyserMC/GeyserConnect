@@ -28,6 +28,7 @@ package org.geysermc.connect.utils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.geysermc.common.window.button.FormImage;
 
 @Getter
 @AllArgsConstructor
@@ -39,6 +40,7 @@ public class Server {
     private boolean online = true;
     private boolean bedrock = false;
     private String name = null;
+    private String imageUrl = null;
 
     public Server(String address) {
         this(address, -1);
@@ -53,7 +55,11 @@ public class Server {
     }
 
     public Server(String address, int port, boolean online, boolean bedrock) {
-        this(address, port, online, false, null);
+        this(address, port, online, bedrock, null);
+    }
+
+    public Server(String address, int port, boolean online, boolean bedrock, String name) {
+        this(address, port, online, bedrock, name, null);
     }
 
     private int defaultPort() { return bedrock ? 19132 : 25565; }
@@ -63,5 +69,13 @@ public class Server {
     @Override
     public String toString() {
         return name != null ? name : address + (getPort() != defaultPort() ? ":" + getPort() : "");
+    }
+
+    public FormImage getFormImage() {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            return new FormImage(FormImage.FormImageType.URL, imageUrl);
+        } else {
+            return new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + address + ":" + port + ".png?use-fallback-icon=true");
+        }
     }
 }

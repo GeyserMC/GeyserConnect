@@ -34,6 +34,11 @@ geyser:
 
 # A global list of servers sent to all clients
 servers:
+  - address: test.geysermc.org
+    port: 19132
+    bedrock: true
+    name: Official Geyser Test Server
+    imageUrl: https://geysermc.org/android-chrome-192x192.png
   - address: "play.cubecraft.net"
   - address: "127.0.0.1"
     port: 25565
