@@ -25,6 +25,7 @@
 
 package org.geysermc.connect.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,6 +72,7 @@ public class Server {
         return name != null ? name : address + (getPort() != defaultPort() ? ":" + getPort() : "");
     }
 
+    @JsonIgnore
     public FormImage getFormImage() {
         if (imageUrl != null && !imageUrl.isEmpty()) {
             return new FormImage(FormImage.FormImageType.URL, imageUrl);
