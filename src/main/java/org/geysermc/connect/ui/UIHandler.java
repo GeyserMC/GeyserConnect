@@ -83,8 +83,7 @@ public class UIHandler {
      * @return A {@link SimpleFormWindow} object
      */
     public static FormWindow getWaitingScreen(Server server) {
-        SimpleFormWindow window = new SimpleFormWindow("Connecting", "Please wait while we connect you to " + server.toString());
-        return window;
+        return new SimpleFormWindow("Connecting", "Please wait while we connect you to " + server.toString());
     }
 
     /**
@@ -93,13 +92,12 @@ public class UIHandler {
      * @return A {@link CustomFormWindow} object
      */
     public static FormWindow getDirectConnect() {
-        CustomFormWindow window = new CustomFormBuilder("Direct Connect")
+        return new CustomFormBuilder("Direct Connect")
                 .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
                 .addComponent(new InputComponent("Port", "25565", "25565"))
                 .addComponent(new ToggleComponent("Online mode", true))
                 .addComponent(new ToggleComponent("Bedrock server", false))
                 .build();
-        return window;
     }
 
     /**
@@ -128,13 +126,12 @@ public class UIHandler {
      * @return A {@link CustomFormWindow} object
      */
     public static FormWindow getAddServer() {
-        CustomFormWindow window = new CustomFormBuilder("Add Server")
+        return new CustomFormBuilder("Add Server")
                 .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
                 .addComponent(new InputComponent("Port", "25565", "25565"))
                 .addComponent(new ToggleComponent("Online mode", true))
                 .addComponent(new ToggleComponent("Bedrock server", false))
                 .build();
-        return window;
     }
 
     /**
@@ -176,14 +173,13 @@ public class UIHandler {
      */
     public static FormWindow getEditServer(int serverIndex, Server server) {
         String port = String.valueOf(server.getPort());
-        CustomFormWindow window = new CustomFormBuilder("Edit Server")
+        return new CustomFormBuilder("Edit Server")
                 .addComponent(new LabelComponent("Server at index: " + serverIndex))
                 .addComponent(new InputComponent("IP", server.getAddress(), server.getAddress()))
                 .addComponent(new InputComponent("Port", port, port))
                 .addComponent(new ToggleComponent("Online mode", server.isOnline()))
                 .addComponent(new ToggleComponent("Bedrock server", server.isBedrock()))
                 .build();
-        return window;
     }
 
     /**
@@ -227,7 +223,7 @@ public class UIHandler {
 
         try {
             String address = data.getInputResponses().get(0);
-            int port = Integer.valueOf(data.getInputResponses().get(1));
+            int port = Integer.parseInt(data.getInputResponses().get(1));
             boolean online = data.getToggleResponses().get(2);
             boolean bedrock = data.getToggleResponses().get(3);
 
@@ -288,7 +284,7 @@ public class UIHandler {
 
         try {
             String address = data.getInputResponses().get(0);
-            int port = Integer.valueOf(data.getInputResponses().get(1));
+            int port = Integer.parseInt(data.getInputResponses().get(1));
             boolean online = data.getToggleResponses().get(2);
             boolean bedrock = data.getToggleResponses().get(3);
 
@@ -399,10 +395,10 @@ public class UIHandler {
         }
 
         try {
-            int serverIndex = Integer.valueOf(data.getLabelResponses().get(0).split(":")[1].trim());
+            int serverIndex = Integer.parseInt(data.getLabelResponses().get(0).split(":")[1].trim());
 
             String address = data.getInputResponses().get(1);
-            int port = Integer.valueOf(data.getInputResponses().get(2));
+            int port = Integer.parseInt(data.getInputResponses().get(2));
             boolean online = data.getToggleResponses().get(3);
             boolean bedrock = data.getToggleResponses().get(4);
 
