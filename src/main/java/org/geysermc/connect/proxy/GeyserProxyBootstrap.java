@@ -71,6 +71,7 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
             text = text.replace("PORT", String.valueOf(multiConfig.getGeyser().getPort()));
             text = text.replaceAll("MOTD", multiConfig.getMotd());
             text = text.replace("PLAYERS", String.valueOf(multiConfig.getMaxPlayers()));
+            text = text.replace("CACHECHUNKS", String.valueOf(multiConfig.getGeyser().isCacheChunks()));
             text = text.replace("ALLOWPASSWORDAUTHENTICATION", String.valueOf(multiConfig.getGeyser().isAllowPasswordAuthentication()));
 
             ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());

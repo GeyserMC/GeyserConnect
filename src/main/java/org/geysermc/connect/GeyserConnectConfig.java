@@ -74,8 +74,11 @@ public class GeyserConnectConfig {
 
         private int port;
 
+        @JsonProperty("cache-chunks")
+        private boolean cacheChunks = true;
+
         @JsonProperty("allow-password-authentication")
-        private boolean allowPasswordAuthentication = true;
+        private boolean allowPasswordAuthentication = false;
 
         @JsonProperty("debug-mode")
         private boolean debugMode;

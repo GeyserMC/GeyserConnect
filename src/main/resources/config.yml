@@ -25,8 +25,11 @@ geyser:
   # The port that will listen for connections
   port: 19133
 
+  # Configures if chunk caching should be enabled or not.
+  cache-chunks: true
+
   # If password authentication should be allowed in online mode.
-  allow-password-authentication: true
+  allow-password-authentication: false
 
   # If debug messages should be sent through console, has to be enabled in both places to work
   debug-mode: false
