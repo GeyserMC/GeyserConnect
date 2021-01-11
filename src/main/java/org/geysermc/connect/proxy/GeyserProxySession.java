@@ -56,7 +56,25 @@ public class GeyserProxySession extends GeyserSession {
             connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
 
             super.authenticate(username, password);
-        }else{
+        } else {
+            // Disconnect the player if they haven't picked a server on the master server list
+            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
+        }
+    }
+
+    @Override
+    public void authenticateWithMicrosoftCode() {
+        // Get the player based on the connection address
+        Player player = MasterServer.getInstance().getPlayers().get(getAuthData().getXboxUUID());
+        if (player != null && player.getCurrentServer() != null) {
+            // Set the remote server info for the player
+            connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
+            connector.getRemoteServer().setPort(player.getCurrentServer().getPort());
+
+            connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
+
+            super.authenticateWithMicrosoftCode();
+        } else {
             // Disconnect the player if they haven't picked a server on the master server list
             bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
         }
@@ -77,7 +95,6 @@ public class GeyserProxySession extends GeyserSession {
         Player player = MasterServer.getInstance().getPlayers().get(authData.getXboxUUID());
         if (player == null) {
             bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
-            return;
         }
     }
 }

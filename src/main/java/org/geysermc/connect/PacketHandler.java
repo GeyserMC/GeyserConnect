@@ -58,8 +58,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PacketHandler implements BedrockPacketHandler {
 
-    private BedrockServerSession session;
-    private MasterServer masterServer;
+    private final BedrockServerSession session;
+    private final MasterServer masterServer;
 
     private Player player;
 
@@ -69,7 +69,7 @@ public class PacketHandler implements BedrockPacketHandler {
         this.session = session;
         this.masterServer = masterServer;
 
-        session.addDisconnectHandler((reason) -> disconnect(reason));
+        session.addDisconnectHandler(this::disconnect);
     }
 
     public void disconnect(DisconnectReason reason) {
@@ -78,7 +78,7 @@ public class PacketHandler implements BedrockPacketHandler {
             masterServer.getStorageManager().saveServers(player);
 
             if (player.getCurrentServer() != null && player.getCurrentServer().isBedrock()) {
-                masterServer.getPlayers().remove(player);
+                masterServer.getPlayers().remove(player.getXuid(), player);
             }
         }
     }

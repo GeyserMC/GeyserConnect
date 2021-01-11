@@ -49,7 +49,6 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class MasterServer {
 
-    private final Timer timer;
     private BedrockServer bdServer;
     private BedrockPong bdPong;
 
@@ -79,10 +78,10 @@ public class MasterServer {
 
     @Setter
     @Getter
-    private long lastDisconnectTime = 0l;
+    private long lastDisconnectTime = 0L;
 
     public MasterServer() {
-        this.instance = this;
+        instance = this;
 
         logger = new Logger();
 
@@ -101,7 +100,7 @@ public class MasterServer {
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
         // Start a timer to keep the thread running
-        timer = new Timer();
+        Timer timer = new Timer();
         TimerTask task = new TimerTask() { public void run() { } };
         timer.scheduleAtFixedRate(task, 0L, 1000L);
 
@@ -165,6 +164,7 @@ public class MasterServer {
 
     public void shutdown() {
         shuttingDown = true;
+        bdServer.close();
 
         shutdownGeyserProxy();
 
