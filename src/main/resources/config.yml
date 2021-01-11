@@ -25,6 +25,9 @@ geyser:
   # The port that will listen for connections
   port: 19133
 
+  # If password authentication should be allowed in online mode.
+  allow-password-authentication: true
+
   # If debug messages should be sent through console, has to be enabled in both places to work
   debug-mode: false
 

@@ -74,6 +74,9 @@ public class GeyserConnectConfig {
 
         private int port;
 
+        @JsonProperty("allow-password-authentication")
+        private boolean allowPasswordAuthentication = true;
+
         @JsonProperty("debug-mode")
         private boolean debugMode;
 
