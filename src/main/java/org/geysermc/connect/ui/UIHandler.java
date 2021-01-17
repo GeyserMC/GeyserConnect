@@ -41,11 +41,15 @@ import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.connect.utils.ServerCategory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UIHandler {
 
+    /**
+     * Create a list of servers for the client based on the passed servers list
+     *
+     * @return A {@link SimpleFormWindow} object
+     */
     public static FormWindow getMainMenu() {
         SimpleFormWindow window = new SimpleFormWindow("Main Menu", "");
 
@@ -196,13 +200,24 @@ public class UIHandler {
                 .build();
     }
 
+    /**
+     * Show a basic form window with a message
+     *
+     * @param message The message to display
+     * @return A {@link CustomFormWindow} object
+     */
     public static FormWindow getMessageWindow(String message) {
         return new CustomFormBuilder("Notice")
                 .addComponent(new LabelComponent(message))
                 .build();
     }
 
-
+    /**
+     * Handle the main menu response
+     *
+     * @param player The player that submitted the response
+     * @param data The form response data
+     */
     public static void handleMainMenuResponse(Player player, SimpleFormResponse data) {
         switch (data.getClickedButtonId()) {
             case 0:
@@ -214,6 +229,7 @@ public class UIHandler {
                 break;
 
             default:
+                // If we have custom servers enabled there are a few extra buttons
                 if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
                     switch (data.getClickedButtonId()) {
                         case 2:
@@ -234,6 +250,7 @@ public class UIHandler {
                 break;
         }
 
+        // Send the server list
         player.sendWindow(FormID.LIST_SERVERS, getServerList(player.getCurrentServers(), player.getServerCategory()));
     }
 
