@@ -51,11 +51,11 @@ import java.util.UUID;
 @Getter
 public class Player {
 
-    private String xuid;
-    private UUID identity;
-    private String displayName;
+    private final String xuid;
+    private final UUID identity;
+    private final String displayName;
 
-    private BedrockServerSession session;
+    private final BedrockServerSession session;
 
     private final List<Server> servers = new ArrayList<>();
     private final Long2ObjectMap<ModalFormRequestPacket> forms = new Long2ObjectOpenHashMap<>();
@@ -68,6 +68,9 @@ public class Player {
 
     @Setter
     private BedrockClientData clientData;
+
+    @Setter
+    private ServerCategory serverCategory;
 
     public Player(JsonNode extraData, BedrockServerSession session) {
         this.xuid = extraData.get("XUID").asText();
@@ -222,7 +225,7 @@ public class Player {
 
     public void sendToServer(Server server) {
         // Tell the user we are connecting them
-        // this wont show up in alot of cases as the client connects quite quickly
+        // This wont show up in a lot of cases as the client connects quite quickly
         sendWindow(FormID.CONNECTING, UIHandler.getWaitingScreen(server));
 
         if (!server.isBedrock()) {
@@ -233,5 +236,13 @@ public class Player {
         // Send the user over to the server
         setCurrentServer(server);
         connectToProxy();
+    }
+
+    public List<Server> getCurrentServers() {
+        if (serverCategory == ServerCategory.CUSTOM) {
+            return servers;
+        }
+
+        return MasterServer.getInstance().getServers(serverCategory);
     }
 }

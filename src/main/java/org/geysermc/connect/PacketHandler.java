@@ -64,7 +64,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
     private Player player;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     public PacketHandler(BedrockServerSession session, MasterServer masterServer) {
         this.session = session;
@@ -213,7 +213,7 @@ public class PacketHandler implements BedrockPacketHandler {
         if (!message.trim().isEmpty()) {
             player.sendWindow(FormID.WELCOME, UIHandler.getMessageWindow(message));
         } else {
-            player.sendWindow(FormID.MAIN, UIHandler.getServerList(player.getServers()));
+            player.sendWindow(FormID.MAIN, UIHandler.getMainMenu());
         }
 
         return false;
@@ -237,10 +237,14 @@ public class PacketHandler implements BedrockPacketHandler {
             // Send the response to the correct response function
             switch (id) {
                 case WELCOME:
-                    player.sendWindow(FormID.MAIN, UIHandler.getServerList(player.getServers()));
+                    player.sendWindow(FormID.MAIN, UIHandler.getMainMenu());
                     break;
 
                 case MAIN:
+                    UIHandler.handleMainMenuResponse(player, (SimpleFormResponse) window.getResponse());
+                    break;
+
+                case LIST_SERVERS:
                     UIHandler.handleServerListResponse(player, (SimpleFormResponse) window.getResponse());
                     break;
 

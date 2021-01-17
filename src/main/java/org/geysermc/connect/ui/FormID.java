@@ -33,6 +33,7 @@ public enum FormID {
     WELCOME,
     MAIN,
     DIRECT_CONNECT(true),
+    LIST_SERVERS(true),
     EDIT_SERVERS(true),
     SERVER_OPTIONS(true),
     ADD_SERVER(true),
@@ -41,7 +42,7 @@ public enum FormID {
     CONNECTING,
     ERROR;
 
-    private boolean handlesNull;
+    private final boolean handlesNull;
 
     private static final FormID[] VALUES = values();
 

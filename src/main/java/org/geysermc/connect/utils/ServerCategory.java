@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2021 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,42 +23,19 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.storage;
+package org.geysermc.connect.utils;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import org.geysermc.connect.utils.Player;
-import org.geysermc.connect.utils.Server;
 
-import java.util.ArrayList;
-import java.util.List;
+@Getter
+public enum ServerCategory {
+    OFFICIAL("Official"),
+    GEYSER("Geyser"),
+    CUSTOM("Custom");
 
-public class AbstractStorageManager {
+    private final String title;
 
-    public void setupStorage() { }
-
-    public void closeStorage() { }
-
-    public void saveServers(Player player) { }
-
-    public List<Server> loadServers(Player player) {
-        return new ArrayList<>();
-    }
-
-    @Getter
-    public enum StorageType {
-        JSON("json", JsonStorageManager.class),
-        SQLITE("sqlite", SQLiteStorageManager.class),
-        MYSQL("mysql", MySQLStorageManager.class);
-
-        @JsonValue
-        private final String name;
-
-        private final Class<? extends AbstractStorageManager> storageManager;
-
-        StorageType(String name, Class<? extends AbstractStorageManager> storageManager) {
-            this.name = name;
-            this.storageManager = storageManager;
-        }
+    ServerCategory(String title) {
+        this.title = title;
     }
 }

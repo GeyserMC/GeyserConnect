@@ -73,7 +73,7 @@ public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandle
 
                 if (shutdownTime != -1) {
                     MasterServer.getInstance().getGeneralThreadPool().schedule(() -> {
-                        if (System.currentTimeMillis() - MasterServer.getInstance().getLastDisconnectTime() > shutdownTime * 1000
+                        if (System.currentTimeMillis() - MasterServer.getInstance().getLastDisconnectTime() > shutdownTime * 1000L
                                 && connector != null
                                 && connector.getPlayers().size() <= 0) {
                             MasterServer.getInstance().shutdownGeyserProxy();

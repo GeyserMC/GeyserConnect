@@ -52,7 +52,7 @@ public class JsonStorageManager extends AbstractStorageManager {
     public void saveServers(Player player) {
         try {
             mapper.writeValue(dataFolder.resolve(player.getXuid() + ".json").toFile(), player.getServers());
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
     }
 
     @Override
@@ -62,7 +62,7 @@ public class JsonStorageManager extends AbstractStorageManager {
         try {
             List<Server> loadedServers = mapper.readValue(dataFolder.resolve(player.getXuid() + ".json").toFile(), new TypeReference<List<Server>>(){});
             servers.addAll(loadedServers);
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
 
         return servers;
     }

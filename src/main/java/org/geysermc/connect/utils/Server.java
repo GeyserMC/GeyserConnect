@@ -42,6 +42,7 @@ public class Server {
     private boolean bedrock = false;
     private String name = null;
     private String imageUrl = null;
+    private ServerCategory category = null;
 
     public Server(String address) {
         this(address, -1);
@@ -61,6 +62,10 @@ public class Server {
 
     public Server(String address, int port, boolean online, boolean bedrock, String name) {
         this(address, port, online, bedrock, name, null);
+    }
+
+    public Server(String address, int port, boolean online, boolean bedrock, String name, String imageUrl) {
+        this(address, port, online, bedrock, name, imageUrl, ServerCategory.CUSTOM);
     }
 
     private int defaultPort() { return bedrock ? 19132 : 25565; }

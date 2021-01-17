@@ -42,7 +42,7 @@ public class WebUtils extends org.geysermc.connector.utils.WebUtils {
      * @return Body contents or error message if the request fails
      */
     public static String getBody(String reqURL) {
-        URL url = null;
+        URL url;
         try {
             url = new URL(reqURL);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -60,7 +60,7 @@ public class WebUtils extends org.geysermc.connector.utils.WebUtils {
      *
      * @param con The connection to get the string from
      * @return The body of the returned page
-     * @throws IOException
+     * @throws IOException If the request fails
      */
     private static String connectionToString(HttpURLConnection con) throws IOException {
         // Send the request (we dont use this but its required for getErrorStream() to work)
@@ -74,7 +74,7 @@ public class WebUtils extends org.geysermc.connector.utils.WebUtils {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         String inputLine;
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);

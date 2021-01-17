@@ -39,39 +39,53 @@ import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
+import org.geysermc.connect.utils.ServerCategory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UIHandler {
 
+    public static FormWindow getMainMenu() {
+        SimpleFormWindow window = new SimpleFormWindow("Main Menu", "");
+
+        window.getButtons().add(new FormButton("Official Servers"));
+        window.getButtons().add(new FormButton("Geyser Servers"));
+
+        // Add a buttons for custom servers
+        if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
+            window.getButtons().add(new FormButton("Custom Servers"));
+            window.getButtons().add(new FormButton("Direct connect"));
+        }
+
+        window.getButtons().add(new FormButton("Disconnect"));
+
+        return window;
+    }
+
     /**
      * Create a list of servers for the client based on the passed servers list
      *
      * @param servers A list of {@link Server} objects
+     * @param category The category of the current list
      * @return A {@link SimpleFormWindow} object
      */
-    public static FormWindow getServerList(List<Server> servers) {
-        SimpleFormWindow window = new SimpleFormWindow("Servers", "");
+    public static FormWindow getServerList(List<Server> servers, ServerCategory category) {
+        SimpleFormWindow window = new SimpleFormWindow(category.getTitle() + " Servers", "");
 
         // Add a button for each global server
-        for (Server server : MasterServer.getInstance().getGeyserConnectConfig().getServers()) {
+        for (Server server : servers) {
             // These images would be better if there was a default to fall back on
             // But that would require a web api as bedrock doesn't support doing that
             window.getButtons().add(new FormButton(server.toString(), server.getFormImage()));
         }
 
-        // Add a button for each personal server
-        if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
-            for (Server server : servers) {
-                window.getButtons().add(new FormButton(server.toString(), server.getFormImage()));
-            }
-
+        // Add a button for editing
+        if (category == ServerCategory.CUSTOM) {
             window.getButtons().add(new FormButton("Edit servers"));
-            window.getButtons().add(new FormButton("Direct connect"));
         }
 
-        window.getButtons().add(new FormButton("Disconnect"));
+        window.getButtons().add(new FormButton("Back"));
 
         return window;
     }
@@ -183,10 +197,44 @@ public class UIHandler {
     }
 
     public static FormWindow getMessageWindow(String message) {
-        CustomFormWindow window = new CustomFormBuilder("Notice")
+        return new CustomFormBuilder("Notice")
                 .addComponent(new LabelComponent(message))
                 .build();
-        return window;
+    }
+
+
+    public static void handleMainMenuResponse(Player player, SimpleFormResponse data) {
+        switch (data.getClickedButtonId()) {
+            case 0:
+                player.setServerCategory(ServerCategory.OFFICIAL);
+                break;
+
+            case 1:
+                player.setServerCategory(ServerCategory.GEYSER);
+                break;
+
+            default:
+                if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
+                    switch (data.getClickedButtonId()) {
+                        case 2:
+                            player.setServerCategory(ServerCategory.CUSTOM);
+                            break;
+                        case 3:
+                            player.sendWindow(FormID.DIRECT_CONNECT, getDirectConnect());
+                            return;
+
+                        default:
+                            player.getSession().disconnect("disconnectionScreen.disconnected");
+                            break;
+                    }
+                } else {
+                    player.getSession().disconnect("disconnectionScreen.disconnected");
+                    return;
+                }
+                break;
+        }
+
+        player.sendWindow(FormID.LIST_SERVERS, getServerList(player.getCurrentServers(), player.getServerCategory()));
     }
 
     /**
@@ -196,22 +244,28 @@ public class UIHandler {
      * @param data The form response data
      */
     public static void handleServerListResponse(Player player, SimpleFormResponse data) {
-        List<Server> servers = new ArrayList<>(MasterServer.getInstance().getGeyserConnectConfig().getServers());
-        servers.addAll(player.getServers());
+        List<Server> servers = player.getCurrentServers();
 
-        // Cant be done in a switch as we need to calculate the last 2 buttons
+        if (player.getServerCategory() == ServerCategory.CUSTOM) {
+            if (data == null || data.getClickedButtonId() == servers.size() + 1) {
+                player.sendWindow(FormID.MAIN, UIHandler.getMainMenu());
+            } else if (data.getClickedButtonId() == servers.size()) {
+                player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getCurrentServers()));
+            } else {
+                // Get the server
+                Server server = servers.get(data.getClickedButtonId());
 
-        if ((!MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled() && data.getClickedButtonId() == servers.size()) || data.getClickedButtonId() == servers.size() + 2) {
-            player.getSession().disconnect("disconnectionScreen.disconnected");
-        } else if (data.getClickedButtonId() == servers.size()) {
-            player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
-        } else if (data.getClickedButtonId() == servers.size() + 1) {
-            player.sendWindow(FormID.DIRECT_CONNECT, getDirectConnect());
+                player.sendToServer(server);
+            }
         } else {
-            // Get the server
-            Server server = servers.get(data.getClickedButtonId());
+            if (data == null || data.getClickedButtonId() == servers.size()) {
+                player.sendWindow(FormID.MAIN, UIHandler.getMainMenu());
+            } else {
+                // Get the server
+                Server server = servers.get(data.getClickedButtonId());
 
-            player.sendToServer(server);
+                player.sendToServer(server);
+            }
         }
     }
 
@@ -224,7 +278,7 @@ public class UIHandler {
     public static void handleDirectConnectResponse(Player player, CustomFormResponse data) {
         // Take them back to the main menu if they close the direct connect window
         if (data == null) {
-            player.sendWindow(FormID.MAIN, getServerList(player.getServers()));
+            player.sendWindow(FormID.MAIN, getMainMenu());
             return;
         }
 
@@ -236,7 +290,7 @@ public class UIHandler {
 
             // Make sure we got an address
             if (address == null || "".equals(address)) {
-                player.sendWindow(FormID.MAIN, getServerList(player.getServers()));
+                player.sendWindow(FormID.MAIN, getMainMenu());
                 return;
             }
 
@@ -259,17 +313,18 @@ public class UIHandler {
      * @param data The form response data
      */
     public static void handleEditServerListResponse(Player player, SimpleFormResponse data) {
+        List<Server> servers = player.getCurrentServers();
+
         // Take them back to the main menu if they close the edit server list window
         if (data == null) {
-            player.sendWindow(FormID.MAIN, getServerList(player.getServers()));
+            player.sendWindow(FormID.LIST_SERVERS, getServerList(servers, player.getServerCategory()));
             return;
         }
 
-        List<Server> servers = player.getServers();
         if (data.getClickedButtonId() == servers.size()) {
             player.sendWindow(FormID.ADD_SERVER, getAddServer());
         } else if (data.getClickedButtonId() == servers.size() + 1) {
-            player.sendWindow(FormID.MAIN, getServerList(player.getServers()));
+            player.sendWindow(FormID.LIST_SERVERS, getServerList(servers, player.getServerCategory()));
         } else {
             Server server = player.getServers().get(data.getClickedButtonId());
             player.sendWindow(FormID.SERVER_OPTIONS, getServerOptions(server));

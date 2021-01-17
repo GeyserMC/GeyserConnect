@@ -62,7 +62,7 @@ public class MySQLStorageManager extends AbstractStorageManager {
     public void closeStorage() {
         try {
             connection.close();
-        } catch (SQLException e) { }
+        } catch (SQLException ignored) { }
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MySQLStorageManager extends AbstractStorageManager {
             Statement updatePlayersServers = connection.createStatement();
             updatePlayersServers.executeUpdate("REPLACE INTO players(xuid, servers) VALUES('" + player.getXuid() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
             updatePlayersServers.close();
-        } catch (IOException | SQLException e) { }
+        } catch (IOException | SQLException ignored) { }
     }
 
     @Override
@@ -88,7 +88,7 @@ public class MySQLStorageManager extends AbstractStorageManager {
             }
 
             getPlayersServers.close();
-        } catch (IOException | SQLException e) { }
+        } catch (IOException | SQLException ignored) { }
 
         return servers;
     }

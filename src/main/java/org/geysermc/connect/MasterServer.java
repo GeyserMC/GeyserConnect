@@ -26,10 +26,11 @@
 package org.geysermc.connect;
 
 import com.nukkitx.protocol.bedrock.*;
-import com.nukkitx.protocol.bedrock.v408.Bedrock_v408;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.connect.storage.DisabledStorageManager;
+import org.geysermc.connect.utils.Server;
+import org.geysermc.connect.utils.ServerCategory;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
@@ -40,12 +41,10 @@ import org.geysermc.connect.utils.Player;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 public class MasterServer {
 
@@ -190,5 +189,9 @@ public class MasterServer {
             geyserProxy.onDisable();
             geyserProxy = null;
         }
+    }
+
+    public List<Server> getServers(ServerCategory serverCategory) {
+        return getGeyserConnectConfig().getServers().stream().filter(server -> server.getCategory() == serverCategory).collect(Collectors.toList());
     }
 }

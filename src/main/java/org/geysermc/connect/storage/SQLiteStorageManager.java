@@ -31,7 +31,6 @@ import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class SQLiteStorageManager extends AbstractStorageManager {
     public void closeStorage() {
         try {
             connection.close();
-        } catch (SQLException e) { }
+        } catch (SQLException ignored) { }
     }
 
     @Override
@@ -70,7 +69,7 @@ public class SQLiteStorageManager extends AbstractStorageManager {
             Statement updatePlayersServers = connection.createStatement();
             updatePlayersServers.executeUpdate("INSERT OR REPLACE INTO players(xuid, servers) VALUES('" + player.getXuid() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
             updatePlayersServers.close();
-        } catch (IOException | SQLException e) { }
+        } catch (IOException | SQLException ignored) { }
     }
 
     @Override
@@ -87,7 +86,7 @@ public class SQLiteStorageManager extends AbstractStorageManager {
             }
 
             getPlayersServers.close();
-        } catch (IOException | SQLException e) { }
+        } catch (IOException | SQLException ignored) { }
 
         return servers;
     }

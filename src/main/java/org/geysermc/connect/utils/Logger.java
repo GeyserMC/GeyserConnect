@@ -35,7 +35,7 @@ import org.geysermc.connector.common.ChatColor;
 @Log4j2
 public class Logger extends SimpleTerminalConsole implements GeyserLogger {
 
-    private boolean colored = true;
+    private final boolean colored = true;
 
     @Override
     protected boolean isRunning() {
