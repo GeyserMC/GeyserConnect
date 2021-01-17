@@ -182,6 +182,13 @@ public class UIHandler {
                 .build();
     }
 
+    public static FormWindow getMessageWindow(String message) {
+        CustomFormWindow window = new CustomFormBuilder("Notice")
+                .addComponent(new LabelComponent(message))
+                .build();
+        return window;
+    }
+
     /**
      * Handle the server list response
      *

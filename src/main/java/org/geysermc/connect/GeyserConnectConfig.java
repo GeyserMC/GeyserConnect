@@ -52,6 +52,9 @@ public class GeyserConnectConfig {
 
     private String motd;
 
+    @JsonProperty("welcome-file")
+    private String welcomeFile = "welcome.txt";
+
     @JsonProperty("debug-mode")
     private boolean debugMode;
 

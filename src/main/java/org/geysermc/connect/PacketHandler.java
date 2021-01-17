@@ -48,8 +48,9 @@ import org.geysermc.connector.entity.attribute.AttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
 import org.geysermc.connector.utils.AttributeUtils;
-import org.geysermc.connector.utils.LanguageUtils;
+import org.geysermc.connector.utils.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
@@ -203,7 +204,17 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
         masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
 
-        player.sendWindow(FormID.MAIN, UIHandler.getServerList(player.getServers()));;
+        String message = "";
+        try {
+            File messageFile = FileUtils.fileOrCopiedFromResource(new File(MasterServer.getInstance().getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
+            message = new String(FileUtils.readAllBytes(messageFile));
+        } catch (IOException ignored) { }
+
+        if (!message.trim().isEmpty()) {
+            player.sendWindow(FormID.WELCOME, UIHandler.getMessageWindow(message));
+        } else {
+            player.sendWindow(FormID.MAIN, UIHandler.getServerList(player.getServers()));
+        }
 
         return false;
     }
@@ -225,6 +236,10 @@ public class PacketHandler implements BedrockPacketHandler {
         } else {
             // Send the response to the correct response function
             switch (id) {
+                case WELCOME:
+                    player.sendWindow(FormID.MAIN, UIHandler.getServerList(player.getServers()));
+                    break;
+
                 case MAIN:
                     UIHandler.handleServerListResponse(player, (SimpleFormResponse) window.getResponse());
                     break;

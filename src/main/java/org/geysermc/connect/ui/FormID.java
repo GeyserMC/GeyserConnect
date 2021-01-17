@@ -30,6 +30,7 @@ import lombok.Getter;
 @Getter
 public enum FormID {
 
+    WELCOME,
     MAIN,
     DIRECT_CONNECT(true),
     EDIT_SERVERS(true),

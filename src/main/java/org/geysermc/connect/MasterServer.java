@@ -119,6 +119,11 @@ public class MasterServer {
 
         storageManager.setupStorage();
 
+        // Create the base welcome.txt file
+        try {
+            FileUtils.fileOrCopiedFromResource(new File(MasterServer.getInstance().getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
+        } catch (IOException ignored) { }
+
         start(geyserConnectConfig.getPort());
 
         logger.start();

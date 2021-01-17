@@ -20,6 +20,10 @@ max-players: 100
 # MOTD to display
 motd: "GeyserConnect Proxy"
 
+# Welcome message file, if file exists and is not empty this will show on join
+# This is loaded live so will update without a server restart
+welcome-file: welcome.txt
+
 # Config for the Geyser listener
 geyser:
   # The port that will listen for connections
