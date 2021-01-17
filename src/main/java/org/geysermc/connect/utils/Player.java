@@ -43,6 +43,7 @@ import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -209,9 +210,13 @@ public class Player {
             port = currentServer.getPort();
         }
 
+        // Create an InetSocketAddress to reduce issues with hostnames for PS4
+        // Thanks Extollite
+        InetSocketAddress socketAddress = new InetSocketAddress(address, port);
+
         TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress(address);
-        transferPacket.setPort(port);
+        transferPacket.setAddress(socketAddress.getAddress().getHostAddress());
+        transferPacket.setPort(socketAddress.getPort());
         session.sendPacket(transferPacket);
     }
 
