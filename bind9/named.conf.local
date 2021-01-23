@@ -35,3 +35,9 @@ zone "mco.cubecraft.net" IN {
         file "/etc/bind/db.mco.cubecraft.net";
         allow-query { any; };
 };
+
+zone "play.galaxite.net" IN {
+        type master;
+        file "/etc/bind/db.play.galaxite.net";
+        allow-query { any; };
+};
