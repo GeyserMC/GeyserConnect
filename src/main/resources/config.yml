@@ -44,16 +44,50 @@ geyser:
 
 # A global list of servers sent to all clients
 servers:
+  - address: 167.114.81.89
+    port: 19132
+    bedrock: true
+    name: The Hive
+    category: OFFICIAL
+    imageUrl: 'https://i.imgur.com/VQJW6XG.png'
+  - address: 94.23.159.81
+    port: 19132
+    bedrock: true
+    name: CubeCraft
+    category: OFFICIAL
+    imageUrl: 'https://www.cubecraft.net/attachments/q3pmrsod_400x400-png.53219/'
+  - address: 54.39.243.199
+    port: 19132
+    bedrock: true
+    name: Galaxite
+    category: OFFICIAL
+    imageUrl: >-
+      https://pbs.twimg.com/profile_images/1275867042583896066/UMPF5nTM_400x400.jpg
+  - address: 63.143.54.198
+    port: 19132
+    bedrock: true
+    name: Lifeboat Network
+    category: OFFICIAL
+    imageUrl: 'https://lbsg.net/wp-content/uploads/2017/06/lifeboat-square.png'
+  - address: 108.178.12.38
+    port: 19132
+    bedrock: true
+    name: Mineplex
+    category: OFFICIAL
+    imageUrl: 'https://www.mineplex.com/assets/www-mp/img/footer/footer_smalllogo.png'
+  - address: 52.234.130.255
+    port: 19132
+    bedrock: true
+    name: MineVille
+    category: OFFICIAL
+    imageUrl: >-
+      https://pbs.twimg.com/profile_images/1332400307050045441/MHQvGEUP_400x400.jpg
   - address: test.geysermc.org
     port: 19132
     bedrock: true
     name: Official Geyser Test Server
-    imageUrl: https://geysermc.org/android-chrome-192x192.png
-    category: OFFICIAL
-  - address: "play.cubecraft.net"
-  - address: "127.0.0.1"
-    port: 25565
     category: GEYSER
+    imageUrl: 'https://geysermc.org/android-chrome-192x192.png'
 
 custom-servers:
   # Should custom servers be enabled for users
@@ -73,4 +107,3 @@ custom-servers:
     database: "geyser_connect"
     host: "localhost"
     port: 3306
-
