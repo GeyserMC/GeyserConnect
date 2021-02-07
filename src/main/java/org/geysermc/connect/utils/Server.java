@@ -65,7 +65,7 @@ public class Server {
     }
 
     public Server(String address, int port, boolean online, boolean bedrock, String name, String imageUrl) {
-        this(address, port, online, bedrock, name, imageUrl, ServerCategory.CUSTOM);
+        this(address.replaceAll(" ", ""), port, online, bedrock, name, imageUrl, ServerCategory.CUSTOM);
     }
 
     private int defaultPort() { return bedrock ? 19132 : 25565; }
