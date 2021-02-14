@@ -202,6 +202,12 @@ public class PacketHandler implements BedrockPacketHandler {
 
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
+        // Disconnect the player if the server is full
+        if (MasterServer.getInstance().getPlayers().size() > MasterServer.getInstance().getGeyserConnectConfig().getMaxPlayers()) {
+            session.disconnect("disconnectionScreen.serverFull");
+            return false;
+        }
+
         masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
 
         String message = "";
