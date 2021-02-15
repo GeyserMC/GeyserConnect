@@ -78,7 +78,7 @@ public class PacketHandler implements BedrockPacketHandler {
             masterServer.getLogger().info(player.getDisplayName() + " has disconnected from the master server (" + reason + ")");
             masterServer.getStorageManager().saveServers(player);
 
-            if (player.getCurrentServer() != null && player.getCurrentServer().isBedrock()) {
+            if (player.getCurrentServer() == null || player.getCurrentServer().isBedrock()) {
                 masterServer.getPlayers().remove(player.getXuid(), player);
             }
         }
