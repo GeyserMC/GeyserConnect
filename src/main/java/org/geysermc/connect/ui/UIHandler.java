@@ -241,7 +241,7 @@ public class UIHandler {
 
                         default:
                             player.getSession().disconnect("disconnectionScreen.disconnected");
-                            break;
+                            return;
                     }
                 } else {
                     player.getSession().disconnect("disconnectionScreen.disconnected");

@@ -63,8 +63,7 @@ servers:
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: >-
-      https://pbs.twimg.com/profile_images/1275867042583896066/UMPF5nTM_400x400.jpg
+    imageUrl: 'https://pbs.twimg.com/profile_images/1275867042583896066/UMPF5nTM_400x400.jpg'
 
   - name: Lifeboat Network
     address: 63.143.54.198
@@ -85,8 +84,7 @@ servers:
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: >-
-      https://pbs.twimg.com/profile_images/1332400307050045441/MHQvGEUP_400x400.jpg
+    imageUrl: 'https://pbs.twimg.com/profile_images/1332400307050045441/MHQvGEUP_400x400.jpg'
 
   - name: Official Geyser Test Server
     address: test.geysermc.org
@@ -113,3 +111,15 @@ custom-servers:
     database: "geyser_connect"
     host: "localhost"
     port: 3306
+
+# Enable virtual hosts to be specified to skip the server list
+# Allows people to connect using addresses like
+#   hypixel.net._p25565.example.com
+#   hypixel.net.example.com
+#   hypixel.net._o.example.com    - For offline mode
+vhost:
+  # Should this be enabled
+  enabled: false
+
+  # The base domain pointing to the server
+  base-domain: example.com

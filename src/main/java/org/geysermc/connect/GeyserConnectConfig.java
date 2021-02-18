@@ -65,6 +65,8 @@ public class GeyserConnectConfig {
     @JsonProperty("custom-servers")
     private CustomServersSection customServers;
 
+    private VirtualHostSection vhost;
+
     public void checkRemoteIP() {
         if ("auto".equals(remoteAddress)) {
             remoteAddress = WebUtils.getBody("https://icanhazip.com/").trim();
@@ -110,5 +112,13 @@ public class GeyserConnectConfig {
         private String database;
         private String host;
         private int port;
+    }
+
+    @Getter
+    public static class VirtualHostSection {
+
+        private boolean enabled;
+        @JsonProperty("base-domain")
+        private String baseDomain;
     }
 }

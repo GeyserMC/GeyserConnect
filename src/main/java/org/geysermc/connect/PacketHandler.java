@@ -44,6 +44,7 @@ import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
+import org.geysermc.connect.utils.Server;
 import org.geysermc.connector.entity.attribute.AttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
@@ -209,6 +210,44 @@ public class PacketHandler implements BedrockPacketHandler {
         }
 
         masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
+
+        // Handle the virtual host if specified
+        GeyserConnectConfig.VirtualHostSection vhost = MasterServer.getInstance().getGeyserConnectConfig().getVhost();
+        if (vhost.isEnabled()) {
+            String domain = player.getClientData().getServerAddress().split(":")[0];
+            if (!domain.equals(vhost.getBaseDomain()) && domain.endsWith("." + vhost.getBaseDomain())) {
+                String address = "";
+                int port = 25565;
+                boolean online = true;
+
+                // Parse the address used
+                String[] domainParts = domain.replaceFirst("\\." + vhost.getBaseDomain() + "$", "").split("._");
+                for (int i = 0; i < domainParts.length; i++) {
+                    String part = domainParts[i];
+                    if (i == 0) {
+                        address = part;
+                    } else if (part.startsWith("p")) {
+                        port = Integer.parseInt(part.substring(1));
+                    } else if (part.startsWith("o")) {
+                        online = false;
+                    }
+                }
+
+                // They didn't specify an address so disconnect them
+                if (address.startsWith("_")) {
+                    session.disconnect("disconnectionScreen.invalidIP");
+                    return false;
+                }
+
+                // Log the virtual host usage
+                masterServer.getLogger().info(player.getDisplayName() + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
+
+                // Send the player to the wanted server
+                player.sendToServer(new Server(address, port, online, false));
+
+                return false;
+            }
+        }
 
         String message = "";
         try {
