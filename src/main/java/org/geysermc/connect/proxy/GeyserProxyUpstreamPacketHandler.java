@@ -40,8 +40,7 @@ public class GeyserProxyUpstreamPacketHandler extends UpstreamPacketHandler {
 
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        Player player = MasterServer.getInstance().getPlayers().get(session.getAuthData().getXboxUUID());
-        connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
+        connector.setAuthType(((GeyserProxySession) session).getPlayer().getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
 
         return super.handle(packet);
     }

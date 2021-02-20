@@ -25,12 +25,15 @@
 
 package org.geysermc.connect;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.nukkitx.protocol.bedrock.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.connect.storage.DisabledStorageManager;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.connect.utils.ServerCategory;
+import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
@@ -44,12 +47,12 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MasterServer {
 
     private BedrockServer bdServer;
-    private BedrockPong bdPong;
 
     @Getter
     private boolean shuttingDown = false;
@@ -65,6 +68,14 @@ public class MasterServer {
 
     @Getter
     private final Map<String, Player> players = new HashMap<>();
+
+    /**
+     * Players that are transferring and are expected to rejoin on the Geyser side.
+     */
+    @Getter
+    private final Cache<String, Player> transferringPlayers = CacheBuilder.newBuilder()
+            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .build();
 
     @Getter
     private GeyserProxyBootstrap geyserProxy;
@@ -134,16 +145,6 @@ public class MasterServer {
         InetSocketAddress bindAddress = new InetSocketAddress(geyserConnectConfig.getAddress(), port);
         bdServer = new BedrockServer(bindAddress);
 
-        bdPong = new BedrockPong();
-        bdPong.setEdition("MCPE");
-        bdPong.setMotd(geyserConnectConfig.getMotd());
-        bdPong.setPlayerCount(0);
-        bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
-        bdPong.setGameType("Survival");
-        bdPong.setIpv4Port(port);
-        bdPong.setProtocolVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
-        bdPong.setVersion(null); // Server tries to connect either way and it looks better
-
         bdServer.setHandler(new BedrockServerEventHandler() {
             @Override
             public boolean onConnectionRequest(InetSocketAddress address) {
@@ -152,6 +153,19 @@ public class MasterServer {
 
             @Override
             public BedrockPong onQuery(InetSocketAddress address) {
+                int playerCount = players.size();
+                if (GeyserConnector.getInstance() != null) {
+                    playerCount += GeyserConnector.getInstance().getPlayers().size();
+                }
+                BedrockPong bdPong = new BedrockPong();
+                bdPong.setEdition("MCPE");
+                bdPong.setMotd(geyserConnectConfig.getMotd());
+                bdPong.setPlayerCount(playerCount);
+                bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
+                bdPong.setGameType("Survival");
+                bdPong.setIpv4Port(port);
+                bdPong.setProtocolVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
+                bdPong.setVersion(null); // Server tries to connect either way and it looks better
                 return bdPong;
             }
 

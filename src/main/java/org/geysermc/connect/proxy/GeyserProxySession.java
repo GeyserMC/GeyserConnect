@@ -26,6 +26,7 @@
 package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
+import lombok.Getter;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.session.GeyserSession;
@@ -37,6 +38,8 @@ public class GeyserProxySession extends GeyserSession {
 
     private final GeyserConnector connector;
     private final BedrockServerSession bedrockServerSession;
+    @Getter
+    private Player player;
 
     public GeyserProxySession(GeyserConnector connector, BedrockServerSession bedrockServerSession) {
         super(connector, bedrockServerSession);
@@ -45,9 +48,19 @@ public class GeyserProxySession extends GeyserSession {
     }
 
     @Override
+    public void setAuthenticationData(AuthData authData) {
+        super.setAuthenticationData(authData);
+
+        player = MasterServer.getInstance().getTransferringPlayers().getIfPresent(authData.getXboxUUID());
+        if (player == null) {
+            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
+        } else {
+            MasterServer.getInstance().getTransferringPlayers().invalidate(authData.getXboxUUID());
+        }
+    }
+
+    @Override
     public void authenticate(String username, String password) {
-        // Get the player based on the connection address
-        Player player = MasterServer.getInstance().getPlayers().get(getAuthData().getXboxUUID());
         if (player != null && player.getCurrentServer() != null) {
             // Set the remote server info for the player
             connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
@@ -64,8 +77,6 @@ public class GeyserProxySession extends GeyserSession {
 
     @Override
     public void authenticateWithMicrosoftCode() {
-        // Get the player based on the connection address
-        Player player = MasterServer.getInstance().getPlayers().get(getAuthData().getXboxUUID());
         if (player != null && player.getCurrentServer() != null) {
             // Set the remote server info for the player
             connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
@@ -82,19 +93,8 @@ public class GeyserProxySession extends GeyserSession {
 
     @Override
     public void login() {
-        Player player = MasterServer.getInstance().getPlayers().get(getAuthData().getXboxUUID());
         connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
 
         super.login();
-    }
-
-    @Override
-    public void setAuthenticationData(AuthData authData) {
-        super.setAuthenticationData(authData);
-
-        Player player = MasterServer.getInstance().getPlayers().get(authData.getXboxUUID());
-        if (player == null) {
-            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
-        }
     }
 }
