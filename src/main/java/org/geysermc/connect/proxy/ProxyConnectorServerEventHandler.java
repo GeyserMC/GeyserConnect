@@ -55,16 +55,14 @@ public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandle
         bedrockServerSession.addDisconnectHandler(disconnectReason -> {
             // Make sure nothing is null before locating the player
             if (MasterServer.getInstance() == null
-                    || MasterServer.getInstance().getPlayers().size() == 0
                     || session.getAuthData() == null
                     || session.getAuthData().getXboxUUID() == null) {
                 return;
             }
 
-            Player player = MasterServer.getInstance().getPlayers().get(session.getAuthData().getXboxUUID());
+            Player player = session.getPlayer();
             if (player != null) {
                 MasterServer.getInstance().getLogger().debug("Player disconnected from Geyser proxy: " + player.getDisplayName() + " (" + disconnectReason + ")");
-                MasterServer.getInstance().getPlayers().remove(session.getAuthData().getXboxUUID());
 
                 // Set the last disconnect time
                 MasterServer.getInstance().setLastDisconnectTime(System.currentTimeMillis());

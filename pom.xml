@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.github.CloudburstMC.Protocol</groupId>
             <artifactId>bedrock-v422</artifactId>
-            <version>d41b84e86c</version>
+            <version>294e7e53b6</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- Stay on the older version of Network while it's rewritten -->

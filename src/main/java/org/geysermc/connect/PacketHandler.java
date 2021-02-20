@@ -79,9 +79,10 @@ public class PacketHandler implements BedrockPacketHandler {
             masterServer.getLogger().info(player.getDisplayName() + " has disconnected from the master server (" + reason + ")");
             masterServer.getStorageManager().saveServers(player);
 
-            if (player.getCurrentServer() == null || player.getCurrentServer().isBedrock()) {
-                masterServer.getPlayers().remove(player.getXuid(), player);
+            if (player.getCurrentServer() != null && !player.getCurrentServer().isBedrock()) {
+                masterServer.getTransferringPlayers().put(player.getXuid(), player);
             }
+            masterServer.getPlayers().remove(player.getXuid(), player);
         }
     }
 
@@ -203,12 +204,6 @@ public class PacketHandler implements BedrockPacketHandler {
 
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        // Disconnect the player if the server is full
-        if (MasterServer.getInstance().getPlayers().size() > MasterServer.getInstance().getGeyserConnectConfig().getMaxPlayers()) {
-            session.disconnect("disconnectionScreen.serverFull");
-            return false;
-        }
-
         masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
 
         // Handle the virtual host if specified
