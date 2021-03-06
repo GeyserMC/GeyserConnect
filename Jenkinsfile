@@ -41,12 +41,12 @@ pipeline {
                 rtMavenResolver(
                     id: "maven-resolver",
                     serverId: "opencollab-artifactory",
-                    releaseRepo: "release",
-                    snapshotRepo: "snapshot"
+                    releaseRepo: "maven-deploy-release",
+                    snapshotRepo: "maven-deploy-snapshot"
                 )
                 rtMavenRun(
                     pom: 'pom.xml',
-                    goals: 'javadoc:jar source:jar install -DskipTests',
+                    goals: 'install -DskipTests',
                     deployerId: "maven-deployer",
                     resolverId: "maven-resolver"
                 )
