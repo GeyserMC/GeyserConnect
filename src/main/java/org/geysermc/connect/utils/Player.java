@@ -134,6 +134,13 @@ public class Player {
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
         startGamePacket.setAuthoritativeMovementMode(AuthoritativeMovementMode.CLIENT);
+
+        SyncedPlayerMovementSettings settings = new SyncedPlayerMovementSettings();
+        settings.setMovementMode(AuthoritativeMovementMode.CLIENT);
+        settings.setRewindHistorySize(0);
+        settings.setServerAuthoritativeBlockBreaking(false);
+        startGamePacket.setPlayerMovementSettings(settings);
+        
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
 

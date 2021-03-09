@@ -19,6 +19,8 @@ max-players: 100
 
 # MOTD to display
 motd: "GeyserConnect Proxy"
+#Sub-MOTD to display. Will be "GeyserConnect" by default if left blank
+submotd: "GeyserConnect"
 
 # Welcome message file, if file exists and is not empty this will show on join
 # This is loaded live so will update without a server restart

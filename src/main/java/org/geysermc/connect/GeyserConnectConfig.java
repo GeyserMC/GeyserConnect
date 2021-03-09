@@ -52,6 +52,8 @@ public class GeyserConnectConfig {
 
     private String motd;
 
+    private String submotd = "GeyserConnect";
+
     @JsonProperty("welcome-file")
     private String welcomeFile = "welcome.txt";
 

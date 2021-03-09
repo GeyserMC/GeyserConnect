@@ -157,15 +157,22 @@ public class MasterServer {
                 if (GeyserConnector.getInstance() != null) {
                     playerCount += GeyserConnector.getInstance().getPlayers().size();
                 }
+
+                String subMotd = geyserConnectConfig.getSubmotd();
+                if (subMotd == null || subMotd.isEmpty()) {
+                    subMotd = "GeyserConnect";
+                }
+
                 BedrockPong bdPong = new BedrockPong();
                 bdPong.setEdition("MCPE");
                 bdPong.setMotd(geyserConnectConfig.getMotd());
+                bdPong.setSubMotd(subMotd);
                 bdPong.setPlayerCount(playerCount);
                 bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
                 bdPong.setGameType("Survival");
                 bdPong.setIpv4Port(port);
                 bdPong.setProtocolVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
-                bdPong.setVersion(null); // Server tries to connect either way and it looks better
+                bdPong.setVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion());
                 return bdPong;
             }
 
