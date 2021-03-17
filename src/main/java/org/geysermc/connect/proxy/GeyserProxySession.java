@@ -36,14 +36,12 @@ import org.geysermc.connector.network.session.auth.AuthData;
 
 public class GeyserProxySession extends GeyserSession {
 
-    private final GeyserConnector connector;
     private final BedrockServerSession bedrockServerSession;
     @Getter
     private Player player;
 
     public GeyserProxySession(GeyserConnector connector, BedrockServerSession bedrockServerSession) {
         super(connector, bedrockServerSession);
-        this.connector = connector;
         this.bedrockServerSession = bedrockServerSession;
     }
 
@@ -60,41 +58,7 @@ public class GeyserProxySession extends GeyserSession {
     }
 
     @Override
-    public void authenticate(String username, String password) {
-        if (player != null && player.getCurrentServer() != null) {
-            // Set the remote server info for the player
-            connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
-            connector.getRemoteServer().setPort(player.getCurrentServer().getPort());
-
-            connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
-
-            super.authenticate(username, password);
-        } else {
-            // Disconnect the player if they haven't picked a server on the master server list
-            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
-        }
-    }
-
-    @Override
-    public void authenticateWithMicrosoftCode() {
-        if (player != null && player.getCurrentServer() != null) {
-            // Set the remote server info for the player
-            connector.getRemoteServer().setAddress(player.getCurrentServer().getAddress());
-            connector.getRemoteServer().setPort(player.getCurrentServer().getPort());
-
-            connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
-
-            super.authenticateWithMicrosoftCode();
-        } else {
-            // Disconnect the player if they haven't picked a server on the master server list
-            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
-        }
-    }
-
-    @Override
-    public void login() {
-        connector.setAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
-
-        super.login();
+    protected void disableSrvResolving() {
+        // Do nothing
     }
 }

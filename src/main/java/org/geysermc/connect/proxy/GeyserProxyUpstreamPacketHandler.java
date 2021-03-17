@@ -40,7 +40,10 @@ public class GeyserProxyUpstreamPacketHandler extends UpstreamPacketHandler {
 
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        connector.setAuthType(((GeyserProxySession) session).getPlayer().getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
+        Player player = ((GeyserProxySession) session).getPlayer();
+        session.setRemoteAddress(player.getCurrentServer().getAddress());
+        session.setRemotePort(player.getCurrentServer().getPort());
+        session.setRemoteAuthType(player.getCurrentServer().isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
 
         return super.handle(packet);
     }
