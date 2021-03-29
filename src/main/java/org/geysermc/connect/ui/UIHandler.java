@@ -54,7 +54,7 @@ public class UIHandler {
         SimpleFormWindow window = new SimpleFormWindow("Main Menu", "");
 
         window.getButtons().add(new FormButton("Official Servers"));
-        window.getButtons().add(new FormButton("Geyser Servers"));
+        window.getButtons().add(new FormButton("TydiumCraft"));
 
         // Add a buttons for custom servers
         if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
