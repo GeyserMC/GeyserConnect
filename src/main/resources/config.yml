@@ -18,9 +18,9 @@ debug-mode: false
 max-players: 100
 
 # MOTD to display
-motd: "GeyserConnect Proxy"
+motd: "Portal to TydiumCraft!"
 #Sub-MOTD to display. Will be "GeyserConnect" by default if left blank
-submotd: "GeyserConnect"
+submotd: "TydiumCraft Connect"
 
 # Welcome message file, if file exists and is not empty this will show on join
 # This is loaded live so will update without a server restart
@@ -29,7 +29,7 @@ welcome-file: welcome.txt
 # Config for the Geyser listener
 geyser:
   # The port that will listen for connections
-  port: 19133
+  port: 19131
 
   # Configures if chunk caching should be enabled or not.
   cache-chunks: true
@@ -46,6 +46,13 @@ geyser:
 
 # A global list of servers sent to all clients
 servers:
+  - name: TydiumCraft
+    address: be.tydiumcraft.tk
+    port: 19132
+    bedrock: true
+    category: GEYSER
+    imageUrl: 'https://cdn.discordapp.com/attachments/781289806943617046/818972476368617472/apng.png'
+    
   - name: The Hive
     address: 167.114.81.89
     port: 19132
@@ -87,13 +94,6 @@ servers:
     bedrock: true
     category: OFFICIAL
     imageUrl: 'https://pbs.twimg.com/profile_images/1332400307050045441/MHQvGEUP_400x400.jpg'
-
-  - name: Official Geyser Test Server
-    address: test.geysermc.org
-    port: 19132
-    bedrock: true
-    category: GEYSER
-    imageUrl: 'https://geysermc.org/android-chrome-192x192.png'
 
 custom-servers:
   # Should custom servers be enabled for users
