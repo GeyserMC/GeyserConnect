@@ -114,7 +114,7 @@ public class UIHandler {
                 .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
                 .addComponent(new InputComponent("Port", "25565", "25565"))
                 .addComponent(new ToggleComponent("Online mode", true))
-                .addComponent(new ToggleComponent("Bedrock server", false))
+                .addComponent(new ToggleComponent("Bedrock/Geyser server", false))
                 .build();
     }
 
