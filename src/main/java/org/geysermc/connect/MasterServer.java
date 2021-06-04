@@ -200,6 +200,9 @@ public class MasterServer {
 
     public void createGeyserProxy() {
         if (geyserProxy == null) {
+            // Make sure Geyser doesn't start the listener
+            GeyserConnector.setShouldStartListener(false);
+
             this.geyserProxy = new GeyserProxyBootstrap();
             geyserProxy.onEnable();
         }

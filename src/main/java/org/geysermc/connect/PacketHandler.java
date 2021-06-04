@@ -76,13 +76,13 @@ public class PacketHandler implements BedrockPacketHandler {
 
     public void disconnect(DisconnectReason reason) {
         if (player != null) {
-            masterServer.getLogger().info(player.getDisplayName() + " has disconnected from the master server (" + reason + ")");
+            masterServer.getLogger().info(player.getAuthData().getName() + " has disconnected from the master server (" + reason + ")");
             masterServer.getStorageManager().saveServers(player);
 
             if (player.getCurrentServer() != null && !player.getCurrentServer().isBedrock()) {
-                masterServer.getTransferringPlayers().put(player.getXuid(), player);
+                masterServer.getTransferringPlayers().put(player.getAuthData().getXboxUUID(), player);
             }
-            masterServer.getPlayers().remove(player.getXuid(), player);
+            masterServer.getPlayers().remove(player.getAuthData().getXboxUUID(), player);
         }
     }
 
@@ -155,7 +155,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
                 // Create a new player and add it to the players list
                 player = new Player(extraData, session);
-                masterServer.getPlayers().put(player.getXuid(), player);
+                masterServer.getPlayers().put(player.getAuthData().getXboxUUID(), player);
 
                 // Store the full client data
                 player.setClientData(OBJECT_MAPPER.convertValue(OBJECT_MAPPER.readTree(skinData.getPayload().toBytes()), BedrockClientData.class));
@@ -184,7 +184,7 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(ResourcePackClientResponsePacket packet) {
         switch (packet.getStatus()) {
             case COMPLETED:
-                masterServer.getLogger().info("Logged in " + player.getDisplayName() + " (" + player.getXuid() + ", " + player.getIdentity() + ")");
+                masterServer.getLogger().info("Logged in " + player.getAuthData().getName() + " (" + player.getAuthData().getXboxUUID() + ", " + player.getAuthData().getUUID() + ")");
                 player.sendStartGame();
                 break;
             case HAVE_ALL_PACKS:
@@ -204,7 +204,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        masterServer.getLogger().debug("Player initialized: " + player.getDisplayName());
+        masterServer.getLogger().debug("Player initialized: " + player.getAuthData().getName());
 
         // Handle the virtual host if specified
         GeyserConnectConfig.VirtualHostSection vhost = MasterServer.getInstance().getGeyserConnectConfig().getVhost();
@@ -235,7 +235,7 @@ public class PacketHandler implements BedrockPacketHandler {
                 }
 
                 // Log the virtual host usage
-                masterServer.getLogger().info(player.getDisplayName() + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
+                masterServer.getLogger().info(player.getAuthData().getName() + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
 
                 // Send the player to the wanted server
                 player.sendToServer(new Server(address, port, online, false));
