@@ -148,7 +148,7 @@ public class UIHandler {
                 .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
                 .addComponent(new InputComponent("Port", "25565", "25565"))
                 .addComponent(new ToggleComponent("Online mode", true))
-                .addComponent(new ToggleComponent("Bedrock server", false))
+                .addComponent(new ToggleComponent("Bedrock/Geyser server", false))
                 .build();
     }
 
@@ -196,7 +196,7 @@ public class UIHandler {
                 .addComponent(new InputComponent("IP", server.getAddress(), server.getAddress()))
                 .addComponent(new InputComponent("Port", port, port))
                 .addComponent(new ToggleComponent("Online mode", server.isOnline()))
-                .addComponent(new ToggleComponent("Bedrock server", server.isBedrock()))
+                .addComponent(new ToggleComponent("Bedrock/Geyser server", server.isBedrock()))
                 .build();
     }
 
