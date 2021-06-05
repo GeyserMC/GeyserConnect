@@ -105,8 +105,6 @@ public class MasterServer {
 
         logger.setDebug(geyserConnectConfig.isDebugMode());
 
-        geyserConnectConfig.checkRemoteIP();
-
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
         // Start a timer to keep the thread running

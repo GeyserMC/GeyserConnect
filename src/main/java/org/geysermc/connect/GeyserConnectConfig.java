@@ -42,9 +42,6 @@ public class GeyserConnectConfig {
 
     private String address;
 
-    @JsonProperty("remote-address")
-    private String remoteAddress;
-
     private int port;
 
     @JsonProperty("max-players")
@@ -68,13 +65,6 @@ public class GeyserConnectConfig {
     private CustomServersSection customServers;
 
     private VirtualHostSection vhost;
-
-    public void checkRemoteIP() {
-        if ("auto".equals(remoteAddress)) {
-            remoteAddress = WebUtils.getBody("https://icanhazip.com/").trim();
-            MasterServer.getInstance().getLogger().debug("Auto set remote IP to: " + remoteAddress);
-        }
-    }
 
     @Getter
     public static class GeyserConfigSection {
