@@ -28,21 +28,11 @@ welcome-file: welcome.txt
 
 # Config for the Geyser listener
 geyser:
-  # The port that will listen for connections
-  port: 19133
-
-  # Configures if chunk caching should be enabled or not.
-  cache-chunks: true
-
   # If password authentication should be allowed in online mode.
   allow-password-authentication: false
 
   # If debug messages should be sent through console, has to be enabled in both places to work
   debug-mode: false
-
-  # The time to wait after the last player disconnects to shutdown the proxy
-  # In seconds, set to -1 to disable
-  shutdown-time: 300
 
 # A global list of servers sent to all clients
 servers:

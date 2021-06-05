@@ -79,19 +79,11 @@ public class GeyserConnectConfig {
     @Getter
     public static class GeyserConfigSection {
 
-        private int port;
-
-        @JsonProperty("cache-chunks")
-        private boolean cacheChunks = true;
-
         @JsonProperty("allow-password-authentication")
         private boolean allowPasswordAuthentication = false;
 
         @JsonProperty("debug-mode")
         private boolean debugMode;
-
-        @JsonProperty("shutdown-time")
-        private int shutdownTime;
     }
 
     @Getter
