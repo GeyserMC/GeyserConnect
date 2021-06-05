@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://ci.nukkitx.com/job/GeyserMC/job/GeyserConnect/job/master/badge/icon)](https://ci.nukkitx.com/job/GeyserMC/job/GeyserConnect/job/master/)
 [![Discord](https://img.shields.io/discord/613163671870242838.svg?color=%237289da&label=discord)](http://discord.geysermc.org/)
-[![HitCount](http://hits.dwyl.io/GeyserMC/GeyserConnect.svg)](http://hits.dwyl.io/GeyserMC/GeyserConnect)
+[![HitCount](http://hits.dwyl.com/GeyserMC/GeyserConnect.svg)](http://hits.dwyl.io/GeyserMC/GeyserConnect)
 
 GeyserConnect is an easy way for Bedrock Edition clients to connect to any Java Edition servers without having to run anything.
 
