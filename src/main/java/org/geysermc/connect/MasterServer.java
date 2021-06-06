@@ -185,7 +185,7 @@ public class MasterServer {
 
         // Create the Geyser instance
         createGeyserProxy();
-        
+
         logger.info("Server started on " + geyserConnectConfig.getAddress() + ":" + port);
     }
 

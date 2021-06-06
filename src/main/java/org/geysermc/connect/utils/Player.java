@@ -40,12 +40,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.common.window.FormWindow;
 import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.UpstreamPacketHandler;
-import org.geysermc.connector.network.session.GeyserSession;
 import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
 import org.geysermc.connector.network.translators.world.block.BlockTranslator1_16_100;
@@ -220,7 +220,7 @@ public class Player {
             transferPacket.setPort(currentServer.getPort());
             session.sendPacket(transferPacket);
         } else {
-            GeyserSession geyserSession = new GeyserSession(GeyserConnector.getInstance(), session);
+            GeyserProxySession geyserSession = new GeyserProxySession(GeyserConnector.getInstance(), session);
             session.setPacketHandler(new UpstreamPacketHandler(GeyserConnector.getInstance(), geyserSession));
 
             geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
