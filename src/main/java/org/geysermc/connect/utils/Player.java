@@ -31,7 +31,6 @@ import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.*;
-import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.v428.Bedrock_v428;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -48,8 +47,12 @@ import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.UpstreamPacketHandler;
 import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
+import org.geysermc.connector.network.translators.BiomeTranslator;
+import org.geysermc.connector.network.translators.EntityIdentifierRegistry;
+import org.geysermc.connector.network.translators.item.ItemRegistry;
 import org.geysermc.connector.network.translators.world.block.BlockTranslator1_16_100;
 import org.geysermc.connector.network.translators.world.block.BlockTranslator1_16_210;
+import org.geysermc.connector.utils.ChunkUtils;
 import org.geysermc.connector.utils.DimensionUtils;
 
 import java.util.ArrayList;
@@ -137,7 +140,7 @@ public class Player {
         startGamePacket.setWorldTemplateOptionLocked(false);
 
         startGamePacket.setLevelId("");
-        startGamePacket.setLevelName("GeyserMulti");
+        startGamePacket.setLevelName("GeyserConnect");
         startGamePacket.setPremiumWorldTemplateId("");
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
@@ -152,11 +155,6 @@ public class Player {
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
 
-        // Send a CreativeContentPacket - required for 1.16.100
-        CreativeContentPacket creativeContentPacket = new CreativeContentPacket();
-        creativeContentPacket.setContents(new ItemData[0]);
-        session.sendPacket(creativeContentPacket);
-
         // Send an empty chunk
         LevelChunkPacket data = new LevelChunkPacket();
         data.setChunkX(0);
@@ -168,8 +166,17 @@ public class Player {
 
         // Send the biomes
         BiomeDefinitionListPacket biomeDefinitionListPacket = new BiomeDefinitionListPacket();
-        biomeDefinitionListPacket.setDefinitions(PaletteManger.BIOMES_PALETTE);
+        biomeDefinitionListPacket.setDefinitions(BiomeTranslator.BIOMES);
         session.sendPacket(biomeDefinitionListPacket);
+
+        AvailableEntityIdentifiersPacket entityPacket = new AvailableEntityIdentifiersPacket();
+        entityPacket.setIdentifiers(EntityIdentifierRegistry.ENTITY_IDENTIFIERS);
+        session.sendPacket(entityPacket);
+
+        // Send a CreativeContentPacket - required for 1.16.100
+        CreativeContentPacket creativeContentPacket = new CreativeContentPacket();
+        creativeContentPacket.setContents(ItemRegistry.CREATIVE_ITEMS);
+        session.sendPacket(creativeContentPacket);
 
         // Let the client know the player can spawn
         PlayStatusPacket playStatusPacket = new PlayStatusPacket();
