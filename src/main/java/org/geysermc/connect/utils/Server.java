@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.geysermc.common.window.button.FormImage;
+import org.geysermc.cumulus.util.FormImage;
 
 @Getter
 @AllArgsConstructor
@@ -80,9 +80,9 @@ public class Server {
     @JsonIgnore
     public FormImage getFormImage() {
         if (imageUrl != null && !imageUrl.isEmpty()) {
-            return new FormImage(FormImage.FormImageType.URL, imageUrl);
+            return FormImage.of(FormImage.Type.URL, imageUrl);
         } else {
-            return new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + address + ":" + port + ".png?use-fallback-icon=true");
+            return FormImage.of(FormImage.Type.URL, "https://eu.mc-api.net/v3/server/favicon/" + address + ":" + port + ".png?use-fallback-icon=true");
         }
     }
 }

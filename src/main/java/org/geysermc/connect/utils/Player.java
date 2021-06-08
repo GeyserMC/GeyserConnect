@@ -37,11 +37,11 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import org.geysermc.common.window.FormWindow;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
+import org.geysermc.cumulus.Form;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class Player {
     private final List<Server> servers = new ArrayList<>();
     private final Long2ObjectMap<ModalFormRequestPacket> forms = new Long2ObjectOpenHashMap<>();
 
-    private FormWindow currentWindow;
+    private Form currentWindow;
     private FormID currentWindowId;
 
     @Setter
@@ -133,7 +133,7 @@ public class Player {
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
-        startGamePacket.setAuthoritativeMovementMode(AuthoritativeMovementMode.CLIENT);
+        startGamePacket.setServerEngine("");
 
         SyncedPlayerMovementSettings settings = new SyncedPlayerMovementSettings();
         settings.setMovementMode(AuthoritativeMovementMode.CLIENT);
@@ -180,15 +180,15 @@ public class Player {
      * Also cache it against the player for later use
      *
      * @param id The {@link FormID} to use for the form
-     * @param window The {@link FormWindow} to turn into json and send
+     * @param window The {@link Form} to turn into json and send
      */
-    public void sendWindow(FormID id, FormWindow window) {
+    public void sendWindow(FormID id, Form window) {
         this.currentWindow = window;
         this.currentWindowId = id;
 
         ModalFormRequestPacket modalFormRequestPacket = new ModalFormRequestPacket();
         modalFormRequestPacket.setFormId(id.ordinal());
-        modalFormRequestPacket.setFormData(window.getJSONData());
+        modalFormRequestPacket.setFormData(window.getJsonData());
         session.sendPacket(modalFormRequestPacket);
 
         // This packet is used to fix the image loading bug
