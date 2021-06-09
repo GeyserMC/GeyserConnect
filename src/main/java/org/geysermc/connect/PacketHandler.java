@@ -38,24 +38,27 @@ import com.nukkitx.protocol.bedrock.data.AttributeData;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
-import org.geysermc.common.window.FormWindow;
-import org.geysermc.common.window.response.CustomFormResponse;
-import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.connector.entity.attribute.AttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
+import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
 import org.geysermc.connector.utils.AttributeUtils;
 import org.geysermc.connector.utils.FileUtils;
+import org.geysermc.cumulus.Form;
+import org.geysermc.cumulus.response.CustomFormResponse;
+import org.geysermc.cumulus.response.FormResponse;
+import org.geysermc.cumulus.response.SimpleFormResponse;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PacketHandler implements BedrockPacketHandler {
@@ -153,8 +156,15 @@ public class PacketHandler implements BedrockPacketHandler {
                 // Fetch the client data
                 JsonNode extraData = payload.get("extraData");
 
+                AuthData authData = new AuthData(
+                        extraData.get("displayName").asText(),
+                        UUID.fromString(extraData.get("identity").asText()),
+                        extraData.get("XUID").asText(),
+                        chainData, packet.getSkinData().toString()
+                );
+
                 // Create a new player and add it to the players list
-                player = new Player(extraData, session);
+                player = new Player(authData, session);
                 masterServer.getPlayers().put(player.getAuthData().getXboxUUID(), player);
 
                 // Store the full client data
@@ -267,11 +277,11 @@ public class PacketHandler implements BedrockPacketHandler {
             return false;
 
         // Fetch the form and parse the response
-        FormWindow window = player.getCurrentWindow();
-        window.setResponse(packet.getFormData().trim());
+        Form window = player.getCurrentWindow();
+        FormResponse response = window.parseResponse(packet.getFormData().trim());
 
         // Resend the form if they closed it
-        if (window.getResponse() == null && !id.isHandlesNull()) {
+        if (!response.isCorrect() && !id.isHandlesNull()) {
             player.resendWindow();
         } else {
             // Send the response to the correct response function
@@ -281,35 +291,35 @@ public class PacketHandler implements BedrockPacketHandler {
                     break;
 
                 case MAIN:
-                    UIHandler.handleMainMenuResponse(player, (SimpleFormResponse) window.getResponse());
+                    UIHandler.handleMainMenuResponse(player, (SimpleFormResponse) response);
                     break;
 
                 case LIST_SERVERS:
-                    UIHandler.handleServerListResponse(player, (SimpleFormResponse) window.getResponse());
+                    UIHandler.handleServerListResponse(player, (SimpleFormResponse) response);
                     break;
 
                 case DIRECT_CONNECT:
-                    UIHandler.handleDirectConnectResponse(player, (CustomFormResponse) window.getResponse());
+                    UIHandler.handleDirectConnectResponse(player, (CustomFormResponse) response);
                     break;
 
                 case EDIT_SERVERS:
-                    UIHandler.handleEditServerListResponse(player, (SimpleFormResponse) window.getResponse());
+                    UIHandler.handleEditServerListResponse(player, (SimpleFormResponse) response);
                     break;
 
                 case ADD_SERVER:
-                    UIHandler.handleAddServerResponse(player, (CustomFormResponse) window.getResponse());
+                    UIHandler.handleAddServerResponse(player, (CustomFormResponse) response);
                     break;
 
                 case SERVER_OPTIONS:
-                    UIHandler.handleServerOptionsResponse(player, (SimpleFormResponse) window.getResponse());
+                    UIHandler.handleServerOptionsResponse(player, (SimpleFormResponse) response);
                     break;
 
                 case REMOVE_SERVER:
-                    UIHandler.handleServerRemoveResponse(player, (SimpleFormResponse) window.getResponse());
+                    UIHandler.handleServerRemoveResponse(player, (SimpleFormResponse) response);
                     break;
 
                 case EDIT_SERVER:
-                    UIHandler.handleEditServerResponse(player, (CustomFormResponse) window.getResponse());
+                    UIHandler.handleEditServerResponse(player, (CustomFormResponse) response);
                     break;
 
                 default:

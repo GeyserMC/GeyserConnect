@@ -25,21 +25,19 @@
 
 package org.geysermc.connect.ui;
 
-import org.geysermc.common.window.CustomFormBuilder;
-import org.geysermc.common.window.CustomFormWindow;
-import org.geysermc.common.window.FormWindow;
-import org.geysermc.common.window.SimpleFormWindow;
-import org.geysermc.common.window.button.FormButton;
-import org.geysermc.common.window.button.FormImage;
-import org.geysermc.common.window.component.InputComponent;
-import org.geysermc.common.window.component.LabelComponent;
-import org.geysermc.common.window.component.ToggleComponent;
-import org.geysermc.common.window.response.CustomFormResponse;
-import org.geysermc.common.window.response.SimpleFormResponse;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.connect.utils.ServerCategory;
+import org.geysermc.cumulus.CustomForm;
+import org.geysermc.cumulus.Form;
+import org.geysermc.cumulus.SimpleForm;
+import org.geysermc.cumulus.component.InputComponent;
+import org.geysermc.cumulus.component.LabelComponent;
+import org.geysermc.cumulus.component.ToggleComponent;
+import org.geysermc.cumulus.response.CustomFormResponse;
+import org.geysermc.cumulus.response.SimpleFormResponse;
+import org.geysermc.cumulus.util.FormImage;
 
 import java.util.List;
 
@@ -48,23 +46,23 @@ public class UIHandler {
     /**
      * Create a list of servers for the client based on the passed servers list
      *
-     * @return A {@link SimpleFormWindow} object
+     * @return A {@link SimpleForm} object
      */
-    public static FormWindow getMainMenu() {
-        SimpleFormWindow window = new SimpleFormWindow("Main Menu", "");
+    public static Form getMainMenu() {
+        SimpleForm.Builder window = SimpleForm.builder().title("Main Menu");
 
-        window.getButtons().add(new FormButton("Official Servers"));
-        window.getButtons().add(new FormButton("Geyser Servers"));
+        window.button("Official Servers");
+        window.button("Geyser Servers");
 
         // Add a buttons for custom servers
         if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
-            window.getButtons().add(new FormButton("Custom Servers"));
-            window.getButtons().add(new FormButton("Direct connect"));
+            window.button("Custom Servers");
+            window.button("Direct connect");
         }
 
-        window.getButtons().add(new FormButton("Disconnect"));
+        window.button("Disconnect");
 
-        return window;
+        return window.build();
     }
 
     /**
@@ -72,49 +70,49 @@ public class UIHandler {
      *
      * @param servers A list of {@link Server} objects
      * @param category The category of the current list
-     * @return A {@link SimpleFormWindow} object
+     * @return A {@link SimpleForm} object
      */
-    public static FormWindow getServerList(List<Server> servers, ServerCategory category) {
-        SimpleFormWindow window = new SimpleFormWindow(category.getTitle() + " Servers", "");
+    public static Form getServerList(List<Server> servers, ServerCategory category) {
+        SimpleForm.Builder window = SimpleForm.builder().title(category.getTitle() + " Servers");
 
         // Add a button for each global server
         for (Server server : servers) {
             // These images would be better if there was a default to fall back on
             // But that would require a web api as bedrock doesn't support doing that
-            window.getButtons().add(new FormButton(server.toString(), server.getFormImage()));
+            window.button(server.toString(), server.getFormImage());
         }
 
         // Add a button for editing
         if (category == ServerCategory.CUSTOM) {
-            window.getButtons().add(new FormButton("Edit servers"));
+            window.button("Edit servers");
         }
 
-        window.getButtons().add(new FormButton("Back"));
+        window.button("Back");
 
-        return window;
+        return window.build();
     }
 
     /**
      * Create a simple connecting message form
      *
      * @param server The server info to display
-     * @return A {@link SimpleFormWindow} object
+     * @return A {@link SimpleForm} object
      */
-    public static FormWindow getWaitingScreen(Server server) {
-        return new SimpleFormWindow("Connecting", "Please wait while we connect you to " + server.toString());
+    public static Form getWaitingScreen(Server server) {
+        return SimpleForm.builder().title("Connecting").content("Please wait while we connect you to " + server.toString()).build();
     }
 
     /**
      * Create a direct connect form
      *
-     * @return A {@link CustomFormWindow} object
+     * @return A {@link CustomForm} object
      */
-    public static FormWindow getDirectConnect() {
-        return new CustomFormBuilder("Direct Connect")
-                .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
-                .addComponent(new InputComponent("Port", "25565", "25565"))
-                .addComponent(new ToggleComponent("Online mode", true))
-                .addComponent(new ToggleComponent("Bedrock/Geyser server", false))
+    public static Form getDirectConnect() {
+        return CustomForm.builder().title("Direct Connect")
+                .component(InputComponent.of("IP", "play.cubecraft.net"))
+                .component(InputComponent.of("Port", "25565", "25565"))
+                .component(ToggleComponent.of("Online mode", true))
+                .component(ToggleComponent.of("Bedrock/Geyser server", false))
                 .build();
     }
 
@@ -122,33 +120,34 @@ public class UIHandler {
      * Create a list of servers for the client to edit
      *
      * @param servers A list of {@link Server} objects
-     * @return A {@link SimpleFormWindow} object
+     * @return A {@link SimpleForm} object
      */
-    public static FormWindow getEditServerList(List<Server> servers) {
-        SimpleFormWindow window = new SimpleFormWindow("Edit Servers", "Select a server to edit");
+    public static Form getEditServerList(List<Server> servers) {
+        SimpleForm.Builder window = SimpleForm.builder().title("Edit Servers").content("Select a server to edit");
 
         // Add a button for each personal server
         for (Server server : servers) {
-            window.getButtons().add(new FormButton(server.toString(), new FormImage(FormImage.FormImageType.URL, "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png")));
+            window.button(server.toString(), FormImage.of(FormImage.Type.URL,
+                    "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png"));
         }
 
-        window.getButtons().add(new FormButton("Add server"));
-        window.getButtons().add(new FormButton("Back"));
+        window.button("Add server");
+        window.button("Back");
 
-        return window;
+        return window.build();
     }
 
     /**
      * Create a add server form
      *
-     * @return A {@link CustomFormWindow} object
+     * @return A {@link CustomForm} object
      */
-    public static FormWindow getAddServer() {
-        return new CustomFormBuilder("Add Server")
-                .addComponent(new InputComponent("IP", "play.cubecraft.net", ""))
-                .addComponent(new InputComponent("Port", "25565", "25565"))
-                .addComponent(new ToggleComponent("Online mode", true))
-                .addComponent(new ToggleComponent("Bedrock server", false))
+    public static Form getAddServer() {
+        return CustomForm.builder().title("Add Server")
+                .component(InputComponent.of("IP", "play.cubecraft.net"))
+                .component(InputComponent.of("Port", "25565", "25565"))
+                .component(ToggleComponent.of("Online mode", true))
+                .component(ToggleComponent.of("Bedrock/Geyser server", false))
                 .build();
     }
 
@@ -156,47 +155,47 @@ public class UIHandler {
      * Create a server options form
      *
      * @param server A {@link Server} object to show options for
-     * @return A {@link SimpleFormWindow} object
+     * @return A {@link SimpleForm} object
      */
-    public static FormWindow getServerOptions(Server server) {
-        SimpleFormWindow window = new SimpleFormWindow("Server Options", server.toString());
+    public static Form getServerOptions(Server server) {
+        SimpleForm.Builder window = SimpleForm.builder().title("Server Options").content(server.toString());
 
-        window.getButtons().add(new FormButton("Edit"));
-        window.getButtons().add(new FormButton("Remove"));
-        window.getButtons().add(new FormButton("Back"));
+        window.button("Edit");
+        window.button("Remove");
+        window.button("Back");
 
-        return window;
+        return window.build();
     }
 
     /**
      * Create a remove server form
      *
      * @param server A {@link Server} object to remove
-     * @return A {@link SimpleFormWindow} object
+     * @return A {@link SimpleForm} object
      */
-    public static FormWindow getRemoveServer(Server server) {
-        SimpleFormWindow window = new SimpleFormWindow("Remove Server", "Are you sure you want to remove server: " + server.toString());
-
-        window.getButtons().add(new FormButton("Remove"));
-        window.getButtons().add(new FormButton("Cancel"));
-
-        return window;
+    public static Form getRemoveServer(Server server) {
+        return SimpleForm.builder()
+                .title("Remove Server")
+                .content("Are you sure you want to remove server: " + server)
+                .button("Remove")
+                .button("Cancel")
+                .build();
     }
 
     /**
      * Create a edit server form
      *
      * @param server A {@link Server} object to edit
-     * @return A {@link CustomFormWindow} object
+     * @return A {@link CustomForm} object
      */
-    public static FormWindow getEditServer(int serverIndex, Server server) {
+    public static Form getEditServer(int serverIndex, Server server) {
         String port = String.valueOf(server.getPort());
-        return new CustomFormBuilder("Edit Server")
-                .addComponent(new LabelComponent("Server at index: " + serverIndex))
-                .addComponent(new InputComponent("IP", server.getAddress(), server.getAddress()))
-                .addComponent(new InputComponent("Port", port, port))
-                .addComponent(new ToggleComponent("Online mode", server.isOnline()))
-                .addComponent(new ToggleComponent("Bedrock server", server.isBedrock()))
+        return CustomForm.builder()
+                .component(LabelComponent.of("Server at index: " + serverIndex))
+                .component(InputComponent.of("IP", server.getAddress(), server.getAddress()))
+                .component(InputComponent.of("Port", port, port))
+                .component(ToggleComponent.of("Online mode", server.isOnline()))
+                .component(ToggleComponent.of("Bedrock/Geyser server", server.isBedrock()))
                 .build();
     }
 
@@ -204,11 +203,12 @@ public class UIHandler {
      * Show a basic form window with a message
      *
      * @param message The message to display
-     * @return A {@link CustomFormWindow} object
+     * @return A {@link CustomForm} object
      */
-    public static FormWindow getMessageWindow(String message) {
-        return new CustomFormBuilder("Notice")
-                .addComponent(new LabelComponent(message))
+    public static Form getMessageWindow(String message) {
+        return CustomForm.builder()
+                .title("Notice")
+                .component(LabelComponent.of(message))
                 .build();
     }
 
@@ -300,10 +300,10 @@ public class UIHandler {
         }
 
         try {
-            String address = data.getInputResponses().get(0);
-            int port = Integer.parseInt(data.getInputResponses().get(1));
-            boolean online = data.getToggleResponses().get(2);
-            boolean bedrock = data.getToggleResponses().get(3);
+            String address = data.getInput(0);
+            int port = Integer.parseInt(data.getInput(1));
+            boolean online = data.getToggle(2);
+            boolean bedrock = data.getToggle(3);
 
             // Make sure we got an address
             if (address == null || "".equals(address)) {
@@ -362,10 +362,10 @@ public class UIHandler {
         }
 
         try {
-            String address = data.getInputResponses().get(0);
-            int port = Integer.parseInt(data.getInputResponses().get(1));
-            boolean online = data.getToggleResponses().get(2);
-            boolean bedrock = data.getToggleResponses().get(3);
+            String address = data.getInput(0);
+            int port = Integer.parseInt(data.getInput(1));
+            boolean online = data.getToggle(2);
+            boolean bedrock = data.getToggle(3);
 
             // Make sure we got an address
             if (address == null || "".equals(address)) {
@@ -401,7 +401,7 @@ public class UIHandler {
             return;
         }
 
-        SimpleFormWindow window = (SimpleFormWindow) player.getCurrentWindow();
+        SimpleForm window = (SimpleForm) player.getCurrentWindow();
         Server selectedServer = null;
         for (Server server : player.getServers()) {
             if (server.toString().equals(window.getContent())) {
@@ -437,7 +437,7 @@ public class UIHandler {
      * @param data The form response data
      */
     public static void handleServerRemoveResponse(Player player, SimpleFormResponse data) {
-        SimpleFormWindow window = (SimpleFormWindow) player.getCurrentWindow();
+        SimpleForm window = (SimpleForm) player.getCurrentWindow();
         String serverName = window.getContent().split(":")[1].trim();
         Server selectedServer = null;
         for (Server server : player.getServers()) {
@@ -474,12 +474,12 @@ public class UIHandler {
         }
 
         try {
-            int serverIndex = Integer.parseInt(data.getLabelResponses().get(0).split(":")[1].trim());
+            int serverIndex = Integer.parseInt(data.getInput(0).split(":")[1].trim());
 
-            String address = data.getInputResponses().get(1);
-            int port = Integer.parseInt(data.getInputResponses().get(2));
-            boolean online = data.getToggleResponses().get(3);
-            boolean bedrock = data.getToggleResponses().get(4);
+            String address = data.getInput(1);
+            int port = Integer.parseInt(data.getInput(2));
+            boolean online = data.getToggle(3);
+            boolean bedrock = data.getToggle(4);
 
             // Make sure we got an address
             if (address == null || "".equals(address)) {

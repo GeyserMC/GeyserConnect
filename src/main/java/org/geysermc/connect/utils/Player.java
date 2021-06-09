@@ -25,19 +25,16 @@
 
 package org.geysermc.connect.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.*;
 import com.nukkitx.protocol.bedrock.packet.*;
-import com.nukkitx.protocol.bedrock.v428.Bedrock_v428;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
-import org.geysermc.common.window.FormWindow;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
@@ -50,14 +47,12 @@ import org.geysermc.connector.network.session.auth.BedrockClientData;
 import org.geysermc.connector.network.translators.BiomeTranslator;
 import org.geysermc.connector.network.translators.EntityIdentifierRegistry;
 import org.geysermc.connector.network.translators.item.ItemRegistry;
-import org.geysermc.connector.network.translators.world.block.BlockTranslator1_16_100;
-import org.geysermc.connector.network.translators.world.block.BlockTranslator1_16_210;
-import org.geysermc.connector.utils.ChunkUtils;
+import org.geysermc.connector.network.translators.world.block.BlockTranslator1_17_0;
 import org.geysermc.connector.utils.DimensionUtils;
+import org.geysermc.cumulus.Form;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 public class Player {
@@ -69,7 +64,7 @@ public class Player {
     private final List<Server> servers = new ArrayList<>();
     private final Long2ObjectMap<ModalFormRequestPacket> forms = new Long2ObjectOpenHashMap<>();
 
-    private FormWindow currentWindow;
+    private Form currentWindow;
     private FormID currentWindowId;
 
     @Setter
@@ -81,13 +76,8 @@ public class Player {
     @Setter
     private ServerCategory serverCategory;
 
-    public Player(JsonNode extraData, BedrockServerSession session) {
-        this.authData = new AuthData(
-            extraData.get("displayName").asText(),
-            UUID.fromString(extraData.get("identity").asText()),
-            extraData.get("XUID").asText()
-        );
-
+    public Player(AuthData authData, BedrockServerSession session) {
+        this.authData = authData;
         this.session = session;
 
         // Should fetch the servers from some form of db
@@ -145,6 +135,7 @@ public class Player {
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
+        startGamePacket.setServerEngine("");
 
         SyncedPlayerMovementSettings settings = new SyncedPlayerMovementSettings();
         settings.setMovementMode(AuthoritativeMovementMode.CLIENT);
@@ -195,15 +186,15 @@ public class Player {
      * Also cache it against the player for later use
      *
      * @param id The {@link FormID} to use for the form
-     * @param window The {@link FormWindow} to turn into json and send
+     * @param window The {@link Form} to turn into json and send
      */
-    public void sendWindow(FormID id, FormWindow window) {
+    public void sendWindow(FormID id, Form window) {
         this.currentWindow = window;
         this.currentWindowId = id;
 
         ModalFormRequestPacket modalFormRequestPacket = new ModalFormRequestPacket();
         modalFormRequestPacket.setFormId(id.ordinal());
-        modalFormRequestPacket.setFormData(window.getJSONData());
+        modalFormRequestPacket.setFormData(window.getJsonData());
         session.sendPacket(modalFormRequestPacket);
 
         // This packet is used to fix the image loading bug
@@ -233,8 +224,7 @@ public class Player {
             geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
 
             // Set the block translation based off of version
-            geyserSession.setBlockTranslator(session.getPacketCodec().getProtocolVersion() >= Bedrock_v428.V428_CODEC.getProtocolVersion()
-                    ? BlockTranslator1_16_210.INSTANCE : BlockTranslator1_16_100.INSTANCE);
+            geyserSession.setBlockTranslator(BlockTranslator1_17_0.INSTANCE);
 
             geyserSession.setAuthData(authData);
             geyserSession.setClientData(clientData);
