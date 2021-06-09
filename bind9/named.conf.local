@@ -41,3 +41,9 @@ zone "play.galaxite.net" IN {
         file "/etc/bind/db.play.galaxite.net";
         allow-query { any; };
 };
+
+zone "play.pixelparadise.gg" IN {
+        type master;
+        file "/etc/bind/db.play.pixelparadise.gg";
+        allow-query { any; };
+};
