@@ -474,7 +474,7 @@ public class UIHandler {
         }
 
         try {
-            int serverIndex = Integer.parseInt(data.getInput(0).split(":")[1].trim());
+            int serverIndex = Integer.parseInt(((CustomForm)player.getCurrentWindow()).getContent().get(0).getText().split(":")[1].trim());
 
             String address = data.getInput(1);
             int port = Integer.parseInt(data.getInput(2));
