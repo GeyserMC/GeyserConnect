@@ -25,34 +25,39 @@
 
 package org.geysermc.connect.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.*;
-import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
 import com.nukkitx.protocol.bedrock.packet.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.connect.MasterServer;
+import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
+import org.geysermc.connector.GeyserConnector;
+import org.geysermc.connector.common.AuthType;
+import org.geysermc.connector.network.UpstreamPacketHandler;
+import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
+import org.geysermc.connector.network.translators.BiomeTranslator;
+import org.geysermc.connector.network.translators.EntityIdentifierRegistry;
+import org.geysermc.connector.network.translators.item.ItemRegistry;
+import org.geysermc.connector.network.translators.world.block.BlockTranslator1_17_0;
+import org.geysermc.connector.utils.DimensionUtils;
 import org.geysermc.cumulus.Form;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 public class Player {
 
-    private final String xuid;
-    private final UUID identity;
-    private final String displayName;
+    private final AuthData authData;
 
     private final BedrockServerSession session;
 
@@ -71,11 +76,8 @@ public class Player {
     @Setter
     private ServerCategory serverCategory;
 
-    public Player(JsonNode extraData, BedrockServerSession session) {
-        this.xuid = extraData.get("XUID").asText();
-        this.identity = UUID.fromString(extraData.get("identity").asText());
-        this.displayName = extraData.get("displayName").asText();
-
+    public Player(AuthData authData, BedrockServerSession session) {
+        this.authData = authData;
         this.session = session;
 
         // Should fetch the servers from some form of db
@@ -128,7 +130,7 @@ public class Player {
         startGamePacket.setWorldTemplateOptionLocked(false);
 
         startGamePacket.setLevelId("");
-        startGamePacket.setLevelName("GeyserMulti");
+        startGamePacket.setLevelName("GeyserConnect");
         startGamePacket.setPremiumWorldTemplateId("");
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
@@ -144,11 +146,6 @@ public class Player {
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
 
-        // Send a CreativeContentPacket - required for 1.16.100
-        CreativeContentPacket creativeContentPacket = new CreativeContentPacket();
-        creativeContentPacket.setContents(new ItemData[0]);
-        session.sendPacket(creativeContentPacket);
-
         // Send an empty chunk
         LevelChunkPacket data = new LevelChunkPacket();
         data.setChunkX(0);
@@ -160,8 +157,17 @@ public class Player {
 
         // Send the biomes
         BiomeDefinitionListPacket biomeDefinitionListPacket = new BiomeDefinitionListPacket();
-        biomeDefinitionListPacket.setDefinitions(PaletteManger.BIOMES_PALETTE);
+        biomeDefinitionListPacket.setDefinitions(BiomeTranslator.BIOMES);
         session.sendPacket(biomeDefinitionListPacket);
+
+        AvailableEntityIdentifiersPacket entityPacket = new AvailableEntityIdentifiersPacket();
+        entityPacket.setIdentifiers(EntityIdentifierRegistry.ENTITY_IDENTIFIERS);
+        session.sendPacket(entityPacket);
+
+        // Send a CreativeContentPacket - required for 1.16.100
+        CreativeContentPacket creativeContentPacket = new CreativeContentPacket();
+        creativeContentPacket.setContents(ItemRegistry.CREATIVE_ITEMS);
+        session.sendPacket(creativeContentPacket);
 
         // Let the client know the player can spawn
         PlayStatusPacket playStatusPacket = new PlayStatusPacket();
@@ -206,33 +212,41 @@ public class Player {
      * Send the player to the Geyser proxy server or straight to the bedrock server if it is
      */
     public void connectToProxy() {
-        // Use the clients connecting IP then fallback to the remote address from config
-        String address = clientData.getServerAddress().split(":")[0].trim();
-        if (address.isEmpty()) {
-            address = MasterServer.getInstance().getGeyserConnectConfig().getRemoteAddress();
-        }
-
-        int port = MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getPort();
-
         if (currentServer.isBedrock()) {
-            address = currentServer.getAddress();
-            port = currentServer.getPort();
-        }
+            TransferPacket transferPacket = new TransferPacket();
+            transferPacket.setAddress(currentServer.getAddress());
+            transferPacket.setPort(currentServer.getPort());
+            session.sendPacket(transferPacket);
+        } else {
+            GeyserProxySession geyserSession = new GeyserProxySession(GeyserConnector.getInstance(), session);
+            session.setPacketHandler(new UpstreamPacketHandler(GeyserConnector.getInstance(), geyserSession));
 
-        TransferPacket transferPacket = new TransferPacket();
-        transferPacket.setAddress(address);
-        transferPacket.setPort(port);
-        session.sendPacket(transferPacket);
+            geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
+
+            // Set the block translation based off of version
+            geyserSession.setBlockTranslator(BlockTranslator1_17_0.INSTANCE);
+
+            geyserSession.setAuthData(authData);
+            geyserSession.setClientData(clientData);
+
+            geyserSession.setDimension(DimensionUtils.THE_END);
+
+            geyserSession.setRemoteAddress(currentServer.getAddress());
+            geyserSession.setRemotePort(currentServer.getPort());
+            geyserSession.setRemoteAuthType(currentServer.isOnline() ? AuthType.ONLINE : AuthType.OFFLINE);
+
+            // Tell Geyser to handle the login
+            SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
+            initializedPacket.setRuntimeEntityId(geyserSession.getPlayerEntity().getGeyserId());
+            session.getPacketHandler().handle(initializedPacket);
+        }
     }
 
     public void sendToServer(Server server) {
         // Tell the user we are connecting them
         // This wont show up in a lot of cases as the client connects quite quickly
-        sendWindow(FormID.CONNECTING, UIHandler.getWaitingScreen(server));
-
-        if (!server.isBedrock()) {
-            // Create the Geyser instance if its not already running
-            MasterServer.getInstance().createGeyserProxy();
+        if (!server.isOnline()) {
+            sendWindow(FormID.CONNECTING, UIHandler.getWaitingScreen(server));
         }
 
         // Send the user over to the server

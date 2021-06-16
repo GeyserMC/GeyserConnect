@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2021 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,35 +26,12 @@
 package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import lombok.Getter;
 import org.geysermc.connector.GeyserConnector;
-import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.session.GeyserSession;
-import org.geysermc.connect.MasterServer;
-import org.geysermc.connect.utils.Player;
-import org.geysermc.connector.network.session.auth.AuthData;
 
 public class GeyserProxySession extends GeyserSession {
-
-    private final BedrockServerSession bedrockServerSession;
-    @Getter
-    private Player player;
-
     public GeyserProxySession(GeyserConnector connector, BedrockServerSession bedrockServerSession) {
         super(connector, bedrockServerSession);
-        this.bedrockServerSession = bedrockServerSession;
-    }
-
-    @Override
-    public void setAuthenticationData(AuthData authData) {
-        super.setAuthenticationData(authData);
-
-        player = MasterServer.getInstance().getTransferringPlayers().getIfPresent(authData.getXboxUUID());
-        if (player == null) {
-            bedrockServerSession.disconnect("Please connect to the master server and pick a server first!");
-        } else {
-            MasterServer.getInstance().getTransferringPlayers().invalidate(authData.getXboxUUID());
-        }
     }
 
     @Override

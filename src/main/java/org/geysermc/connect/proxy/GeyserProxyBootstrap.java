@@ -68,11 +68,9 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
             // Grab the config as text and replace static strings to the main config variables
             String text = new BufferedReader(new InputStreamReader(configFile, StandardCharsets.UTF_8)).lines().collect(Collectors.joining("\n"));
             GeyserConnectConfig multiConfig = MasterServer.getInstance().getGeyserConnectConfig();
-            text = text.replace("PORT", String.valueOf(multiConfig.getGeyser().getPort()));
-            text = text.replaceAll("MOTD", multiConfig.getMotd());
-            text = text.replace("PLAYERS", String.valueOf(multiConfig.getMaxPlayers()));
-            text = text.replace("CACHECHUNKS", String.valueOf(multiConfig.getGeyser().isCacheChunks()));
-            text = text.replace("ALLOWPASSWORDAUTHENTICATION", String.valueOf(multiConfig.getGeyser().isAllowPasswordAuthentication()));
+            text = text.replaceAll("%MOTD%", multiConfig.getMotd());
+            text = text.replace("%PLAYERS%", String.valueOf(multiConfig.getMaxPlayers()));
+            text = text.replace("%ALLOWPASSWORDAUTHENTICATION%", String.valueOf(multiConfig.getGeyser().isAllowPasswordAuthentication()));
 
             ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
             geyserConfig = objectMapper.readValue(text, GeyserProxyConfiguration.class);

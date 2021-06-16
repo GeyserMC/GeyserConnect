@@ -105,8 +105,6 @@ public class MasterServer {
 
         logger.setDebug(geyserConnectConfig.isDebugMode());
 
-        geyserConnectConfig.checkRemoteIP();
-
         this.generalThreadPool = Executors.newScheduledThreadPool(32);
 
         // Start a timer to keep the thread running
@@ -131,7 +129,7 @@ public class MasterServer {
 
         // Create the base welcome.txt file
         try {
-            FileUtils.fileOrCopiedFromResource(new File(MasterServer.getInstance().getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
+            FileUtils.fileOrCopiedFromResource(new File(getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
         } catch (IOException ignored) { }
 
         start(geyserConnectConfig.getPort());
@@ -184,6 +182,10 @@ public class MasterServer {
 
         // Start server up
         bdServer.bind().join();
+
+        // Create the Geyser instance
+        createGeyserProxy();
+
         logger.info("Server started on " + geyserConnectConfig.getAddress() + ":" + port);
     }
 
@@ -200,6 +202,9 @@ public class MasterServer {
 
     public void createGeyserProxy() {
         if (geyserProxy == null) {
+            // Make sure Geyser doesn't start the listener
+            GeyserConnector.setShouldStartListener(false);
+
             this.geyserProxy = new GeyserProxyBootstrap();
             geyserProxy.onEnable();
         }

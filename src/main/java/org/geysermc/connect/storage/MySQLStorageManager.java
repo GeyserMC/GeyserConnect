@@ -69,7 +69,7 @@ public class MySQLStorageManager extends AbstractStorageManager {
     public void saveServers(Player player) {
         try {
             Statement updatePlayersServers = connection.createStatement();
-            updatePlayersServers.executeUpdate("REPLACE INTO players(xuid, servers) VALUES('" + player.getXuid() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
+            updatePlayersServers.executeUpdate("REPLACE INTO players(xuid, servers) VALUES('" + player.getAuthData().getXboxUUID() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
             updatePlayersServers.close();
         } catch (IOException | SQLException ignored) { }
     }
@@ -80,7 +80,7 @@ public class MySQLStorageManager extends AbstractStorageManager {
 
         try {
             Statement getPlayersServers = connection.createStatement();
-            ResultSet rs = getPlayersServers.executeQuery("SELECT servers FROM players WHERE xuid='" + player.getXuid() + "';");
+            ResultSet rs = getPlayersServers.executeQuery("SELECT servers FROM players WHERE xuid='" + player.getAuthData().getXboxUUID() + "';");
 
             while (rs.next()) {
                 List<Server> loadedServers = mapper.readValue(rs.getString("servers"), new TypeReference<List<Server>>(){});
