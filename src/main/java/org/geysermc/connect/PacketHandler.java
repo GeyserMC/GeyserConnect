@@ -226,7 +226,7 @@ public class PacketHandler implements BedrockPacketHandler {
                 boolean online = true;
 
                 // Parse the address used
-                String[] domainParts = domain.replaceFirst("\\." + vhost.getBaseDomain() + "$", "").split("._");
+                String[] domainParts = domain.replaceFirst("\\." + vhost.getBaseDomain() + "$", "").split("\\._");
                 for (int i = 0; i < domainParts.length; i++) {
                     String part = domainParts[i];
                     if (i == 0) {
