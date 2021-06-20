@@ -135,6 +135,8 @@ public class Player {
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
+        startGamePacket.setItemEntries(ItemRegistry.ITEMS);
+        startGamePacket.setInventoriesServerAuthoritative(true);
         startGamePacket.setServerEngine("");
 
         SyncedPlayerMovementSettings settings = new SyncedPlayerMovementSettings();
@@ -145,6 +147,12 @@ public class Player {
         
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
+
+        if (ItemRegistry.FURNACE_MINECART_DATA != null) {
+            ItemComponentPacket itemComponentPacket = new ItemComponentPacket();
+            itemComponentPacket.getItems().add(ItemRegistry.FURNACE_MINECART_DATA);
+            session.sendPacket(itemComponentPacket);
+        }
 
         // Send an empty chunk
         LevelChunkPacket data = new LevelChunkPacket();

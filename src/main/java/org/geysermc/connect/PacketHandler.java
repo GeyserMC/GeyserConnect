@@ -35,6 +35,7 @@ import com.nukkitx.network.util.DisconnectReason;
 import com.nukkitx.protocol.bedrock.BedrockPacketCodec;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.AttributeData;
+import com.nukkitx.protocol.bedrock.data.ExperimentData;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
@@ -46,6 +47,7 @@ import org.geysermc.connector.entity.attribute.AttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
+import org.geysermc.connector.network.translators.item.ItemRegistry;
 import org.geysermc.connector.utils.AttributeUtils;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.cumulus.Form;
@@ -202,6 +204,12 @@ public class PacketHandler implements BedrockPacketHandler {
                 stack.setExperimentsPreviouslyToggled(false);
                 stack.setForcedToAccept(false);
                 stack.setGameVersion("*");
+
+                if (ItemRegistry.FURNACE_MINECART_DATA != null) {
+                    // Allow custom items to work
+                    stack.getExperiments().add(new ExperimentData("data_driven_items", true));
+                }
+
                 session.sendPacket(stack);
                 break;
             default:
