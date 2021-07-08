@@ -43,7 +43,7 @@ import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
-import org.geysermc.connector.entity.attribute.AttributeType;
+import org.geysermc.connector.entity.attribute.GeyserAttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
@@ -345,7 +345,7 @@ public class PacketHandler implements BedrockPacketHandler {
         UpdateAttributesPacket updateAttributesPacket = new UpdateAttributesPacket();
         updateAttributesPacket.setRuntimeEntityId(1);
         List<AttributeData> attributes = new ArrayList<>();
-        attributes.add(AttributeUtils.getBedrockAttribute(AttributeType.EXPERIENCE_LEVEL.getAttribute(0f)));
+        attributes.add(GeyserAttributeType.EXPERIENCE_LEVEL.getAttribute(0f));
         updateAttributesPacket.setAttributes(attributes);
 
         // Doesn't work 100% of the time but fixes it most of the time
