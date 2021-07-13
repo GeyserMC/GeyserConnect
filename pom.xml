@@ -68,12 +68,12 @@
         <dependency>
             <groupId>org.geysermc</groupId>
             <artifactId>connector</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
+            <version>1.4.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.CloudburstMC.Protocol</groupId>
-            <artifactId>bedrock-v440</artifactId>
-            <version>1656151</version>
+            <artifactId>bedrock-v448</artifactId>
+            <version>ddfa38b</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
