@@ -44,10 +44,9 @@ import org.geysermc.connector.common.AuthType;
 import org.geysermc.connector.network.UpstreamPacketHandler;
 import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
-import org.geysermc.connector.network.translators.BiomeTranslator;
-import org.geysermc.connector.network.translators.EntityIdentifierRegistry;
-import org.geysermc.connector.network.translators.item.ItemRegistry;
-import org.geysermc.connector.network.translators.world.block.BlockTranslator1_17_0;
+import org.geysermc.connector.registry.BlockRegistries;
+import org.geysermc.connector.registry.Registries;
+import org.geysermc.connector.registry.type.ItemMappings;
 import org.geysermc.connector.utils.DimensionUtils;
 import org.geysermc.cumulus.Form;
 
@@ -90,6 +89,8 @@ public class Player {
      * Send a few different packets to get the client to load in
      */
     public void sendStartGame() {
+        ItemMappings itemMappings = Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion());
+
         // A lot of this likely doesn't need to be changed
         StartGamePacket startGamePacket = new StartGamePacket();
         startGamePacket.setUniqueEntityId(1);
@@ -135,7 +136,7 @@ public class Player {
         startGamePacket.setCurrentTick(0);
         startGamePacket.setEnchantmentSeed(0);
         startGamePacket.setMultiplayerCorrelationId("");
-        startGamePacket.setItemEntries(ItemRegistry.ITEMS);
+        startGamePacket.setItemEntries(itemMappings.getItemEntries());
         startGamePacket.setInventoriesServerAuthoritative(true);
         startGamePacket.setServerEngine("");
 
@@ -148,9 +149,9 @@ public class Player {
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
 
-        if (ItemRegistry.FURNACE_MINECART_DATA != null) {
+        if (itemMappings.getFurnaceMinecartData() != null) {
             ItemComponentPacket itemComponentPacket = new ItemComponentPacket();
-            itemComponentPacket.getItems().add(ItemRegistry.FURNACE_MINECART_DATA);
+            itemComponentPacket.getItems().add(itemMappings.getFurnaceMinecartData());
             session.sendPacket(itemComponentPacket);
         }
 
@@ -165,16 +166,16 @@ public class Player {
 
         // Send the biomes
         BiomeDefinitionListPacket biomeDefinitionListPacket = new BiomeDefinitionListPacket();
-        biomeDefinitionListPacket.setDefinitions(BiomeTranslator.BIOMES);
+        biomeDefinitionListPacket.setDefinitions(Registries.BIOMES.get());
         session.sendPacket(biomeDefinitionListPacket);
 
         AvailableEntityIdentifiersPacket entityPacket = new AvailableEntityIdentifiersPacket();
-        entityPacket.setIdentifiers(EntityIdentifierRegistry.ENTITY_IDENTIFIERS);
+        entityPacket.setIdentifiers(Registries.ENTITY_IDENTIFIERS.get());
         session.sendPacket(entityPacket);
 
         // Send a CreativeContentPacket - required for 1.16.100
         CreativeContentPacket creativeContentPacket = new CreativeContentPacket();
-        creativeContentPacket.setContents(ItemRegistry.CREATIVE_ITEMS);
+        creativeContentPacket.setContents(itemMappings.getCreativeItems());
         session.sendPacket(creativeContentPacket);
 
         // Let the client know the player can spawn
@@ -232,7 +233,8 @@ public class Player {
             geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
 
             // Set the block translation based off of version
-            geyserSession.setBlockTranslator(BlockTranslator1_17_0.INSTANCE);
+            geyserSession.setBlockMappings(BlockRegistries.BLOCKS.forVersion(session.getPacketCodec().getProtocolVersion()));
+            geyserSession.setItemMappings(Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()));
 
             geyserSession.setAuthData(authData);
             geyserSession.setClientData(clientData);

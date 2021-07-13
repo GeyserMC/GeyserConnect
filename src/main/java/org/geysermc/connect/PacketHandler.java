@@ -47,8 +47,7 @@ import org.geysermc.connector.entity.attribute.GeyserAttributeType;
 import org.geysermc.connector.network.BedrockProtocol;
 import org.geysermc.connector.network.session.auth.AuthData;
 import org.geysermc.connector.network.session.auth.BedrockClientData;
-import org.geysermc.connector.network.translators.item.ItemRegistry;
-import org.geysermc.connector.utils.AttributeUtils;
+import org.geysermc.connector.registry.Registries;
 import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.cumulus.Form;
 import org.geysermc.cumulus.response.CustomFormResponse;
@@ -205,7 +204,7 @@ public class PacketHandler implements BedrockPacketHandler {
                 stack.setForcedToAccept(false);
                 stack.setGameVersion("*");
 
-                if (ItemRegistry.FURNACE_MINECART_DATA != null) {
+                if (Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()).getFurnaceMinecartData() != null) {
                     // Allow custom items to work
                     stack.getExperiments().add(new ExperimentData("data_driven_items", true));
                 }
