@@ -47,8 +47,8 @@ public class MySQLStorageManager extends AbstractStorageManager {
     public void setupStorage() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            GeyserConnectConfig.MySQLConnectionSection connectionInfomation = MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().getMysql();
-            connection = DriverManager.getConnection("jdbc:mysql://" + connectionInfomation.getHost() + "/" + connectionInfomation.getDatabase(), connectionInfomation.getUser(), connectionInfomation.getPass());
+            GeyserConnectConfig.MySQLConnectionSection connectionInformation = MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().getMysql();
+            connection = DriverManager.getConnection("jdbc:mysql://" + connectionInformation.getHost() + ":" + connectionInformation.getPort() + "/" + connectionInformation.getDatabase(), connectionInformation.getUser(), connectionInformation.getPass());
 
             Statement createPlayersTable = connection.createStatement();
             createPlayersTable.executeUpdate("CREATE TABLE IF NOT EXISTS players (xuid VARCHAR(32), servers TEXT, PRIMARY KEY(xuid));");
