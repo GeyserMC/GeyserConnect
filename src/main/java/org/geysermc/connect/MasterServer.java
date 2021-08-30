@@ -28,6 +28,8 @@ package org.geysermc.connect;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.nukkitx.protocol.bedrock.*;
+import io.netty.channel.DefaultEventLoopGroup;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.Getter;
 import lombok.Setter;
 import org.geysermc.connect.storage.DisabledStorageManager;
@@ -89,6 +91,9 @@ public class MasterServer {
     @Setter
     @Getter
     private long lastDisconnectTime = 0L;
+
+    @Getter
+    private final DefaultEventLoopGroup eventLoopGroup = new DefaultEventLoopGroup(new DefaultThreadFactory("Geyser player thread"));
 
     public MasterServer() {
         instance = this;

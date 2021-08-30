@@ -25,12 +25,15 @@
 
 package org.geysermc.connect;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.nimbusds.jose.JWSObject;
 import com.nimbusds.jose.crypto.factories.DefaultJWSVerifierFactory;
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nukkitx.network.util.DisconnectReason;
 import com.nukkitx.protocol.bedrock.BedrockPacketCodec;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
@@ -131,6 +134,18 @@ public class PacketHandler implements BedrockPacketHandler {
         }
 
         try {
+            // Convert the chainData to a JSONArray
+            ObjectReader reader = OBJECT_MAPPER.readerFor(new TypeReference<List<String>>() { });
+            JSONArray array = new JSONArray();
+            array.addAll(reader.readValue(chainData));
+
+            // Verify the chain data
+            if (!EncryptionUtils.verifyChain(array)) {
+                // Disconnect the client
+                session.disconnect("disconnectionScreen.internalError.cantConnect");
+                throw new AssertionError("Failed to login, due to invalid chain data!");
+            }
+
             // Parse the signed jws object
             JWSObject jwsObject;
             jwsObject = JWSObject.parse(chainData.get(chainData.size() - 1).asText());

@@ -35,6 +35,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.geysermc.connect.GeyserConnect;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
@@ -166,7 +167,7 @@ public class Player {
 
         // Send the biomes
         BiomeDefinitionListPacket biomeDefinitionListPacket = new BiomeDefinitionListPacket();
-        biomeDefinitionListPacket.setDefinitions(Registries.BIOMES.get());
+        biomeDefinitionListPacket.setDefinitions(Registries.BIOMES_NBT.get());
         session.sendPacket(biomeDefinitionListPacket);
 
         AvailableEntityIdentifiersPacket entityPacket = new AvailableEntityIdentifiersPacket();
@@ -227,7 +228,7 @@ public class Player {
             transferPacket.setPort(currentServer.getPort());
             session.sendPacket(transferPacket);
         } else {
-            GeyserProxySession geyserSession = new GeyserProxySession(GeyserConnector.getInstance(), session);
+            GeyserProxySession geyserSession = new GeyserProxySession(GeyserConnector.getInstance(), session, MasterServer.getInstance().getEventLoopGroup().next());
             session.setPacketHandler(new UpstreamPacketHandler(GeyserConnector.getInstance(), geyserSession));
 
             geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());

@@ -26,12 +26,13 @@
 package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
+import io.netty.channel.EventLoop;
 import org.geysermc.connector.GeyserConnector;
 import org.geysermc.connector.network.session.GeyserSession;
 
 public class GeyserProxySession extends GeyserSession {
-    public GeyserProxySession(GeyserConnector connector, BedrockServerSession bedrockServerSession) {
-        super(connector, bedrockServerSession);
+    public GeyserProxySession(GeyserConnector connector, BedrockServerSession bedrockServerSession, EventLoop eventLoop) {
+        super(connector, bedrockServerSession, eventLoop);
     }
 
     @Override
