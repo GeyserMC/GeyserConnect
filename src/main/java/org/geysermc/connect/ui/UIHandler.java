@@ -264,7 +264,7 @@ public class UIHandler {
         List<Server> servers = player.getCurrentServers();
 
         if (player.getServerCategory() == ServerCategory.CUSTOM) {
-            if (data == null || data.getClickedButtonId() == servers.size() + 1) {
+            if (!data.isCorrect() || data.getClickedButtonId() == servers.size() + 1) {
                 player.sendWindow(FormID.MAIN, UIHandler.getMainMenu());
             } else if (data.getClickedButtonId() == servers.size()) {
                 player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getCurrentServers()));
@@ -275,7 +275,7 @@ public class UIHandler {
                 player.sendToServer(server);
             }
         } else {
-            if (data == null || data.getClickedButtonId() == servers.size()) {
+            if (!data.isCorrect() || data.getClickedButtonId() == servers.size()) {
                 player.sendWindow(FormID.MAIN, UIHandler.getMainMenu());
             } else {
                 // Get the server
@@ -294,7 +294,7 @@ public class UIHandler {
      */
     public static void handleDirectConnectResponse(Player player, CustomFormResponse data) {
         // Take them back to the main menu if they close the direct connect window
-        if (data == null) {
+        if (!data.isCorrect()) {
             player.sendWindow(FormID.MAIN, getMainMenu());
             return;
         }
@@ -333,7 +333,7 @@ public class UIHandler {
         List<Server> servers = player.getCurrentServers();
 
         // Take them back to the main menu if they close the edit server list window
-        if (data == null) {
+        if (!data.isCorrect()) {
             player.sendWindow(FormID.LIST_SERVERS, getServerList(servers, player.getServerCategory()));
             return;
         }
@@ -356,7 +356,7 @@ public class UIHandler {
      */
     public static void handleAddServerResponse(Player player, CustomFormResponse data) {
         // Take them back to the edit server list menu if they close the add server window
-        if (data == null) {
+        if (!data.isCorrect()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
             return;
         }
@@ -396,7 +396,7 @@ public class UIHandler {
      */
     public static void handleServerOptionsResponse(Player player, SimpleFormResponse data) {
         // Take them back to the main menu if they close the edit server list window
-        if (data == null) {
+        if (!data.isCorrect()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
             return;
         }
@@ -468,7 +468,7 @@ public class UIHandler {
      */
     public static void handleEditServerResponse(Player player, CustomFormResponse data) {
         // Take them back to the edit server list menu if they close the add server window
-        if (data == null) {
+        if (!data.isCorrect()) {
             player.sendWindow(FormID.EDIT_SERVERS, getEditServerList(player.getServers()));
             return;
         }

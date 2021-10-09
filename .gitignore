@@ -224,3 +224,9 @@ nbdist/
 # Copyright header files
 .idea/*
 !.idea/copyright/
+
+/config.yml
+/welcome.txt
+/logs/
+/locales/
+/players/
