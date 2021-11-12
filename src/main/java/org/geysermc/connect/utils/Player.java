@@ -230,6 +230,9 @@ public class Player {
         } else {
             GeyserProxySession geyserSession = new GeyserProxySession(GeyserConnector.getInstance(), session, MasterServer.getInstance().getEventLoopGroup().next());
             session.setPacketHandler(new UpstreamPacketHandler(GeyserConnector.getInstance(), geyserSession));
+            // The player will be tracked from Geyser from here
+            MasterServer.getInstance().getPlayers().remove(this);
+            GeyserConnector.getInstance().getSessionManager().addPendingSession(geyserSession);
 
             geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
 

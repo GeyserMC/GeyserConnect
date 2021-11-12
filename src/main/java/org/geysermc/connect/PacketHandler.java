@@ -60,7 +60,7 @@ import org.geysermc.cumulus.response.SimpleFormResponse;
 import java.io.File;
 import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -86,10 +86,7 @@ public class PacketHandler implements BedrockPacketHandler {
             masterServer.getLogger().info(player.getAuthData().getName() + " has disconnected from the master server (" + reason + ")");
             masterServer.getStorageManager().saveServers(player);
 
-            if (player.getCurrentServer() != null && !player.getCurrentServer().isBedrock()) {
-                masterServer.getTransferringPlayers().put(player.getAuthData().getXboxUUID(), player);
-            }
-            masterServer.getPlayers().remove(player.getAuthData().getXboxUUID(), player);
+            masterServer.getPlayers().remove(player);
         }
     }
 
@@ -181,7 +178,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
                 // Create a new player and add it to the players list
                 player = new Player(authData, session);
-                masterServer.getPlayers().put(player.getAuthData().getXboxUUID(), player);
+                masterServer.getPlayers().add(player);
 
                 // Store the full client data
                 player.setClientData(OBJECT_MAPPER.convertValue(OBJECT_MAPPER.readTree(skinData.getPayload().toBytes()), BedrockClientData.class));
@@ -358,8 +355,7 @@ public class PacketHandler implements BedrockPacketHandler {
         // This is to fix a bug in the client where it doesn't load form images
         UpdateAttributesPacket updateAttributesPacket = new UpdateAttributesPacket();
         updateAttributesPacket.setRuntimeEntityId(1);
-        List<AttributeData> attributes = new ArrayList<>();
-        attributes.add(GeyserAttributeType.EXPERIENCE_LEVEL.getAttribute(0f));
+        List<AttributeData> attributes = Collections.singletonList(GeyserAttributeType.EXPERIENCE_LEVEL.getAttribute(0f));
         updateAttributesPacket.setAttributes(attributes);
 
         // Doesn't work 100% of the time but fixes it most of the time

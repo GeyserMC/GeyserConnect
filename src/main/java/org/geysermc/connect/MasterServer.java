@@ -25,13 +25,11 @@
 
 package org.geysermc.connect;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.nukkitx.protocol.bedrock.*;
 import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import lombok.Setter;
 import org.geysermc.connect.storage.DisabledStorageManager;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.connect.utils.ServerCategory;
@@ -49,7 +47,6 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class MasterServer {
@@ -69,15 +66,7 @@ public class MasterServer {
     private final ScheduledExecutorService generalThreadPool;
 
     @Getter
-    private final Map<String, Player> players = new HashMap<>();
-
-    /**
-     * Players that are transferring and are expected to rejoin on the Geyser side.
-     */
-    @Getter
-    private final Cache<String, Player> transferringPlayers = CacheBuilder.newBuilder()
-            .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build();
+    private final List<Player> players = new ObjectArrayList<>();
 
     @Getter
     private GeyserProxyBootstrap geyserProxy;
@@ -87,10 +76,6 @@ public class MasterServer {
 
     @Getter
     private AbstractStorageManager storageManager;
-
-    @Setter
-    @Getter
-    private long lastDisconnectTime = 0L;
 
     @Getter
     private final DefaultEventLoopGroup eventLoopGroup = new DefaultEventLoopGroup(new DefaultThreadFactory("Geyser player thread"));
@@ -110,7 +95,8 @@ public class MasterServer {
 
         logger.setDebug(geyserConnectConfig.isDebugMode());
 
-        this.generalThreadPool = Executors.newScheduledThreadPool(32);
+        // As this is only used for fixing the form image bug, we don't need to handle many threads
+        this.generalThreadPool = Executors.newSingleThreadScheduledExecutor();
 
         // Start a timer to keep the thread running
         Timer timer = new Timer();
@@ -156,10 +142,7 @@ public class MasterServer {
 
             @Override
             public BedrockPong onQuery(InetSocketAddress address) {
-                int playerCount = players.size();
-                if (GeyserConnector.getInstance() != null) {
-                    playerCount += GeyserConnector.getInstance().getPlayers().size();
-                }
+                int playerCount = players.size() + GeyserConnector.getInstance().getSessionManager().size();
 
                 String subMotd = geyserConnectConfig.getSubmotd();
                 if (subMotd == null || subMotd.isEmpty()) {
