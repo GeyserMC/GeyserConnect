@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WebUtils extends org.geysermc.connector.utils.WebUtils {
+public class WebUtils {
     /**
      * Makes a web request to the given URL and returns the body as a string
      *

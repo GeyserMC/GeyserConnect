@@ -48,9 +48,9 @@ public class SQLiteStorageManager extends AbstractStorageManager {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:players.db");
 
-            Statement createPlayersTable = connection.createStatement();
-            createPlayersTable.executeUpdate("CREATE TABLE IF NOT EXISTS players (xuid TEXT, servers TEXT, PRIMARY KEY(xuid));");
-            createPlayersTable.close();
+            try (Statement createPlayersTable = connection.createStatement()) {
+                createPlayersTable.executeUpdate("CREATE TABLE IF NOT EXISTS players (xuid TEXT, servers TEXT, PRIMARY KEY(xuid));");
+            }
         } catch (ClassNotFoundException | SQLException e) {
             MasterServer.getInstance().getLogger().severe("Unable to load sqlite database!", e);
         }
@@ -65,10 +65,8 @@ public class SQLiteStorageManager extends AbstractStorageManager {
 
     @Override
     public void saveServers(Player player) {
-        try {
-            Statement updatePlayersServers = connection.createStatement();
-            updatePlayersServers.executeUpdate("INSERT OR REPLACE INTO players(xuid, servers) VALUES('" + player.getAuthData().getXboxUUID() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
-            updatePlayersServers.close();
+        try (Statement updatePlayersServers = connection.createStatement()) {
+            updatePlayersServers.executeUpdate("INSERT OR REPLACE INTO players(xuid, servers) VALUES('" + player.getAuthData().xuid() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
         } catch (IOException | SQLException ignored) { }
     }
 
@@ -76,16 +74,13 @@ public class SQLiteStorageManager extends AbstractStorageManager {
     public List<Server> loadServers(Player player) {
         List<Server> servers = new ArrayList<>();
 
-        try {
-            Statement getPlayersServers = connection.createStatement();
-            ResultSet rs = getPlayersServers.executeQuery("SELECT servers FROM players WHERE xuid='" + player.getAuthData().getXboxUUID() + "';");
+        try (Statement getPlayersServers = connection.createStatement()) {
+            ResultSet rs = getPlayersServers.executeQuery("SELECT servers FROM players WHERE xuid='" + player.getAuthData().xuid() + "';");
 
             while (rs.next()) {
-                List<Server> loadedServers = mapper.readValue(rs.getString("servers"), new TypeReference<List<Server>>() {});
+                List<Server> loadedServers = mapper.readValue(rs.getString("servers"), new TypeReference<>() {});
                 servers.addAll(loadedServers);
             }
-
-            getPlayersServers.close();
         } catch (IOException | SQLException ignored) { }
 
         return servers;

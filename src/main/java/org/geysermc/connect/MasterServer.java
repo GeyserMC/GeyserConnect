@@ -30,16 +30,16 @@ import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import org.geysermc.connect.storage.DisabledStorageManager;
-import org.geysermc.connect.utils.Server;
-import org.geysermc.connect.utils.ServerCategory;
-import org.geysermc.connector.GeyserConnector;
-import org.geysermc.connector.network.BedrockProtocol;
-import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
 import org.geysermc.connect.storage.AbstractStorageManager;
+import org.geysermc.connect.storage.DisabledStorageManager;
 import org.geysermc.connect.utils.Logger;
 import org.geysermc.connect.utils.Player;
+import org.geysermc.connect.utils.Server;
+import org.geysermc.connect.utils.ServerCategory;
+import org.geysermc.geyser.GeyserImpl;
+import org.geysermc.geyser.network.MinecraftProtocol;
+import org.geysermc.geyser.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,7 +142,7 @@ public class MasterServer {
 
             @Override
             public BedrockPong onQuery(InetSocketAddress address) {
-                int playerCount = players.size() + GeyserConnector.getInstance().getSessionManager().size();
+                int playerCount = players.size() + GeyserImpl.getInstance().getSessionManager().size();
 
                 String subMotd = geyserConnectConfig.getSubmotd();
                 if (subMotd == null || subMotd.isEmpty()) {
@@ -157,8 +157,8 @@ public class MasterServer {
                 bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
                 bdPong.setGameType("Survival");
                 bdPong.setIpv4Port(port);
-                bdPong.setProtocolVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
-                bdPong.setVersion(BedrockProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion());
+                bdPong.setProtocolVersion(MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
+                bdPong.setVersion(MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion());
                 return bdPong;
             }
 
@@ -191,7 +191,7 @@ public class MasterServer {
     public void createGeyserProxy() {
         if (geyserProxy == null) {
             // Make sure Geyser doesn't start the listener
-            GeyserConnector.setShouldStartListener(false);
+            GeyserImpl.setShouldStartListener(false);
 
             this.geyserProxy = new GeyserProxyBootstrap();
             geyserProxy.onEnable();

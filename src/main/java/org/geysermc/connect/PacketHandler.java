@@ -42,20 +42,21 @@ import com.nukkitx.protocol.bedrock.data.ExperimentData;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
+import com.nukkitx.protocol.bedrock.v471.Bedrock_v471;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
-import org.geysermc.connector.entity.attribute.GeyserAttributeType;
-import org.geysermc.connector.network.BedrockProtocol;
-import org.geysermc.connector.network.session.auth.AuthData;
-import org.geysermc.connector.network.session.auth.BedrockClientData;
-import org.geysermc.connector.registry.Registries;
-import org.geysermc.connector.utils.FileUtils;
 import org.geysermc.cumulus.Form;
 import org.geysermc.cumulus.response.CustomFormResponse;
 import org.geysermc.cumulus.response.FormResponse;
 import org.geysermc.cumulus.response.SimpleFormResponse;
+import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
+import org.geysermc.geyser.network.MinecraftProtocol;
+import org.geysermc.geyser.registry.Registries;
+import org.geysermc.geyser.session.auth.AuthData;
+import org.geysermc.geyser.session.auth.BedrockClientData;
+import org.geysermc.geyser.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
     public void disconnect(DisconnectReason reason) {
         if (player != null) {
-            masterServer.getLogger().info(player.getAuthData().getName() + " has disconnected from the master server (" + reason + ")");
+            masterServer.getLogger().info(player.getAuthData().name() + " has disconnected from the master server (" + reason + ")");
             masterServer.getStorageManager().saveServers(player);
 
             masterServer.getPlayers().remove(player);
@@ -94,16 +95,16 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(LoginPacket packet) {
         masterServer.getLogger().debug("Login: " + packet.toString());
 
-        BedrockPacketCodec packetCodec = BedrockProtocol.getBedrockCodec(packet.getProtocolVersion());
+        BedrockPacketCodec packetCodec = MinecraftProtocol.getBedrockCodec(packet.getProtocolVersion());
         if (packetCodec == null) {
-            session.setPacketCodec(BedrockProtocol.DEFAULT_BEDROCK_CODEC);
+            session.setPacketCodec(MinecraftProtocol.DEFAULT_BEDROCK_CODEC);
 
             String message = "disconnectionScreen.internalError.cantConnect";
             PlayStatusPacket status = new PlayStatusPacket();
-            if (packet.getProtocolVersion() > BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
+            if (packet.getProtocolVersion() > MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_SERVER_OLD);
                 message = "disconnectionScreen.outdatedServer";
-            } else if (packet.getProtocolVersion() < BedrockProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
+            } else if (packet.getProtocolVersion() < MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_CLIENT_OLD);
                 message = "disconnectionScreen.outdatedClient";
             }
@@ -207,7 +208,7 @@ public class PacketHandler implements BedrockPacketHandler {
     public boolean handle(ResourcePackClientResponsePacket packet) {
         switch (packet.getStatus()) {
             case COMPLETED:
-                masterServer.getLogger().info("Logged in " + player.getAuthData().getName() + " (" + player.getAuthData().getXboxUUID() + ", " + player.getAuthData().getUUID() + ")");
+                masterServer.getLogger().info("Logged in " + player.getAuthData().name() + " (" + player.getAuthData().xuid() + ", " + player.getAuthData().uuid() + ")");
                 player.sendStartGame();
                 break;
             case HAVE_ALL_PACKS:
@@ -219,6 +220,11 @@ public class PacketHandler implements BedrockPacketHandler {
                 if (Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()).getFurnaceMinecartData() != null) {
                     // Allow custom items to work
                     stack.getExperiments().add(new ExperimentData("data_driven_items", true));
+                }
+
+                if (session.getPacketCodec().getProtocolVersion() <= Bedrock_v471.V471_CODEC.getProtocolVersion()) {
+                    // Allow extended world height in the overworld to work for pre-1.18 clients
+                    stack.getExperiments().add(new ExperimentData("caves_and_cliffs", true));
                 }
 
                 session.sendPacket(stack);
@@ -233,7 +239,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        masterServer.getLogger().debug("Player initialized: " + player.getAuthData().getName());
+        masterServer.getLogger().debug("Player initialized: " + player.getAuthData().name());
 
         // Handle the virtual host if specified
         GeyserConnectConfig.VirtualHostSection vhost = MasterServer.getInstance().getGeyserConnectConfig().getVhost();
@@ -264,7 +270,7 @@ public class PacketHandler implements BedrockPacketHandler {
                 }
 
                 // Log the virtual host usage
-                masterServer.getLogger().info(player.getAuthData().getName() + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
+                masterServer.getLogger().info(player.getAuthData().name() + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
 
                 // Send the player to the wanted server
                 player.sendToServer(new Server(address, port, online, false));

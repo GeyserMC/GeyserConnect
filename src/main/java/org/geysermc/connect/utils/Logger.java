@@ -29,8 +29,8 @@ import lombok.extern.log4j.Log4j2;
 import net.minecrell.terminalconsole.SimpleTerminalConsole;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.geysermc.connect.MasterServer;
-import org.geysermc.connector.GeyserLogger;
-import org.geysermc.connector.common.ChatColor;
+import org.geysermc.geyser.GeyserLogger;
+import org.geysermc.geyser.text.ChatColor;
 
 @Log4j2
 public class Logger extends SimpleTerminalConsole implements GeyserLogger {

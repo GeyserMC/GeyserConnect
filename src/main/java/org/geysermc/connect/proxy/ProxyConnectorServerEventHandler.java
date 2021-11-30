@@ -26,17 +26,13 @@
 package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import org.geysermc.connector.GeyserConnector;
-import org.geysermc.connector.network.ConnectorServerEventHandler;
-import org.geysermc.connect.MasterServer;
-import org.geysermc.connect.utils.Player;
-
-import java.util.concurrent.TimeUnit;
+import org.geysermc.geyser.GeyserImpl;
+import org.geysermc.geyser.network.ConnectorServerEventHandler;
 
 public class ProxyConnectorServerEventHandler extends ConnectorServerEventHandler {
 
-    public ProxyConnectorServerEventHandler(GeyserConnector connector) {
-        super(connector);
+    public ProxyConnectorServerEventHandler(GeyserImpl geyser) {
+        super(geyser);
     }
 
     @Override

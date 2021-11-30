@@ -25,13 +25,13 @@
 
 package org.geysermc.connect.proxy;
 
-import org.geysermc.connector.GeyserConnector;
-import org.geysermc.connector.command.CommandManager;
+import org.geysermc.geyser.GeyserImpl;
+import org.geysermc.geyser.command.CommandManager;
 
 public class GeyserProxyCommandManager extends CommandManager {
 
-    public GeyserProxyCommandManager(GeyserConnector connector) {
-        super(connector);
+    public GeyserProxyCommandManager(GeyserImpl geyser) {
+        super(geyser);
     }
 
     @Override
