@@ -33,10 +33,7 @@ import lombok.Getter;
 import org.geysermc.connect.proxy.GeyserProxyBootstrap;
 import org.geysermc.connect.storage.AbstractStorageManager;
 import org.geysermc.connect.storage.DisabledStorageManager;
-import org.geysermc.connect.utils.Logger;
-import org.geysermc.connect.utils.Player;
-import org.geysermc.connect.utils.Server;
-import org.geysermc.connect.utils.ServerCategory;
+import org.geysermc.connect.utils.*;
 import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.network.MinecraftProtocol;
 import org.geysermc.geyser.util.FileUtils;
@@ -89,7 +86,7 @@ public class MasterServer {
         logger = new Logger();
 
         try {
-            File configFile = fileOrCopiedFromResource(new File("config.yml"), "config.yml", (x) -> x);
+            File configFile = GeyserConnectFileUtils.fileOrCopiedFromResource(new File("config.yml"), "config.yml", (x) -> x);
             this.geyserConnectConfig = FileUtils.loadConfig(configFile, GeyserConnectConfig.class);
         } catch (IOException ex) {
             logger.severe("Failed to read/create config.yml! Make sure it's up to date and/or readable+writable!", ex);
@@ -123,7 +120,7 @@ public class MasterServer {
 
         // Create the base welcome.txt file
         try {
-            fileOrCopiedFromResource(new File(getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
+            GeyserConnectFileUtils.fileOrCopiedFromResource(new File(getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
         } catch (IOException ignored) { }
 
         start(geyserConnectConfig.getPort());
@@ -210,28 +207,5 @@ public class MasterServer {
 
     public List<Server> getServers(ServerCategory serverCategory) {
         return getGeyserConnectConfig().getServers().stream().filter(server -> server.getCategory() == serverCategory).collect(Collectors.toList());
-    }
-
-    private File fileOrCopiedFromResource(File file, String name, Function<String, String> format) throws IOException {
-        if (!file.exists()) {
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();
-            try (FileOutputStream fos = new FileOutputStream(file)) {
-                try (InputStream input = MasterServer.class.getClassLoader().getResourceAsStream(name)) {
-                    byte[] bytes = new byte[input.available()];
-
-                    //noinspection ResultOfMethodCallIgnored
-                    input.read(bytes);
-
-                    for(char c : format.apply(new String(bytes)).toCharArray()) {
-                        fos.write(c);
-                    }
-
-                    fos.flush();
-                }
-            }
-        }
-
-        return file;
     }
 }

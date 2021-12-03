@@ -45,6 +45,7 @@ import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import com.nukkitx.protocol.bedrock.v471.Bedrock_v471;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
+import org.geysermc.connect.utils.GeyserConnectFileUtils;
 import org.geysermc.connect.utils.Player;
 import org.geysermc.connect.utils.Server;
 import org.geysermc.cumulus.Form;
@@ -281,7 +282,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
         String message = "";
         try {
-            File messageFile = FileUtils.fileOrCopiedFromResource(new File(MasterServer.getInstance().getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
+            File messageFile = GeyserConnectFileUtils.fileOrCopiedFromResource(new File(MasterServer.getInstance().getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
             message = new String(FileUtils.readAllBytes(messageFile));
         } catch (IOException ignored) { }
 
