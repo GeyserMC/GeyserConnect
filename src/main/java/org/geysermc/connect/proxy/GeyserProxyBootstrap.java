@@ -37,6 +37,7 @@ import org.geysermc.geyser.configuration.GeyserConfiguration;
 import org.geysermc.geyser.dump.BootstrapDumpInfo;
 import org.geysermc.geyser.ping.GeyserLegacyPingPassthrough;
 import org.geysermc.geyser.ping.IGeyserPingPassthrough;
+import org.geysermc.geyser.text.GeyserLocale;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,6 +59,8 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
 
     @Override
     public void onEnable() {
+        GeyserLocale.init(this);
+
         // Setup a logger
         geyserLogger = new GeyserProxyLogger();
 

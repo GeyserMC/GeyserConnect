@@ -42,11 +42,14 @@ import org.geysermc.geyser.network.MinecraftProtocol;
 import org.geysermc.geyser.util.FileUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MasterServer {
@@ -86,7 +89,7 @@ public class MasterServer {
         logger = new Logger();
 
         try {
-            File configFile = FileUtils.fileOrCopiedFromResource(new File("config.yml"), "config.yml", (x) -> x);
+            File configFile = fileOrCopiedFromResource(new File("config.yml"), "config.yml", (x) -> x);
             this.geyserConnectConfig = FileUtils.loadConfig(configFile, GeyserConnectConfig.class);
         } catch (IOException ex) {
             logger.severe("Failed to read/create config.yml! Make sure it's up to date and/or readable+writable!", ex);
@@ -120,7 +123,7 @@ public class MasterServer {
 
         // Create the base welcome.txt file
         try {
-            FileUtils.fileOrCopiedFromResource(new File(getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
+            fileOrCopiedFromResource(new File(getGeyserConnectConfig().getWelcomeFile()), "welcome.txt", (x) -> x);
         } catch (IOException ignored) { }
 
         start(geyserConnectConfig.getPort());
@@ -207,5 +210,28 @@ public class MasterServer {
 
     public List<Server> getServers(ServerCategory serverCategory) {
         return getGeyserConnectConfig().getServers().stream().filter(server -> server.getCategory() == serverCategory).collect(Collectors.toList());
+    }
+
+    private File fileOrCopiedFromResource(File file, String name, Function<String, String> format) throws IOException {
+        if (!file.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            file.createNewFile();
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                try (InputStream input = MasterServer.class.getClassLoader().getResourceAsStream(name)) {
+                    byte[] bytes = new byte[input.available()];
+
+                    //noinspection ResultOfMethodCallIgnored
+                    input.read(bytes);
+
+                    for(char c : format.apply(new String(bytes)).toCharArray()) {
+                        fos.write(c);
+                    }
+
+                    fos.flush();
+                }
+            }
+        }
+
+        return file;
     }
 }
