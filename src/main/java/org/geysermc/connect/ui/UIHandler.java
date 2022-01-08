@@ -73,7 +73,7 @@ public class UIHandler {
      * @return A {@link SimpleForm} object
      */
     public static Form getServerList(List<Server> servers, ServerCategory category) {
-        SimpleForm.Builder window = SimpleForm.builder().title(category.getTitle() + " Servers");
+        SimpleForm.Builder window = SimpleForm.builder().title(category.getTitle() + " Serwery");
 
         // Add a button for each global server
         for (Server server : servers) {
@@ -84,10 +84,10 @@ public class UIHandler {
 
         // Add a button for editing
         if (category == ServerCategory.CUSTOM) {
-            window.button("Edit servers");
+            window.button("Edytuj serwer");
         }
 
-        window.button("Back");
+        window.button("Wroc");
 
         return window.build();
     }
@@ -99,7 +99,7 @@ public class UIHandler {
      * @return A {@link SimpleForm} object
      */
     public static Form getWaitingScreen(Server server) {
-        return SimpleForm.builder().title("Connecting").content("Please wait while we connect you to " + server.toString()).build();
+        return SimpleForm.builder().title("Laczenie").content("Prosze chwile poczekac, laczymy sie do " + server.toString()).build();
     }
 
     /**
@@ -123,7 +123,7 @@ public class UIHandler {
      * @return A {@link SimpleForm} object
      */
     public static Form getEditServerList(List<Server> servers) {
-        SimpleForm.Builder window = SimpleForm.builder().title("Edit Servers").content("Select a server to edit");
+        SimpleForm.Builder window = SimpleForm.builder().title("Edycja serwera").content("Ktory serwer chcesz zedytowac");
 
         // Add a button for each personal server
         for (Server server : servers) {
@@ -131,8 +131,8 @@ public class UIHandler {
                     "https://eu.mc-api.net/v3/server/favicon/" + server.getAddress() + ":" + server.getPort() + ".png"));
         }
 
-        window.button("Add server");
-        window.button("Back");
+        window.button("Dodaj serwer");
+        window.button("Wroc");
 
         return window.build();
     }
@@ -143,11 +143,11 @@ public class UIHandler {
      * @return A {@link CustomForm} object
      */
     public static Form getAddServer() {
-        return CustomForm.builder().title("Add Server")
-                .component(InputComponent.of("IP", "play.cubecraft.net"))
+        return CustomForm.builder().title("Dodaj serwer")
+                .component(InputComponent.of("IP", "kokscraft.pl"))
                 .component(InputComponent.of("Port", "25565", "25565"))
-                .component(ToggleComponent.of("Online mode", true))
-                .component(ToggleComponent.of("Bedrock/Geyser server", false))
+                .component(ToggleComponent.of("Online mode", false))
+                .component(ToggleComponent.of("Czy to jest Bedrock/Geyser", false))
                 .build();
     }
 
@@ -158,11 +158,11 @@ public class UIHandler {
      * @return A {@link SimpleForm} object
      */
     public static Form getServerOptions(Server server) {
-        SimpleForm.Builder window = SimpleForm.builder().title("Server Options").content(server.toString());
+        SimpleForm.Builder window = SimpleForm.builder().title("Opcje serwera").content(server.toString());
 
-        window.button("Edit");
-        window.button("Remove");
-        window.button("Back");
+        window.button("Edytuj");
+        window.button("Usun");
+        window.button("Wroc");
 
         return window.build();
     }
@@ -175,10 +175,10 @@ public class UIHandler {
      */
     public static Form getRemoveServer(Server server) {
         return SimpleForm.builder()
-                .title("Remove Server")
-                .content("Are you sure you want to remove server: " + server)
-                .button("Remove")
-                .button("Cancel")
+                .title("Usun serwer")
+                .content("Czy jestes pewiem ze chcesz usunac: " + server)
+                .button("Usun")
+                .button("Anuluj")
                 .build();
     }
 
@@ -191,11 +191,11 @@ public class UIHandler {
     public static Form getEditServer(int serverIndex, Server server) {
         String port = String.valueOf(server.getPort());
         return CustomForm.builder()
-                .component(LabelComponent.of("Server at index: " + serverIndex))
+                .component(LabelComponent.of("Serwer: " + serverIndex))
                 .component(InputComponent.of("IP", server.getAddress(), server.getAddress()))
                 .component(InputComponent.of("Port", port, port))
-                .component(ToggleComponent.of("Online mode", server.isOnline()))
-                .component(ToggleComponent.of("Bedrock/Geyser server", server.isBedrock()))
+                .component(ToggleComponent.of("Czy serwer jest premium", server.isOnline()))
+                .component(ToggleComponent.of("Czy serwer jest Bedrock/Geyser", server.isBedrock()))
                 .build();
     }
 
@@ -207,7 +207,7 @@ public class UIHandler {
      */
     public static Form getMessageWindow(String message) {
         return CustomForm.builder()
-                .title("Notice")
+                .title("Zauważ")
                 .component(LabelComponent.of(message))
                 .build();
     }
