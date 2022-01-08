@@ -49,18 +49,18 @@ public class UIHandler {
      * @return A {@link SimpleForm} object
      */
     public static Form getMainMenu() {
-        SimpleForm.Builder window = SimpleForm.builder().title("Main Menu");
+        SimpleForm.Builder window = SimpleForm.builder().title("Menu");
 
-        window.button("Official Servers");
-        window.button("Geyser Servers");
+        window.button("Polskie serwery");
+        window.button("Zagraniczne");
 
         // Add a buttons for custom servers
         if (MasterServer.getInstance().getGeyserConnectConfig().getCustomServers().isEnabled()) {
-            window.button("Custom Servers");
-            window.button("Direct connect");
+            window.button("Wlasny serwer");
+            window.button("Polaczenie bezposredne");
         }
 
-        window.button("Disconnect");
+        window.button("Rozlacz");
 
         return window.build();
     }
