@@ -195,7 +195,7 @@ public class UIHandler {
                 .component(InputComponent.of("IP", server.getAddress(), server.getAddress()))
                 .component(InputComponent.of("Port", port, port))
                 .component(ToggleComponent.of("Czy serwer jest premium", server.isOnline()))
-                .component(ToggleComponent.of("Czy serwer jest Bedrock/Geyser", server.isBedrock()))
+                .component(ToggleComponent.of("Czy serwer jest Bedrock/GeyserProxy", server.isBedrock()))
                 .build();
     }
 
