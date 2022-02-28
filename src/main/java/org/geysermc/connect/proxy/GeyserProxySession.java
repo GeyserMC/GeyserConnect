@@ -27,17 +27,34 @@ package org.geysermc.connect.proxy;
 
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import io.netty.channel.EventLoop;
+import org.geysermc.connect.utils.Player;
+import org.geysermc.connect.utils.Server;
 import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.session.GeyserSession;
+import org.geysermc.geyser.session.PendingMicrosoftAuthentication.*;
 
 public class GeyserProxySession extends GeyserSession {
-    public GeyserProxySession(GeyserImpl geyser, BedrockServerSession bedrockServerSession, EventLoop eventLoop) {
+    private final Player player;
+
+    public GeyserProxySession(GeyserImpl geyser, BedrockServerSession bedrockServerSession, EventLoop eventLoop, Player player, boolean initialized) {
         super(geyser, bedrockServerSession, eventLoop);
-        sentSpawnPacket = true;
+        sentSpawnPacket = initialized;
+        this.player = player;
     }
 
     @Override
     protected void disableSrvResolving() {
         // Do nothing
+    }
+
+    @Override
+    public void disconnect(String reason) {
+        ProxyAuthenticationTask task = (ProxyAuthenticationTask) getGeyser().getPendingMicrosoftAuthentication().getTask(this.xuid());
+        if (task != null) {
+            Server server = player.getCurrentServer();
+            task.setServer(server.getAddress());
+            task.setPort(server.getPort());
+        }
+        super.disconnect(reason);
     }
 }

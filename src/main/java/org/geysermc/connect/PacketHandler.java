@@ -43,6 +43,7 @@ import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import com.nukkitx.protocol.bedrock.v471.Bedrock_v471;
+import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.connect.utils.GeyserConnectFileUtils;
@@ -52,10 +53,13 @@ import org.geysermc.cumulus.Form;
 import org.geysermc.cumulus.response.CustomFormResponse;
 import org.geysermc.cumulus.response.FormResponse;
 import org.geysermc.cumulus.response.SimpleFormResponse;
+import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
 import org.geysermc.geyser.network.MinecraftProtocol;
 import org.geysermc.geyser.registry.Registries;
+import org.geysermc.geyser.session.PendingMicrosoftAuthentication.*;
 import org.geysermc.geyser.session.auth.AuthData;
+import org.geysermc.geyser.session.auth.AuthType;
 import org.geysermc.geyser.session.auth.BedrockClientData;
 import org.geysermc.geyser.util.FileUtils;
 
@@ -210,7 +214,22 @@ public class PacketHandler implements BedrockPacketHandler {
         switch (packet.getStatus()) {
             case COMPLETED:
                 masterServer.getLogger().info("Logged in " + player.getAuthData().name() + " (" + player.getAuthData().xuid() + ", " + player.getAuthData().uuid() + ")");
-                player.sendStartGame();
+
+                ProxyAuthenticationTask task = (ProxyAuthenticationTask) GeyserImpl.getInstance()
+                        .getPendingMicrosoftAuthentication().getTask(player.getAuthData().xuid());
+                if (task != null && task.getAuthentication().isDone()) {
+                    String address = task.getServer();
+                    int port = task.getPort();
+                    player.setCurrentServer(new Server(address, port, true, false));
+                    GeyserProxySession session = player.createGeyserSession(false);
+                    session.setRemoteAddress(address);
+                    session.setRemotePort(port);
+                    session.setRemoteAuthType(AuthType.ONLINE);
+
+                    session.onMicrosoftLoginComplete(task);
+                } else {
+                    player.sendStartGame();
+                }
                 break;
             case HAVE_ALL_PACKS:
                 ResourcePackStackPacket stack = new ResourcePackStackPacket();
@@ -241,6 +260,11 @@ public class PacketHandler implements BedrockPacketHandler {
     @Override
     public boolean handle(SetLocalPlayerAsInitializedPacket packet) {
         masterServer.getLogger().debug("Player initialized: " + player.getAuthData().name());
+
+        if (player.getCurrentServer() != null) {
+            // Player is already logged in via delayed Microsoft authentication
+            return false;
+        }
 
         // Handle the virtual host if specified
         GeyserConnectConfig.VirtualHostSection vhost = MasterServer.getInstance().getGeyserConnectConfig().getVhost();

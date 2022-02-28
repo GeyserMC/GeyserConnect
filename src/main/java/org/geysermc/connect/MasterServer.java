@@ -39,14 +39,11 @@ import org.geysermc.geyser.network.MinecraftProtocol;
 import org.geysermc.geyser.util.FileUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MasterServer {
@@ -195,6 +192,7 @@ public class MasterServer {
 
             this.geyserProxy = new GeyserProxyBootstrap();
             geyserProxy.onEnable();
+            GeyserImpl.getInstance().getPendingMicrosoftAuthentication().setStoreServerInformation();
         }
     }
 

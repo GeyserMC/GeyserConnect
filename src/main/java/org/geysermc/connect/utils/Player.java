@@ -233,20 +233,7 @@ public class Player {
             transferPacket.setPort(currentServer.getPort());
             session.sendPacket(transferPacket);
         } else {
-            GeyserProxySession geyserSession = new GeyserProxySession(GeyserImpl.getInstance(), session, MasterServer.getInstance().getEventLoopGroup().next());
-            session.setPacketHandler(new UpstreamPacketHandler(GeyserImpl.getInstance(), geyserSession));
-            // The player will be tracked from Geyser from here
-            MasterServer.getInstance().getPlayers().remove(this);
-            GeyserImpl.getInstance().getSessionManager().addPendingSession(geyserSession);
-
-            geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
-
-            // Set the block translation based off of version
-            geyserSession.setBlockMappings(BlockRegistries.BLOCKS.forVersion(session.getPacketCodec().getProtocolVersion()));
-            geyserSession.setItemMappings(Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()));
-
-            geyserSession.setAuthData(authData);
-            geyserSession.setClientData(clientData);
+            GeyserProxySession geyserSession = createGeyserSession(true);
 
             geyserSession.setDimension(DimensionUtils.THE_END);
 
@@ -263,6 +250,26 @@ public class Player {
                 geyserSession.authenticate(geyserSession.getAuthData().name());
             }
         }
+    }
+
+    public GeyserProxySession createGeyserSession(boolean initialized) {
+        GeyserProxySession geyserSession = new GeyserProxySession(GeyserImpl.getInstance(), session,
+                MasterServer.getInstance().getEventLoopGroup().next(), this, initialized);
+        session.setPacketHandler(new UpstreamPacketHandler(GeyserImpl.getInstance(), geyserSession));
+        // The player will be tracked from Geyser from here
+        MasterServer.getInstance().getPlayers().remove(this);
+        GeyserImpl.getInstance().getSessionManager().addPendingSession(geyserSession);
+
+        geyserSession.getUpstream().getSession().setPacketCodec(session.getPacketCodec());
+
+        // Set the block translation based off of version
+        geyserSession.setBlockMappings(BlockRegistries.BLOCKS.forVersion(session.getPacketCodec().getProtocolVersion()));
+        geyserSession.setItemMappings(Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()));
+
+        geyserSession.setAuthData(authData);
+        geyserSession.setClientData(clientData);
+
+        return geyserSession;
     }
 
     public void sendToServer(Server server) {
