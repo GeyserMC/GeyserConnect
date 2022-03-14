@@ -93,16 +93,6 @@ public class UIHandler {
     }
 
     /**
-     * Create a simple connecting message form
-     *
-     * @param server The server info to display
-     * @return A {@link SimpleForm} object
-     */
-    public static Form getWaitingScreen(Server server) {
-        return SimpleForm.builder().title("Connecting").content("Please wait while we connect you to " + server.toString()).build();
-    }
-
-    /**
      * Create a direct connect form
      *
      * @return A {@link CustomForm} object

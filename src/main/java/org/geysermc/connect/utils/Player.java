@@ -39,7 +39,6 @@ import lombok.Setter;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
-import org.geysermc.connect.ui.UIHandler;
 import org.geysermc.cumulus.Form;
 import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
@@ -273,11 +272,7 @@ public class Player {
     }
 
     public void sendToServer(Server server) {
-        // Tell the user we are connecting them
-        // This wont show up in a lot of cases as the client connects quite quickly
-        if (!server.isOnline()) {
-            sendWindow(FormID.CONNECTING, UIHandler.getWaitingScreen(server));
-        }
+        // Geyser will show a "please wait" message in action bar
 
         // Send the user over to the server
         setCurrentServer(server);
