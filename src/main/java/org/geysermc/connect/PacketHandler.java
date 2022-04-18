@@ -178,16 +178,18 @@ public class PacketHandler implements BedrockPacketHandler {
                 AuthData authData = new AuthData(
                         extraData.get("displayName").asText(),
                         UUID.fromString(extraData.get("identity").asText()),
-                        extraData.get("XUID").asText(),
-                        chainData, packet.getSkinData().toString()
+                        extraData.get("XUID").asText()
                 );
 
                 // Create a new player and add it to the players list
                 player = new Player(authData, session);
                 masterServer.getPlayers().add(player);
 
+                player.setChainData(chainData);
+
                 // Store the full client data
                 player.setClientData(OBJECT_MAPPER.convertValue(OBJECT_MAPPER.readTree(skinData.getPayload().toBytes()), BedrockClientData.class));
+                player.getClientData().setOriginalString(packet.getSkinData().toString());
 
                 // Tell the client we have logged in successfully
                 PlayStatusPacket playStatusPacket = new PlayStatusPacket();

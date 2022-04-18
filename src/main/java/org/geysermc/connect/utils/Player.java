@@ -25,6 +25,7 @@
 
 package org.geysermc.connect.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
@@ -41,6 +42,7 @@ import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.cumulus.Form;
 import org.geysermc.geyser.GeyserImpl;
+import org.geysermc.geyser.level.BedrockDimension;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
 import org.geysermc.geyser.registry.BlockRegistries;
 import org.geysermc.geyser.registry.Registries;
@@ -58,6 +60,8 @@ import java.util.List;
 public class Player {
 
     private final AuthData authData;
+    @Setter
+    private JsonNode chainData;
 
     private final BedrockServerSession session;
 
@@ -100,7 +104,7 @@ public class Player {
         startGamePacket.setPlayerPosition(Vector3f.from(0, 64 + 2, 0));
         startGamePacket.setRotation(Vector2f.ONE);
 
-        startGamePacket.setSeed(-1);
+        startGamePacket.setSeed(-1L);
         startGamePacket.setDimensionId(2);
         startGamePacket.setGeneratorId(1);
         startGamePacket.setLevelGameType(GameType.CREATIVE);
@@ -266,6 +270,7 @@ public class Player {
         geyserSession.setItemMappings(Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()));
 
         geyserSession.setAuthData(authData);
+        geyserSession.setCertChainData(chainData);
         geyserSession.setClientData(clientData);
 
         return geyserSession;
