@@ -77,6 +77,12 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
 
             ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
             geyserConfig = objectMapper.readValue(text, GeyserProxyConfiguration.class);
+
+            geyserConfig.getSavedUserLogins().clear();
+            for (String savedUserLogin : MasterServer.getInstance().getGeyserConnectConfig().getGeyser().getSavedUserLogins()) {
+                geyserConfig.getSavedUserLogins().add(savedUserLogin);
+            }
+
         } catch (IOException ex) {
             geyserLogger.severe("Failed to read proxy_config.yml! Make sure it's up to date and/or readable+writable!", ex);
             return;
