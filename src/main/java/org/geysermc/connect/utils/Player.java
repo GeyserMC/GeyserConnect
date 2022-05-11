@@ -237,6 +237,7 @@ public class Player {
             session.sendPacket(transferPacket);
         } else {
             GeyserProxySession geyserSession = createGeyserSession(true);
+            GeyserImpl geyser = geyserSession.getGeyser();
 
             geyserSession.setDimension(DimensionUtils.THE_END);
 
@@ -248,6 +249,13 @@ public class Player {
             SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
             initializedPacket.setRuntimeEntityId(geyserSession.getPlayerEntity().getGeyserId());
             session.getPacketHandler().handle(initializedPacket);
+
+            if (geyser.getConfig().getSavedUserLogins().contains(authData.name())) {
+                String refreshToken = geyser.refreshTokenFor(authData.name());
+                if (refreshToken != null) {
+                    geyserSession.authenticateWithRefreshToken(refreshToken);
+                }
+            }
 
             if (geyserSession.getRemoteAuthType() != AuthType.ONLINE) {
                 geyserSession.authenticate(geyserSession.getAuthData().name());

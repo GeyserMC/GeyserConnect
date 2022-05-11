@@ -31,6 +31,10 @@ geyser:
   # If debug messages should be sent through console, has to be enabled in both places to work
   debug-mode: false
 
+  saved-user-logins:
+    - ThisExampleUsernameShouldBeLongEnoughToNeverBeAnXboxUsername
+    - ThisOtherExampleUsernameShouldAlsoBeLongEnough
+
 # A global list of servers sent to all clients
 servers:
   - name: The Hive

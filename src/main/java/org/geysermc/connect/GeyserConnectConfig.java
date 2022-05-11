@@ -32,6 +32,7 @@ import org.geysermc.connect.storage.AbstractStorageManager;
 import org.geysermc.connect.utils.Server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -72,6 +73,9 @@ public class GeyserConnectConfig {
 
         @JsonProperty("debug-mode")
         private boolean debugMode;
+
+        @JsonProperty("saved-user-logins")
+        private List<String> savedUserLogins = Collections.emptyList();
     }
 
     @Getter
