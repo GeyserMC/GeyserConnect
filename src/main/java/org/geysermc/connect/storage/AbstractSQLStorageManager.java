@@ -67,8 +67,10 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
 
     @Override
     public void saveServers(Player player) {
-        try (Statement updatePlayersServers = connection.createStatement()) {
-            updatePlayersServers.executeUpdate("INSERT OR REPLACE INTO players(xuid, servers) VALUES('" + player.getAuthData().xuid() + "', '" + mapper.writeValueAsString(player.getServers()) + "');");
+        try (PreparedStatement updatePlayersServers = connection.prepareStatement("INSERT OR REPLACE INTO players(xuid, servers) VALUES(?, ?)")) {
+            updatePlayersServers.setString(1, player.getAuthData().xuid());
+            updatePlayersServers.setString(2, mapper.writeValueAsString(player.getServers()));
+            updatePlayersServers.executeUpdate();
         } catch (IOException | SQLException exception) {
             MasterServer.getInstance().getLogger().error("Couldn't save servers for " + player.getAuthData().name(), exception);
         }
@@ -78,8 +80,9 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
     public List<Server> loadServers(Player player) {
         List<Server> servers = new ArrayList<>();
 
-        try (Statement getPlayersServers = connection.createStatement()) {
-            ResultSet rs = getPlayersServers.executeQuery("SELECT servers FROM players WHERE xuid='" + player.getAuthData().xuid() + "';");
+        try (PreparedStatement getPlayersServers = connection.prepareStatement("SELECT servers FROM players WHERE xuid=?")) {
+            getPlayersServers.setString(1, player.getAuthData().xuid());
+            ResultSet rs = getPlayersServers.executeQuery();
 
             while (rs.next()) {
                 List<Server> loadedServers = mapper.readValue(rs.getString("servers"), new TypeReference<>() {
