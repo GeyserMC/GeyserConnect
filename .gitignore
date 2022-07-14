@@ -230,3 +230,4 @@ nbdist/
 /logs/
 /locales/
 /players/
+players.db
