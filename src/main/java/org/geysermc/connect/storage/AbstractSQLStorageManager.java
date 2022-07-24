@@ -67,7 +67,8 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
 
     @Override
     public void saveServers(Player player) {
-        try (PreparedStatement updatePlayersServers = connection.prepareStatement("INSERT OR REPLACE INTO players(xuid, servers) VALUES(?, ?)")) {
+        // replace into works on MySQL and SQLite
+        try (PreparedStatement updatePlayersServers = connection.prepareStatement("REPLACE INTO players(xuid, servers) VALUES(?, ?)")) {
             updatePlayersServers.setString(1, player.getAuthData().xuid());
             updatePlayersServers.setString(2, mapper.writeValueAsString(player.getServers()));
             updatePlayersServers.executeUpdate();
