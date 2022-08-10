@@ -148,16 +148,13 @@ public class Player {
         startGamePacket.setServerEngine("");
         startGamePacket.setPlayerPropertyData(NbtMap.EMPTY);
         startGamePacket.setWorldTemplateId(UUID.randomUUID());
+        startGamePacket.setChatRestrictionLevel(ChatRestrictionLevel.NONE);
 
         SyncedPlayerMovementSettings settings = new SyncedPlayerMovementSettings();
         settings.setMovementMode(AuthoritativeMovementMode.CLIENT);
         settings.setRewindHistorySize(0);
         settings.setServerAuthoritativeBlockBreaking(false);
         startGamePacket.setPlayerMovementSettings(settings);
-
-        if (session.getPacketCodec().getProtocolVersion() <= Bedrock_v471.V471_CODEC.getProtocolVersion()) {
-            startGamePacket.getExperiments().add(new ExperimentData("caves_and_cliffs", true));
-        }
 
         startGamePacket.setVanillaVersion("*");
         session.sendPacket(startGamePacket);
