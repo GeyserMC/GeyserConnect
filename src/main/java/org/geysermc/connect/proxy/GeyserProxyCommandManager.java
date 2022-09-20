@@ -26,16 +26,16 @@
 package org.geysermc.connect.proxy;
 
 import org.geysermc.geyser.GeyserImpl;
-import org.geysermc.geyser.command.CommandManager;
+import org.geysermc.geyser.command.GeyserCommandManager;
 
-public class GeyserProxyCommandManager extends CommandManager {
+public class GeyserProxyCommandManager extends GeyserCommandManager {
 
     public GeyserProxyCommandManager(GeyserImpl geyser) {
         super(geyser);
     }
 
     @Override
-    public String getDescription(String command) {
+    public String description(String command) {
         return ""; // this is not sent over the protocol, so we return none
     }
 }

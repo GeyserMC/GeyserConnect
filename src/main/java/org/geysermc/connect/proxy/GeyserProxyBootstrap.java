@@ -32,7 +32,7 @@ import org.geysermc.connect.GeyserConnectConfig;
 import org.geysermc.connect.MasterServer;
 import org.geysermc.geyser.GeyserBootstrap;
 import org.geysermc.geyser.GeyserImpl;
-import org.geysermc.geyser.command.CommandManager;
+import org.geysermc.geyser.command.GeyserCommandManager;
 import org.geysermc.geyser.configuration.GeyserConfiguration;
 import org.geysermc.geyser.dump.BootstrapDumpInfo;
 import org.geysermc.geyser.ping.GeyserLegacyPingPassthrough;
@@ -92,7 +92,8 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
         GeyserConfiguration.checkGeyserConfiguration(geyserConfig, geyserLogger);
 
         // Create the connector and command manager
-        geyser = GeyserImpl.start(PlatformType.STANDALONE, this);
+        geyser = GeyserImpl.load(PlatformType.STANDALONE, this);
+        GeyserImpl.start();
         geyserCommandManager = new GeyserProxyCommandManager(geyser);
 
         // Start the ping passthrough thread, again don't think there is a point
@@ -118,7 +119,7 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
     }
 
     @Override
-    public CommandManager getGeyserCommandManager() {
+    public GeyserCommandManager getGeyserCommandManager() {
         return geyserCommandManager;
     }
 

@@ -29,12 +29,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.cumulus.util.FormImage;
+import org.geysermc.geyser.api.network.AuthType;
+import org.geysermc.geyser.api.network.RemoteServer;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Server {
+public class Server implements RemoteServer {
 
     private String address;
     private int port = -1;
@@ -84,5 +87,30 @@ public class Server {
         } else {
             return FormImage.of(FormImage.Type.URL, "https://eu.mc-api.net/v3/server/favicon/" + address + ":" + port + ".png?use-fallback-icon=true");
         }
+    }
+
+    @Override
+    public String address() {
+        return address;
+    }
+
+    @Override
+    public int port() {
+        return port;
+    }
+
+    @Override
+    public @NonNull AuthType authType() {
+        return this.online ? AuthType.ONLINE : AuthType.OFFLINE;
+    }
+
+    @Override
+    public String minecraftVersion() {
+        return null;
+    }
+
+    @Override
+    public int protocolVersion() {
+        return 0;
     }
 }

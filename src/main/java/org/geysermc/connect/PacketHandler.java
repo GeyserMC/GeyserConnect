@@ -39,10 +39,12 @@ import com.nukkitx.protocol.bedrock.BedrockPacketCodec;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.AttributeData;
 import com.nukkitx.protocol.bedrock.data.ExperimentData;
+import com.nukkitx.protocol.bedrock.data.PacketCompressionAlgorithm;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import com.nukkitx.protocol.bedrock.v471.Bedrock_v471;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.connect.proxy.GeyserProxySession;
 import org.geysermc.connect.ui.FormID;
 import org.geysermc.connect.ui.UIHandler;
@@ -54,12 +56,13 @@ import org.geysermc.cumulus.response.CustomFormResponse;
 import org.geysermc.cumulus.response.FormResponse;
 import org.geysermc.cumulus.response.SimpleFormResponse;
 import org.geysermc.geyser.GeyserImpl;
+import org.geysermc.geyser.api.network.AuthType;
+import org.geysermc.geyser.api.network.RemoteServer;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
-import org.geysermc.geyser.network.MinecraftProtocol;
+import org.geysermc.geyser.network.GameProtocol;
 import org.geysermc.geyser.registry.Registries;
 import org.geysermc.geyser.session.PendingMicrosoftAuthentication.*;
 import org.geysermc.geyser.session.auth.AuthData;
-import org.geysermc.geyser.session.auth.AuthType;
 import org.geysermc.geyser.session.auth.BedrockClientData;
 import org.geysermc.geyser.util.FileUtils;
 
@@ -96,20 +99,34 @@ public class PacketHandler implements BedrockPacketHandler {
         }
     }
 
-    @Override
-    public boolean handle(LoginPacket packet) {
-        masterServer.getLogger().debug("Login: " + packet.toString());
+    private boolean checkedProtocol = false;
 
-        BedrockPacketCodec packetCodec = MinecraftProtocol.getBedrockCodec(packet.getProtocolVersion());
+    @Override
+    public boolean handle(RequestNetworkSettingsPacket packet) {
+        if (checkProtocol(packet.getProtocolVersion())) {
+            PacketCompressionAlgorithm algorithm = PacketCompressionAlgorithm.ZLIB;
+
+            NetworkSettingsPacket responsePacket = new NetworkSettingsPacket();
+            responsePacket.setCompressionAlgorithm(algorithm);
+            responsePacket.setCompressionThreshold(512);
+            session.sendPacketImmediately(responsePacket);
+
+            session.setCompression(algorithm);
+        }
+        return true;
+    }
+
+    private boolean checkProtocol(int protocolVersion) {
+        BedrockPacketCodec packetCodec = GameProtocol.getBedrockCodec(protocolVersion);
         if (packetCodec == null) {
-            session.setPacketCodec(MinecraftProtocol.DEFAULT_BEDROCK_CODEC);
+            session.setPacketCodec(GameProtocol.DEFAULT_BEDROCK_CODEC);
 
             String message = "disconnectionScreen.internalError.cantConnect";
             PlayStatusPacket status = new PlayStatusPacket();
-            if (packet.getProtocolVersion() > MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
+            if (protocolVersion > GameProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_SERVER_OLD);
                 message = "disconnectionScreen.outdatedServer";
-            } else if (packet.getProtocolVersion() < MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
+            } else if (protocolVersion < GameProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion()) {
                 status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_CLIENT_OLD);
                 message = "disconnectionScreen.outdatedClient";
             }
@@ -121,6 +138,19 @@ public class PacketHandler implements BedrockPacketHandler {
 
         // Set the session codec
         session.setPacketCodec(packetCodec);
+        return true;
+    }
+
+    @Override
+    public boolean handle(LoginPacket packet) {
+        masterServer.getLogger().debug("Login: " + packet.toString());
+
+        if (!checkedProtocol) {
+            if (!checkProtocol(packet.getProtocolVersion())) {
+                return false;
+            }
+            checkedProtocol = true;
+        }
 
         // Read the raw chain data
         JsonNode rawChainData;
@@ -224,9 +254,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     int port = task.getPort();
                     player.setCurrentServer(new Server(address, port, true, false));
                     GeyserProxySession session = player.createGeyserSession(false);
-                    session.setRemoteAddress(address);
-                    session.setRemotePort(port);
-                    session.setRemoteAuthType(AuthType.ONLINE);
+                    session.remoteServer(player.getCurrentServer());
 
                     session.onMicrosoftLoginComplete(task);
                 } else {
@@ -239,7 +267,7 @@ public class PacketHandler implements BedrockPacketHandler {
                 stack.setForcedToAccept(false);
                 stack.setGameVersion("*");
 
-                if (Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()).getFurnaceMinecartData() != null) {
+                if (!Registries.ITEMS.forVersion(session.getPacketCodec().getProtocolVersion()).getComponentItemData().isEmpty()) {
                     // Allow custom items to work
                     stack.getExperiments().add(new ExperimentData("data_driven_items", true));
                 }

@@ -35,7 +35,7 @@ import org.geysermc.connect.storage.AbstractStorageManager;
 import org.geysermc.connect.storage.DisabledStorageManager;
 import org.geysermc.connect.utils.*;
 import org.geysermc.geyser.GeyserImpl;
-import org.geysermc.geyser.network.MinecraftProtocol;
+import org.geysermc.geyser.network.GameProtocol;
 import org.geysermc.geyser.util.FileUtils;
 
 import java.io.File;
@@ -154,8 +154,8 @@ public class MasterServer {
                 bdPong.setMaximumPlayerCount(geyserConnectConfig.getMaxPlayers());
                 bdPong.setGameType("Survival");
                 bdPong.setIpv4Port(port);
-                bdPong.setProtocolVersion(MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
-                bdPong.setVersion(MinecraftProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion());
+                bdPong.setProtocolVersion(GameProtocol.DEFAULT_BEDROCK_CODEC.getProtocolVersion());
+                bdPong.setVersion(GameProtocol.DEFAULT_BEDROCK_CODEC.getMinecraftVersion());
                 return bdPong;
             }
 
