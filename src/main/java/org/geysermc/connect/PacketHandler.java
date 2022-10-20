@@ -358,7 +358,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
         // Fetch the form and parse the response
         Form window = player.getCurrentWindow();
-        FormResponse response = window.parseResponse(packet.getFormData().trim());
+        FormResponse response = window.parseResponse(packet.getFormData() == null ? null : packet.getFormData().trim());
 
         // Resend the form if they closed it
         if (!response.isCorrect() && !id.isHandlesNull()) {

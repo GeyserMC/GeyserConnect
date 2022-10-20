@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 
 public class GeyserProxyBootstrap implements GeyserBootstrap {
 
-    private GeyserProxyCommandManager geyserCommandManager;
+    private GeyserCommandManager geyserCommandManager;
     private GeyserProxyConfiguration geyserConfig;
     private GeyserProxyLogger geyserLogger;
     private IGeyserPingPassthrough geyserPingPassthrough;
@@ -94,7 +94,7 @@ public class GeyserProxyBootstrap implements GeyserBootstrap {
         // Create the connector and command manager
         geyser = GeyserImpl.load(PlatformType.STANDALONE, this);
         GeyserImpl.start();
-        geyserCommandManager = new GeyserProxyCommandManager(geyser);
+        geyserCommandManager = new GeyserCommandManager(geyser);
 
         // Start the ping passthrough thread, again don't think there is a point
         geyserPingPassthrough = GeyserLegacyPingPassthrough.init(geyser);
