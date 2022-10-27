@@ -35,8 +35,6 @@ import org.geysermc.geyser.text.ChatColor;
 @Log4j2
 public class Logger extends SimpleTerminalConsole implements GeyserLogger {
 
-    private final boolean colored = true;
-
     @Override
     protected boolean isRunning() {
         return !MasterServer.getInstance().isShuttingDown();
@@ -53,35 +51,35 @@ public class Logger extends SimpleTerminalConsole implements GeyserLogger {
     }
 
     public void severe(String message) {
-        log.fatal(printConsole(ChatColor.DARK_RED + message, colored));
+        log.fatal(printConsole(ChatColor.DARK_RED + message));
     }
 
     public void severe(String message, Throwable error) {
-        log.fatal(printConsole(ChatColor.DARK_RED + message, colored), error);
+        log.fatal(printConsole(ChatColor.DARK_RED + message), error);
     }
 
     public void error(String message) {
-        log.error(printConsole(ChatColor.RED + message, colored));
+        log.error(printConsole(ChatColor.RED + message));
     }
 
     public void error(String message, Throwable error) {
-        log.error(printConsole(ChatColor.RED + message, colored), error);
+        log.error(printConsole(ChatColor.RED + message), error);
     }
 
     public void warning(String message) {
-        log.warn(printConsole(ChatColor.YELLOW + message, colored));
+        log.warn(printConsole(ChatColor.YELLOW + message));
     }
 
     public void info(String message) {
-        log.info(printConsole(ChatColor.WHITE + message, colored));
+        log.info(printConsole(ChatColor.WHITE + message));
     }
 
     public void debug(String message) {
-        log.debug(printConsole(ChatColor.GRAY + message, colored));
+        log.debug(printConsole(ChatColor.GRAY + message));
     }
 
-    public static String printConsole(String message, boolean colors) {
-        return colors ? ChatColor.toANSI(message + ChatColor.RESET) : ChatColor.stripColors(message + ChatColor.RESET);
+    public static String printConsole(String message) {
+        return ChatColor.toANSI(message + ChatColor.RESET);
     }
 
     public void setDebug(boolean debug) {
