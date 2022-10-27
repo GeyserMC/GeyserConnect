@@ -18,7 +18,17 @@ pipeline {
         stage ('Build') {
             steps {
                 sh 'git submodule update --init --recursive'
-                sh 'mvn clean package'
+                rtMavenResolver(
+                    id: "maven-resolver",
+                    serverId: "opencollab-artifactory",
+                    releaseRepo: "maven-deploy-release",
+                    snapshotRepo: "maven-deploy-snapshot"
+                )
+                rtMavenRun(
+                    pom: 'pom.xml',
+                    goals: 'clean package',
+                    resolverId: "maven-resolver"
+                )
             }
             post {
                 success {
