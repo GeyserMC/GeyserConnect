@@ -58,7 +58,7 @@
         </repository>
         <repository>
             <id>sonatype-s01</id>
-            <url>"https://s01.oss.sonatype.org/content/repositories/snapshots/"</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
