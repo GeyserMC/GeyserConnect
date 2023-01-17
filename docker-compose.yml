@@ -1,0 +1,22 @@
+version: "3.5"
+
+services:
+  geyser-connect:
+    image: geyser-connect
+    container_name: geyser-connect
+    restart: "unless-stopped"
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        JDK_IMG: eclipse-temurin
+        JDK_VER: 17-jdk-alpine
+        MAVEN_VER: 3.8.7-eclipse-temurin-17-alpine
+        COMPILE: "false"  # if false, fetch from repo
+        GC_VER: "latest"  # if COMPILE=false
+    ports:
+      - 19132/udp
+    stdin_open: true  # docker run -i
+    tty: true  # docker run -t
+    volumes:
+      - $(pwd)/data:/gsc
