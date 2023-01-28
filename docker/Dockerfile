@@ -9,7 +9,7 @@ ARG COMPILE=false  # if false, fetch from repo
 #ARG GC_VER="1.0-SNAPSHOT"
 #ARG GC_URL="https://repo.opencollab.dev/artifactory/maven-snapshots/org/geysermc/geyser-connect/$GC_VER/geyser-connect-${GC_VER}.jar"
 ARG GC_VER="latest"
-ARG GC_URL="https://ci.opencollab.dev//job/GeyserMC/job/GeyserConnect/job/master/lastSuccessfulBuild/artifact/target/GeyserConnect.jar"
+ARG GC_URL="https://ci.opencollab.dev/job/GeyserMC/job/GeyserConnect/job/master/lastSuccessfulBuild/artifact/target/GeyserConnect.jar"
 
 WORKDIR /target
 COPY . .
