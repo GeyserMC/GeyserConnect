@@ -11,58 +11,22 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(artifactNumToKeepStr: '5'))
+        buildDiscarder(logRotator(artifactNumToKeepStr: '20'))
     }
 
     stages {
         stage ('Build') {
             steps {
                 sh 'git submodule update --init --recursive'
-                rtMavenResolver(
-                    id: "maven-resolver",
-                    serverId: "opencollab-artifactory",
-                    releaseRepo: "maven-deploy-release",
-                    snapshotRepo: "maven-deploy-snapshot"
-                )
                 rtMavenRun(
                     pom: 'pom.xml',
-                    goals: 'clean package',
-                    resolverId: "maven-resolver"
+                    goals: 'clean package'
                 )
             }
             post {
                 success {
                     archiveArtifacts artifacts: 'target/*.jar', excludes: 'target/geyser-connect-*.jar', fingerprint: true
                 }
-            }
-        }
-
-        stage ('Deploy') {
-            when {
-                branch "master"
-            }
-            steps {
-                rtMavenDeployer(
-                    id: "maven-deployer",
-                    serverId: "opencollab-artifactory",
-                    releaseRepo: "maven-releases",
-                    snapshotRepo: "maven-snapshots"
-                )
-                rtMavenResolver(
-                    id: "maven-resolver",
-                    serverId: "opencollab-artifactory",
-                    releaseRepo: "maven-deploy-release",
-                    snapshotRepo: "maven-deploy-snapshot"
-                )
-                rtMavenRun(
-                    pom: 'pom.xml',
-                    goals: 'install -DskipTests',
-                    deployerId: "maven-deployer",
-                    resolverId: "maven-resolver"
-                )
-                rtPublishBuildInfo(
-                    serverId: "opencollab-artifactory"
-                )
             }
         }
     }
