@@ -79,7 +79,7 @@ public class PacketHandler extends UpstreamPacketHandler {
 
                 geyserConnect.logger().debug("Player initialized: " + Utils.displayName(session));
 
-                UIHandler uiHandler = new UIHandler(session, packet, originalPacketHandler);
+                UIHandler uiHandler = new UIHandler(session, originalPacketHandler);
                 uiHandler.initialiseSession();
             }
         }

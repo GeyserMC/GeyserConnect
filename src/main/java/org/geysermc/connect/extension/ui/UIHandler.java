@@ -21,13 +21,10 @@ import java.util.List;
 
 public class UIHandler {
     private final GeyserSession session;
-    private final SetLocalPlayerAsInitializedPacket initializedPacket;
     private final BedrockPacketHandler originalPacketHandler;
 
-    public UIHandler(GeyserSession session, SetLocalPlayerAsInitializedPacket packet, BedrockPacketHandler originalPacketHandler) {
+    public UIHandler(GeyserSession session, BedrockPacketHandler originalPacketHandler) {
         this.session = session;
-        this.initializedPacket = new SetLocalPlayerAsInitializedPacket();
-        this.initializedPacket.setRuntimeEntityId(packet.getRuntimeEntityId());
         this.originalPacketHandler = originalPacketHandler;
     }
 
@@ -53,6 +50,8 @@ public class UIHandler {
             session.getUpstream().setInitialized(false);
 
             // Hand back to core geyser
+            SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
+            initializedPacket.setRuntimeEntityId(session.getPlayerEntity().getGeyserId());
             originalPacketHandler.handle(initializedPacket);
         }
     }
