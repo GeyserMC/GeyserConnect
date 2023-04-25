@@ -1,12 +1,16 @@
 package org.geysermc.connect.extension;
 
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
+import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
 import org.geysermc.connect.extension.config.Config;
 import org.geysermc.connect.extension.config.ConfigLoader;
 import org.geysermc.connect.extension.storage.AbstractStorageManager;
 import org.geysermc.connect.extension.storage.DisabledStorageManager;
 import org.geysermc.event.subscribe.Subscribe;
+import org.geysermc.geyser.api.command.Command;
+import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.geysermc.geyser.api.event.bedrock.SessionInitializeEvent;
+import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
 import org.geysermc.geyser.api.extension.Extension;
 import org.geysermc.geyser.session.GeyserSession;
@@ -57,5 +61,28 @@ public class GeyserConnect implements Extension {
         GeyserSession session = (GeyserSession) event.connection();
         BedrockPacketHandler packetHandler = session.getUpstream().getSession().getPacketHandler();
         session.getUpstream().getSession().setPacketHandler(new PacketHandler(this, session, packetHandler));
+    }
+
+    @Subscribe
+    public void onCommandDefine(GeyserDefineCommandsEvent event) {
+        event.register(Command.builder(this)
+            .source(GeyserConnection.class)
+            .name("menu")
+            .description("Take you back to the GeyserConnect menu.")
+            .executor((source, command, args) -> {
+                GeyserSession session = (GeyserSession) source;
+                String serverAddress = session.getClientData().getServerAddress();
+                String ip = serverAddress.split(":")[0];
+                int port = 19132;
+                try {
+                    port = Integer.parseInt(serverAddress.split(":")[1]);
+                } catch (NumberFormatException ignored) { }
+
+                TransferPacket transferPacket = new TransferPacket();
+                transferPacket.setAddress(ip);
+                transferPacket.setPort(port);
+                session.sendUpstreamPacket(transferPacket);
+            })
+            .build());
     }
 }
