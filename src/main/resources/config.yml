@@ -2,38 +2,9 @@
 # GeyserConnect Configuration File
 # --------------------------------
 
-# The IP address that will listen for connections
-address: 0.0.0.0
-
-# The port that will listen for connections
-port: 19132
-
-# If debug messages should be sent through console
-debug-mode: false
-
-# Maximum amount of players that can connect
-max-players: 100
-
-# MOTD to display
-motd: "GeyserConnect Proxy"
-#Sub-MOTD to display. Will be "GeyserConnect" by default if left blank
-submotd: "GeyserConnect"
-
 # Welcome message file, if file exists and is not empty this will show on join
 # This is loaded live so will update without a server restart
 welcome-file: welcome.txt
-
-# Config for the Geyser listener
-geyser:
-  # If password authentication should be allowed in online mode.
-  allow-password-authentication: false
-
-  # If debug messages should be sent through console, has to be enabled in both places to work
-  debug-mode: false
-
-  saved-user-logins:
-    - ThisExampleUsernameShouldBeLongEnoughToNeverBeAnXboxUsername
-    - ThisOtherExampleUsernameShouldAlsoBeLongEnough
 
 # A global list of servers sent to all clients
 servers:
@@ -42,49 +13,49 @@ servers:
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://i.imgur.com/VQJW6XG.png'
+    imageUrl: 'https://i.imgur.com/myXmr7B.png'
 
   - name: CubeCraft
     address: 94.23.159.81
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://www.cubecraft.net/attachments/q3pmrsod_400x400-png.53219/'
+    imageUrl: 'https://i.imgur.com/f83ZeDS.jpg'
 
   - name: Galaxite
     address: 54.39.243.199
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://pbs.twimg.com/profile_images/1275867042583896066/UMPF5nTM_400x400.jpg'
+    imageUrl: 'https://i.imgur.com/PEkLROT.jpg'
 
   - name: Lifeboat Network
     address: 63.143.54.198
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://lbsg.net/wp-content/uploads/2017/06/lifeboat-square.png'
+    imageUrl: 'https://i.imgur.com/GjsxhCI.png'
 
   - name: Mineplex
     address: 108.178.12.38
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://www.mineplex.com/assets/www-mp/img/footer/footer_smalllogo.png'
+    imageUrl: 'https://i.imgur.com/xB6yncS.png'
 
   - name: MineVille
     address: 52.234.130.255
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://pbs.twimg.com/profile_images/1332400307050045441/MHQvGEUP_400x400.jpg'
+    imageUrl: 'https://i.imgur.com/yqrfMhP.jpg'
 
   - name: Pixel Paradise
     address: 40.87.84.59
     port: 19132
     bedrock: true
     category: OFFICIAL
-    imageUrl: 'https://xforgeassets001.xboxlive.com/pf-title-b63a0803d3653643-20ca2/fa7681c4-673d-40e4-9b6a-61d5d0f93d14/PixelParadise.jpg'
+    imageUrl: 'https://i.imgur.com/fXQdou8.jpg'
 
   - name: Official Geyser Test Server
     address: test.geysermc.org

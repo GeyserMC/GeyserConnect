@@ -1,7 +1,7 @@
 name: Build Pull Request
 
 on: 
-  pull_request:
+  push:
     paths-ignore:
       - '.idea/copyright/*.xml' 
       - '.gitignore'

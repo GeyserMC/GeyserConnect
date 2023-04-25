@@ -1,0 +1,59 @@
+plugins {
+    id 'java-library'
+    id 'java'
+}
+
+group 'org.geysermc.connect.extension'
+version '1.0.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url 'https://repo.opencollab.dev/main'
+    }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+    maven {
+        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    compileOnly 'org.geysermc.geyser:api:2.1.0-SNAPSHOT'
+    compileOnly('org.geysermc.geyser:core:2.1.0-SNAPSHOT') {
+        exclude group: 'io.netty'
+    }
+
+    implementation 'org.xerial:sqlite-jdbc:3.41.2.1'
+    implementation 'com.mysql:mysql-connector-j:8.0.33'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    archiveFileName = "${project.name}.jar"
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
