@@ -34,7 +34,6 @@ import org.cloudburstmc.protocol.common.PacketSignal;
 import org.geysermc.connect.extension.ui.UIHandler;
 import org.geysermc.connect.extension.utils.ServerManager;
 import org.geysermc.connect.extension.utils.Utils;
-import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
 import org.geysermc.geyser.session.GeyserSession;
@@ -51,7 +50,7 @@ public class PacketHandler extends UpstreamPacketHandler {
     private final BedrockPacketHandler originalPacketHandler;
 
     public PacketHandler(GeyserConnect geyserConnect, GeyserSession session, BedrockPacketHandler packetHandler) {
-        super(GeyserImpl.getInstance(), session);
+        super(session.getGeyser(), session);
 
         this.session = session;
         this.geyserConnect = geyserConnect;
@@ -134,7 +133,7 @@ public class PacketHandler extends UpstreamPacketHandler {
         updateAttributesPacket.setAttributes(attributes);
 
         // Doesn't work 100% of the time but fixes it most of the time
-        GeyserImpl.getInstance().getScheduledThread().schedule(() -> session.sendUpstreamPacket(updateAttributesPacket), 500, TimeUnit.MILLISECONDS);
+        session.getGeyser().getScheduledThread().schedule(() -> session.sendUpstreamPacket(updateAttributesPacket), 500, TimeUnit.MILLISECONDS);
 
         return super.handle(packet);
     }
