@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2022 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@
 package org.geysermc.connect.extension.storage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geysermc.connect.extension.GeyserConnect;
 import org.geysermc.connect.extension.utils.Server;
 import org.geysermc.connect.extension.utils.ServerManager;
@@ -58,7 +57,8 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
                 ResultSet rs = getPlayersServers.executeQuery();
 
                 while (rs.next()) {
-                    List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(rs.getString("servers"), new TypeReference<>() {});
+                    List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(rs.getString("servers"), new TypeReference<>() {
+                    });
                     GeyserConnect.instance().logger().info("Loaded " + loadedServers.size() + " servers for " + rs.getString("xuid"));
                 }
             } catch (IOException | SQLException exception) {
@@ -101,7 +101,8 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
             ResultSet rs = getPlayersServers.executeQuery();
 
             while (rs.next()) {
-                List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(rs.getString("servers"), new TypeReference<>() {});
+                List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(rs.getString("servers"), new TypeReference<>() {
+                });
                 if (loadedServers != null) {
                     servers.addAll(loadedServers);
                 }

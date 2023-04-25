@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,6 @@ import org.geysermc.geyser.session.GeyserSession;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +52,8 @@ public class JsonStorageManager extends AbstractStorageManager {
     public void saveServers(GeyserSession session) {
         try {
             Utils.OBJECT_MAPPER.writeValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), ServerManager.getServers(session));
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {
+        }
     }
 
     @Override
@@ -61,11 +61,13 @@ public class JsonStorageManager extends AbstractStorageManager {
         List<Server> servers = new ArrayList<>();
 
         try {
-            List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), new TypeReference<>(){});
+            List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), new TypeReference<>() {
+            });
             if (loadedServers != null) {
                 servers.addAll(loadedServers);
             }
-        } catch (IOException ignored) { }
+        } catch (IOException ignored) {
+        }
 
         return servers;
     }

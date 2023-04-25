@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,18 +28,20 @@ package org.geysermc.connect.extension.storage;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.geysermc.connect.extension.utils.Server;
 import org.geysermc.geyser.session.GeyserSession;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AbstractStorageManager {
 
-    public void setupStorage() { }
+    public void setupStorage() {
+    }
 
-    public void closeStorage() { }
+    public void closeStorage() {
+    }
 
-    public void saveServers(GeyserSession session) { }
+    public void saveServers(GeyserSession session) {
+    }
 
     public List<Server> loadServers(GeyserSession session) {
         return new ArrayList<>();
