@@ -59,6 +59,12 @@ public class GeyserConnect implements Extension {
     @Subscribe
     public void onSessionInitialize(SessionInitializeEvent event) {
         GeyserSession session = (GeyserSession) event.connection();
+
+        // Remove all saved logins to prevent issues connecting
+        // Maybe worth adding support for this later
+        session.getGeyser().getConfig().getSavedUserLogins().clear();
+
+        // Change the packet handler to our own
         BedrockPacketHandler packetHandler = session.getUpstream().getSession().getPacketHandler();
         session.getUpstream().getSession().setPacketHandler(new PacketHandler(this, session, packetHandler));
     }
