@@ -63,8 +63,10 @@ public class PacketHandler extends UpstreamPacketHandler {
 
     @Override
     public void onDisconnect(String reason) {
-        geyserConnect.logger().info(Utils.displayName(session) + " has disconnected (" + reason + ")");
-        ServerManager.unloadServers(session);
+        if (session.getAuthData() != null) {
+            geyserConnect.logger().info(Utils.displayName(session) + " has disconnected (" + reason + ")");
+            ServerManager.unloadServers(session);
+        }
     }
 
     @Override

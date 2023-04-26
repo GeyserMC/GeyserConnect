@@ -95,7 +95,6 @@ public class UIHandler {
                 .label(message)
                 .resultHandler((customForm, customFormResponseFormResponseResult) -> {
                     sendMainMenu();
-//                    this.sendToServer(new Server("test.geysermc.org", 25565));
                 })
                 .build());
         } else {
