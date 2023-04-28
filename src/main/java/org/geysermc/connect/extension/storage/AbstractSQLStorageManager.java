@@ -52,18 +52,6 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
             try (Statement createPlayersTable = connection.createStatement()) {
                 createPlayersTable.executeUpdate("CREATE TABLE IF NOT EXISTS players (xuid VARCHAR(32), servers TEXT, PRIMARY KEY(xuid));");
             }
-
-            try (PreparedStatement getPlayersServers = connection.prepareStatement("SELECT xuid, servers FROM players")) {
-                ResultSet rs = getPlayersServers.executeQuery();
-
-                while (rs.next()) {
-                    List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(rs.getString("servers"), new TypeReference<>() {
-                    });
-                    GeyserConnect.instance().logger().info("Loaded " + loadedServers.size() + " servers for " + rs.getString("xuid"));
-                }
-            } catch (IOException | SQLException exception) {
-                GeyserConnect.instance().logger().error("Couldn't load servers", exception);
-            }
         } catch (ClassNotFoundException | SQLException e) {
             GeyserConnect.instance().logger().severe("Unable to connect to MySQL database!", e);
         }

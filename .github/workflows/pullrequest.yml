@@ -33,5 +33,5 @@ jobs:
         uses: actions/upload-artifact@v1
         if: success()
         with:
-          name: Build
+          name: GeyserConnect
           path: build/libs/GeyserConnect.jar
