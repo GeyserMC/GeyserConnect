@@ -27,6 +27,7 @@ package org.geysermc.connect.extension;
 
 import org.cloudburstmc.protocol.bedrock.data.AttributeData;
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
+import org.cloudburstmc.protocol.bedrock.packet.LoginPacket;
 import org.cloudburstmc.protocol.bedrock.packet.NetworkStackLatencyPacket;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.UpdateAttributesPacket;
@@ -72,16 +73,21 @@ public class PacketHandler extends UpstreamPacketHandler {
     }
 
     @Override
-    public PacketSignal handle(SetLocalPlayerAsInitializedPacket packet) {
-        geyserConnect.logger().debug("Player initialized: " + Utils.displayName(session));
-
+    public PacketSignal handle(LoginPacket loginPacket) {
         // Check to see if the server is full and we have a hard player cap
         if (geyserConnect.config().hardPlayerLimit()) {
-            if (session.getGeyser().getSessionManager().size() > session.getGeyser().getConfig().getMaxPlayers()) {
+            if (session.getGeyser().getSessionManager().size() >= session.getGeyser().getConfig().getMaxPlayers()) {
                 session.disconnect("disconnectionScreen.serverFull");
                 return PacketSignal.HANDLED;
             }
         }
+
+        return super.handle(loginPacket);
+    }
+
+    @Override
+    public PacketSignal handle(SetLocalPlayerAsInitializedPacket packet) {
+        geyserConnect.logger().debug("Player initialized: " + Utils.displayName(session));
 
         // Handle the virtual host if specified
         VirtualHostSection vhost = geyserConnect.config().vhost();
