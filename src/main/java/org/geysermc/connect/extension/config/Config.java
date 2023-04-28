@@ -32,6 +32,7 @@ import java.util.List;
 
 public record Config(
     @JsonProperty("welcome-file") String welcomeFile,
+    @JsonProperty("hard-player-limit") boolean hardPlayerLimit,
     List<Server> servers,
     @JsonProperty("custom-servers") CustomServersSection customServers,
     VirtualHostSection vhost) {

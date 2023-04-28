@@ -6,6 +6,10 @@
 # This is loaded live so will update without a server restart
 welcome-file: welcome.txt
 
+# Enabled hard max player limit
+# This will kick players if the server is full
+hard-player-limit: false
+
 # A global list of servers sent to all clients
 servers:
   - name: The Hive

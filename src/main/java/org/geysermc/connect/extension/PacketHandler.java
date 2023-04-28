@@ -75,8 +75,16 @@ public class PacketHandler extends UpstreamPacketHandler {
     public PacketSignal handle(SetLocalPlayerAsInitializedPacket packet) {
         geyserConnect.logger().debug("Player initialized: " + Utils.displayName(session));
 
+        // Check to see if the server is full and we have a hard player cap
+        if (geyserConnect.config().hardPlayerLimit()) {
+            if (session.getGeyser().getSessionManager().size() > session.getGeyser().getConfig().getMaxPlayers()) {
+                session.disconnect("disconnectionScreen.serverFull");
+                return PacketSignal.HANDLED;
+            }
+        }
+
         // Handle the virtual host if specified
-        VirtualHostSection vhost = GeyserConnect.instance().config().vhost();
+        VirtualHostSection vhost = geyserConnect.config().vhost();
         if (vhost.enabled()) {
             String domain = session.getClientData().getServerAddress().split(":")[0];
             if (!domain.equals(vhost.baseDomain()) && domain.endsWith("." + vhost.baseDomain())) {
@@ -104,7 +112,7 @@ public class PacketHandler extends UpstreamPacketHandler {
                 }
 
                 // Log the virtual host usage
-                GeyserConnect.instance().logger().info(Utils.displayName(session) + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
+                geyserConnect.logger().info(Utils.displayName(session) + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
 
                 // Send the player to the wanted server
                 Utils.sendToServer(session, originalPacketHandler, new Server(address, port, online, false, null, null, null));
