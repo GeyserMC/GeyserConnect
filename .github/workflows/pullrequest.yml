@@ -24,7 +24,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Build Geyser
+      - name: Build GeyserConnect
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
