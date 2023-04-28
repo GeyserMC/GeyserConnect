@@ -53,34 +53,6 @@ public class UIHandler {
         this.originalPacketHandler = originalPacketHandler;
     }
 
-    private void sendToServer(Server server) {
-        GeyserConnect.instance().logger().info("Sending " + Utils.displayName(session) + " to " + server.title());
-        GeyserConnect.instance().logger().debug(server.toString());
-
-        if (server.bedrock()) {
-            // Send them to the bedrock server
-            TransferPacket transferPacket = new TransferPacket();
-            transferPacket.setAddress(server.address());
-            transferPacket.setPort(server.port());
-            session.sendUpstreamPacket(transferPacket);
-        } else {
-            // Save the players servers since we are changing packet handlers
-            ServerManager.unloadServers(session);
-
-            // Restore the original packet handler
-            session.getUpstream().getSession().setPacketHandler(originalPacketHandler);
-
-            // Set the remote server and un-initialize the session
-            session.remoteServer(server);
-            session.getUpstream().setInitialized(false);
-
-            // Hand back to core geyser
-            SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
-            initializedPacket.setRuntimeEntityId(session.getPlayerEntity().getGeyserId());
-            originalPacketHandler.handle(initializedPacket);
-        }
-    }
-
     public void initialiseSession() {
         String message = "";
         try {
@@ -189,7 +161,7 @@ public class UIHandler {
                 }
 
                 Server server = servers.get(response.clickedButtonId());
-                sendToServer(server);
+                Utils.sendToServer(session, originalPacketHandler, server);
             });
 
         session.sendForm(serversMenu);
@@ -332,7 +304,7 @@ public class UIHandler {
                 boolean geyserServer = response.asToggle(3);
 
                 Server server = new Server(ip, port, onlineMode, geyserServer, null, null, ServerCategory.CUSTOM);
-                sendToServer(server);
+                Utils.sendToServer(session, originalPacketHandler, server);
             }));
     }
 }

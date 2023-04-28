@@ -1,6 +1,7 @@
 name: Build Pull Request
 
-on: 
+on:
+  workflow_dispatch:
   pull_request:
     paths-ignore:
       - '.idea/copyright/*.xml' 

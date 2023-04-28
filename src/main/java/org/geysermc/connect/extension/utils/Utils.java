@@ -27,6 +27,9 @@ package org.geysermc.connect.extension.utils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
+import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
+import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
 import org.geysermc.connect.extension.GeyserConnect;
 import org.geysermc.geyser.session.GeyserSession;
 
@@ -73,5 +76,33 @@ public class Utils {
 
     public static String displayName(GeyserSession session) {
         return session.bedrockUsername() + " (" + session.xuid() + ")";
+    }
+
+    public static void sendToServer(GeyserSession session, BedrockPacketHandler originalPacketHandler, Server server) {
+        GeyserConnect.instance().logger().info("Sending " + Utils.displayName(session) + " to " + server.title());
+        GeyserConnect.instance().logger().debug(server.toString());
+
+        if (server.bedrock()) {
+            // Send them to the bedrock server
+            TransferPacket transferPacket = new TransferPacket();
+            transferPacket.setAddress(server.address());
+            transferPacket.setPort(server.port());
+            session.sendUpstreamPacket(transferPacket);
+        } else {
+            // Save the players servers since we are changing packet handlers
+            ServerManager.unloadServers(session);
+
+            // Restore the original packet handler
+            session.getUpstream().getSession().setPacketHandler(originalPacketHandler);
+
+            // Set the remote server and un-initialize the session
+            session.remoteServer(server);
+            session.getUpstream().setInitialized(false);
+
+            // Hand back to core geyser
+            SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
+            initializedPacket.setRuntimeEntityId(session.getPlayerEntity().getGeyserId());
+            originalPacketHandler.handle(initializedPacket);
+        }
     }
 }

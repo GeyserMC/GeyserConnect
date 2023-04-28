@@ -31,7 +31,9 @@ import org.cloudburstmc.protocol.bedrock.packet.NetworkStackLatencyPacket;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.UpdateAttributesPacket;
 import org.cloudburstmc.protocol.common.PacketSignal;
+import org.geysermc.connect.extension.config.VirtualHostSection;
 import org.geysermc.connect.extension.ui.UIHandler;
+import org.geysermc.connect.extension.utils.Server;
 import org.geysermc.connect.extension.utils.ServerManager;
 import org.geysermc.connect.extension.utils.Utils;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
@@ -71,6 +73,47 @@ public class PacketHandler extends UpstreamPacketHandler {
 
     @Override
     public PacketSignal handle(SetLocalPlayerAsInitializedPacket packet) {
+        geyserConnect.logger().debug("Player initialized: " + Utils.displayName(session));
+
+        // Handle the virtual host if specified
+        VirtualHostSection vhost = GeyserConnect.instance().config().vhost();
+        if (vhost.enabled()) {
+            String domain = session.getClientData().getServerAddress().split(":")[0];
+            if (!domain.equals(vhost.baseDomain()) && domain.endsWith("." + vhost.baseDomain())) {
+                String address = "";
+                int port = 25565;
+                boolean online = true;
+
+                // Parse the address used
+                String[] domainParts = domain.replaceFirst("\\." + vhost.baseDomain() + "$", "").split("\\._");
+                for (int i = 0; i < domainParts.length; i++) {
+                    String part = domainParts[i];
+                    if (i == 0) {
+                        address = part;
+                    } else if (part.startsWith("p")) {
+                        port = Integer.parseInt(part.substring(1));
+                    } else if (part.startsWith("o")) {
+                        online = false;
+                    }
+                }
+
+                // They didn't specify an address so disconnect them
+                if (address.startsWith("_")) {
+                    session.disconnect("disconnectionScreen.invalidIP");
+                    return PacketSignal.HANDLED;
+                }
+
+                // Log the virtual host usage
+                GeyserConnect.instance().logger().info(Utils.displayName(session) + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
+
+                // Send the player to the wanted server
+                Utils.sendToServer(session, originalPacketHandler, new Server(address, port, online, false, null, null, null));
+
+                return PacketSignal.HANDLED;
+            }
+        }
+
+        // Handle normal connections
         if (session.getPlayerEntity().getGeyserId() == packet.getRuntimeEntityId()) {
             if (!session.getUpstream().isInitialized()) {
                 session.getUpstream().setInitialized(true);
@@ -78,50 +121,10 @@ public class PacketHandler extends UpstreamPacketHandler {
                 // Load the players servers
                 ServerManager.loadServers(session);
 
-                geyserConnect.logger().debug("Player initialized: " + Utils.displayName(session));
-
                 UIHandler uiHandler = new UIHandler(session, originalPacketHandler);
                 uiHandler.initialiseSession();
             }
         }
-
-        // Handle the virtual host if specified
-//        GeyserConnectConfig.VirtualHostSection vhost = MasterServer.getInstance().getGeyserConnectConfig().getVhost();
-//        if (vhost.isEnabled()) {
-//            String domain = player.getClientData().getServerAddress().split(":")[0];
-//            if (!domain.equals(vhost.getBaseDomain()) && domain.endsWith("." + vhost.getBaseDomain())) {
-//                String address = "";
-//                int port = 25565;
-//                boolean online = true;
-//
-//                // Parse the address used
-//                String[] domainParts = domain.replaceFirst("\\." + vhost.getBaseDomain() + "$", "").split("\\._");
-//                for (int i = 0; i < domainParts.length; i++) {
-//                    String part = domainParts[i];
-//                    if (i == 0) {
-//                        address = part;
-//                    } else if (part.startsWith("p")) {
-//                        port = Integer.parseInt(part.substring(1));
-//                    } else if (part.startsWith("o")) {
-//                        online = false;
-//                    }
-//                }
-//
-//                // They didn't specify an address so disconnect them
-//                if (address.startsWith("_")) {
-//                    session.disconnect("disconnectionScreen.invalidIP");
-//                    return false;
-//                }
-//
-//                // Log the virtual host usage
-//                masterServer.getLogger().info(player.getAuthData().name() + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
-//
-//                // Send the player to the wanted server
-//                player.sendToServer(new Server(address, port, online, false));
-//
-//                return false;
-//            }
-//        }
 
         return PacketSignal.HANDLED;
     }

@@ -41,6 +41,7 @@ public class ServerManager {
     }
 
     public static void unloadServers(GeyserSession session) {
+        if (getServers(session) == null) return;
         GeyserConnect.instance().logger().debug("Saving and unloading servers for " + Utils.displayName(session));
         GeyserConnect.instance().storageManager().saveServers(session);
         servers.remove(session.xuid());

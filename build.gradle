@@ -7,7 +7,7 @@ group 'org.geysermc.connect.extension'
 version '1.0.0'
 
 repositories {
-    mavenLocal()
+//    mavenLocal()
     mavenCentral()
     maven {
         url 'https://repo.opencollab.dev/main'
