@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @author GeyserMC
+ * @link https://github.com/GeyserMC/GeyserConnect
+ */
+
+package org.geysermc.connect.extension.storage;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.geysermc.connect.extension.GeyserConnect;
+import org.geysermc.connect.extension.utils.Server;
+import org.geysermc.connect.extension.utils.ServerManager;
+import org.geysermc.connect.extension.utils.Utils;
+import org.geysermc.geyser.session.GeyserSession;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+public class JsonStorageManager extends AbstractStorageManager {
+    private Path dataFolder;
+
+    @Override
+    public void setupStorage() {
+        dataFolder = GeyserConnect.instance().dataFolder().resolve("players/");
+        if (!dataFolder.toFile().exists()) {
+            dataFolder.toFile().mkdirs();
+        }
+    }
+
+    @Override
+    public void saveServers(GeyserSession session) {
+        try {
+            Utils.OBJECT_MAPPER.writeValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), ServerManager.getServers(session));
+        } catch (IOException ignored) {
+        }
+    }
+
+    @Override
+    public List<Server> loadServers(GeyserSession session) {
+        List<Server> servers = new ArrayList<>();
+
+        try {
+            List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), new TypeReference<>() {
+            });
+            if (loadedServers != null) {
+                servers.addAll(loadedServers);
+            }
+        } catch (IOException ignored) {
+        }
+
+        return servers;
+    }
+}
