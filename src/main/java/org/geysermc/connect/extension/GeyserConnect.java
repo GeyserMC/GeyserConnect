@@ -31,14 +31,24 @@ import org.geysermc.connect.extension.config.Config;
 import org.geysermc.connect.extension.config.ConfigLoader;
 import org.geysermc.connect.extension.storage.AbstractStorageManager;
 import org.geysermc.connect.extension.storage.DisabledStorageManager;
+import org.geysermc.connect.extension.utils.Utils;
+import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.event.subscribe.Subscribe;
+import org.geysermc.geyser.GeyserImpl;
 import org.geysermc.geyser.api.command.Command;
+import org.geysermc.geyser.api.command.CommandSource;
 import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.geysermc.geyser.api.event.bedrock.SessionInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
 import org.geysermc.geyser.api.extension.Extension;
+import org.geysermc.geyser.api.network.AuthType;
 import org.geysermc.geyser.session.GeyserSession;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GeyserConnect implements Extension {
     private static GeyserConnect instance;
@@ -114,6 +124,95 @@ public class GeyserConnect implements Extension {
                 transferPacket.setAddress(ip);
                 transferPacket.setPort(port);
                 session.sendUpstreamPacket(transferPacket);
+            })
+            .build());
+
+        event.register(Command.builder(this)
+            .source(CommandSource.class)
+            .name("messageall")
+            .description("Send a message to everyone connected to this GeyserConnect server.")
+            .executor((source, command, args) -> {
+                if (!source.isConsole()) {
+                    source.sendMessage("This command can only be ran from the console.");
+                    return;
+                }
+
+                String type = args[0].toLowerCase();
+                String message = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
+
+                if (message.isEmpty()) {
+                    source.sendMessage("You must specify a message.");
+                    return;
+                }
+
+                Collection<GeyserSession> sessions = GeyserImpl.getInstance().getSessionManager().getSessions().values();
+
+                switch (type) {
+                    case "chat":
+                        for (GeyserSession session : sessions) {
+                            session.sendMessage(message);
+                        }
+                        break;
+                    case "gui":
+                        for (GeyserSession session : sessions) {
+                            session.sendForm(CustomForm.builder()
+                                .title("Notice")
+                                .label(message)
+                                .build());
+                        }
+                        break;
+                    default:
+                        source.sendMessage("Invalid message type. Valid types: chat, gui");
+                        return;
+                }
+            })
+            .build());
+
+
+        event.register(Command.builder(this)
+            .source(CommandSource.class)
+            .name("transferall")
+            .description("Transfer everyone connected to this GeyserConnect server to another.")
+            .executor((source, command, args) -> {
+                if (!source.isConsole()) {
+                    source.sendMessage("This command can only be ran from the console.");
+                    return;
+                }
+
+                String ip = args[0].toLowerCase();
+                int port = 19132;
+                boolean passAsVhost = args.length > 1 && Boolean.parseBoolean(args[1]);
+
+                // Split the ip and port if needed
+                String[] parts = ip.split(":");
+                ip = parts[0];
+                if (parts.length > 1) {
+                    try {
+                        port = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+
+                for (GeyserSession session : GeyserImpl.getInstance().getSessionManager().getSessions().values()) {
+                    String sessionIp = ip;
+
+                    // If we are passing with a vhost construct the vhost
+                    if (passAsVhost) {
+                        sessionIp = session.remoteServer().address();
+                        sessionIp += "._p" + session.remoteServer().port();
+                        if (session.remoteServer().authType() == AuthType.OFFLINE) {
+                            sessionIp += "._o";
+                        }
+                        sessionIp += "." + ip;
+                    }
+
+                    GeyserConnect.instance().logger().info("Sending " + Utils.displayName(session) + " to " + sessionIp + (port != 19132 ? ":" + port : ""));
+
+                    TransferPacket transferPacket = new TransferPacket();
+                    transferPacket.setAddress(sessionIp);
+                    transferPacket.setPort(port);
+                    session.sendUpstreamPacket(transferPacket);
+                }
             })
             .build());
     }

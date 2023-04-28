@@ -13,3 +13,12 @@ GeyserConnect is an easy way for Bedrock Edition clients to connect to any Java 
 GeyserConnect is an extension for Geyser that allows for a list of Minecraft: Java Edition servers to be displayed and accessed through 1 public Geyser instance. It is effectively give the customisability of [BedrockConnect](https://github.com/Pugmatt/BedrockConnect) to [Geyser](https://github.com/GeyserMC/Geyser).
 
 If you wish to use DNS redirection please see the [bind9](bind9) folder in this repository.
+
+## Commands
+All commands are prefixed ingame with `/geyserconnect` or in console with `geyserconnect`
+
+| Command                            | Description                                  | Example                                                | Console only       |
+|------------------------------------|----------------------------------------------|--------------------------------------------------------|--------------------|
+| `menu`                             | Reconnect and get back to the menu.          | `/geyserconnect menu`                                  | :x:                |
+| `messageall (chat\|gui) <message>` | Send a message to all online users.          | `/geyserconnect messageall gui This is a test message` | :heavy_check_mark: |
+| `transferall <ip> [passAsVhost]`   | Transfer all online users to another server. | `/geyserconnect transferall gc.example.com true`       | :heavy_check_mark: |
