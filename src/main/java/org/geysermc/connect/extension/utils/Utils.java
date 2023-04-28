@@ -99,6 +99,12 @@ public class Utils {
             session.remoteServer(server);
             session.getUpstream().setInitialized(false);
 
+            // If we are offline then authenticate
+            // Online mode is handled by geyser code
+            if (!server.online()) {
+                session.authenticate(session.getAuthData().name());
+            }
+
             // Hand back to core geyser
             SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
             initializedPacket.setRuntimeEntityId(session.getPlayerEntity().getGeyserId());
