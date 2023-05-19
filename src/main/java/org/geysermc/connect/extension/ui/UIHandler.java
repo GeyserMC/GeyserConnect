@@ -26,8 +26,6 @@
 package org.geysermc.connect.extension.ui;
 
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
-import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
-import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
 import org.geysermc.connect.extension.GeyserConnect;
 import org.geysermc.connect.extension.utils.Server;
 import org.geysermc.connect.extension.utils.ServerCategory;
