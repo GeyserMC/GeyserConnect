@@ -41,13 +41,14 @@ import org.geysermc.geyser.api.connection.GeyserConnection;
 import org.geysermc.geyser.api.event.bedrock.SessionInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
+import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
 import org.geysermc.geyser.api.extension.Extension;
 import org.geysermc.geyser.api.network.AuthType;
+import org.geysermc.geyser.api.util.PlatformType;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class GeyserConnect implements Extension {
@@ -72,6 +73,14 @@ public class GeyserConnect implements Extension {
     }
 
     @Subscribe
+    public void onPreInitialize(GeyserPreInitializeEvent event) {
+        if (this.geyserApi().platformType() != PlatformType.STANDALONE) {
+            this.logger().severe("GeyserConnect is only supported on standalone Geyser instances!");
+            this.disable();
+        }
+    }
+
+    @Subscribe
     public void onPostInitialize(GeyserPostInitializeEvent event) {
         config = ConfigLoader.load(this, GeyserConnect.class, Config.class);
 
@@ -89,15 +98,21 @@ public class GeyserConnect implements Extension {
         }
 
         storageManager.setupStorage();
+
+        GeyserImpl geyserInstance = (GeyserImpl) this.geyserApi();
+
+        // Remove all saved logins to prevent issues connecting
+        // Maybe worth adding support for this later
+        geyserInstance.getConfig().getSavedUserLogins().clear();
+
+        if (geyserInstance.getConfig().isPassthroughMotd() || geyserInstance.getConfig().isPassthroughPlayerCounts()) {
+            this.logger().warning("Either `passthrough-motd` or `passthrough-player-counts` is enabled in the config, this will likely produce errors");
+        }
     }
 
     @Subscribe
     public void onSessionInitialize(SessionInitializeEvent event) {
         GeyserSession session = (GeyserSession) event.connection();
-
-        // Remove all saved logins to prevent issues connecting
-        // Maybe worth adding support for this later
-        session.getGeyser().getConfig().getSavedUserLogins().clear();
 
         // Change the packet handler to our own
         BedrockPacketHandler packetHandler = session.getUpstream().getSession().getPacketHandler();

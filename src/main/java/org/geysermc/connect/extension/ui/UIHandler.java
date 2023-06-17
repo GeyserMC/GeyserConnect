@@ -35,7 +35,6 @@ import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.ModalForm;
 import org.geysermc.cumulus.form.SimpleForm;
 import org.geysermc.geyser.session.GeyserSession;
-import org.geysermc.geyser.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +54,7 @@ public class UIHandler {
         String message = "";
         try {
             File messageFile = Utils.fileOrCopiedFromResource(GeyserConnect.instance().config().welcomeFile(), "welcome.txt");
-            message = new String(FileUtils.readAllBytes(messageFile), StandardCharsets.UTF_8);
+            message = new String(Utils.readAllBytes(messageFile), StandardCharsets.UTF_8);
         } catch (IOException ignored) {
         }
 

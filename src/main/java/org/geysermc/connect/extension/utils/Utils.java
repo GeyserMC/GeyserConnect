@@ -34,6 +34,7 @@ import org.geysermc.connect.extension.GeyserConnect;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,6 +110,20 @@ public class Utils {
             SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
             initializedPacket.setRuntimeEntityId(session.getPlayerEntity().getGeyserId());
             originalPacketHandler.handle(initializedPacket);
+        }
+    }
+
+    /**
+     * Read all bytes from a file
+     *
+     * @param file File to read bytes of
+     * @return The byte array of the file
+     */
+    public static byte[] readAllBytes(File file) {
+        try (InputStream stream = new FileInputStream(file)) {
+            return stream.readAllBytes();
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read " + file);
         }
     }
 }
