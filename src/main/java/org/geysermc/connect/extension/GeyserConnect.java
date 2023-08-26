@@ -48,6 +48,7 @@ import org.geysermc.geyser.api.util.PlatformType;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GeyserConnect implements Extension {
@@ -159,7 +160,7 @@ public class GeyserConnect implements Extension {
                     return;
                 }
 
-                GeyserSession[] sessions = getGeyserSessions();
+                List<GeyserSession> sessions = getGeyserSessions();
 
                 switch (type) {
                     case "chat":
@@ -231,7 +232,7 @@ public class GeyserConnect implements Extension {
             .build());
     }
 
-    private GeyserSession[] getGeyserSessions() {
-        return this.geyserApi().onlineConnections().stream().map(connection -> (GeyserSession) connection).toList()
+    private List<GeyserSession> getGeyserSessions() {
+        return this.geyserApi().onlineConnections().stream().map(connection -> (GeyserSession) connection).toList();
     }
 }
