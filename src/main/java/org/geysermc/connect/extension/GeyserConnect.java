@@ -48,7 +48,6 @@ import org.geysermc.geyser.api.util.PlatformType;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class GeyserConnect implements Extension {
@@ -160,7 +159,7 @@ public class GeyserConnect implements Extension {
                     return;
                 }
 
-                Collection<GeyserSession> sessions = GeyserImpl.getInstance().getSessionManager().getSessions().values();
+                GeyserSession[] sessions = getGeyserSessions();
 
                 switch (type) {
                     case "chat":
@@ -208,7 +207,7 @@ public class GeyserConnect implements Extension {
                     }
                 }
 
-                for (GeyserSession session : GeyserImpl.getInstance().getSessionManager().getSessions().values()) {
+                for (GeyserSession session : getGeyserSessions()) {
                     String sessionIp = ip;
 
                     // If we are passing with a vhost construct the vhost
@@ -230,5 +229,9 @@ public class GeyserConnect implements Extension {
                 }
             })
             .build());
+    }
+
+    private GeyserSession[] getGeyserSessions() {
+        return this.geyserApi().onlineConnections().stream().map(connection -> (GeyserSession) connection).toList()
     }
 }

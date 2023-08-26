@@ -54,6 +54,11 @@ public record Server(
         return this.online ? AuthType.ONLINE : AuthType.OFFLINE;
     }
 
+    @Override
+    public boolean resolveSrv() {
+        return true;
+    }
+
     @JsonIgnore
     public FormImage formImage() {
         if (imageUrl != null && !imageUrl.isEmpty()) {
