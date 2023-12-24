@@ -27,7 +27,9 @@ package org.geysermc.connect.extension.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public record VirtualHostSection(
     boolean enabled,
-    @JsonProperty("base-domain") String baseDomain) {
+    @JsonProperty("domains") List<String> domains) {
 }

@@ -96,5 +96,8 @@ vhost:
   # Should this be enabled
   enabled: false
 
-  # The base domain pointing to the server
-  base-domain: example.com
+  # The domains pointing to the server
+  domains:
+    - example.com
+    - eu.example.com
+    - us.example.com

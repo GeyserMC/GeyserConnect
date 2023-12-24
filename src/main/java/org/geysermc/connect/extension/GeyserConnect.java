@@ -108,6 +108,12 @@ public class GeyserConnect implements Extension {
         if (geyserInstance.getConfig().isPassthroughMotd() || geyserInstance.getConfig().isPassthroughPlayerCounts()) {
             this.logger().warning("Either `passthrough-motd` or `passthrough-player-counts` is enabled in the config, this will likely produce errors");
         }
+
+        // If we are using floodgate then disable the extension
+        if (geyserInstance.getConfig().getRemote().authType() == AuthType.FLOODGATE) {
+            this.logger().error("auth-type set to floodgate in the config, this will break GeyserConnect. Disabling!");
+            this.disable();
+        }
     }
 
     @Subscribe

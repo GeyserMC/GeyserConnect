@@ -45,6 +45,8 @@ import org.geysermc.geyser.util.DimensionUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class PacketHandler extends UpstreamPacketHandler {
 
@@ -92,38 +94,45 @@ public class PacketHandler extends UpstreamPacketHandler {
         // Handle the virtual host if specified
         VirtualHostSection vhost = geyserConnect.config().vhost();
         if (vhost.enabled()) {
-            String domain = session.getClientData().getServerAddress().split(":")[0];
-            if (!domain.equals(vhost.baseDomain()) && domain.endsWith("." + vhost.baseDomain())) {
-                String address = "";
-                int port = 25565;
-                boolean online = true;
+            String domain = session.getClientData().getServerAddress();
 
-                // Parse the address used
-                String[] domainParts = domain.replaceFirst("\\." + vhost.baseDomain() + "$", "").split("\\._");
-                for (int i = 0; i < domainParts.length; i++) {
-                    String part = domainParts[i];
-                    if (i == 0) {
-                        address = part;
-                    } else if (part.startsWith("p")) {
-                        port = Integer.parseInt(part.substring(1));
-                    } else if (part.startsWith("o")) {
-                        online = false;
+            // Build the regex matcher for the vhosts
+            Pattern regex = Pattern.compile("\\.?(" + vhost.domains().stream().map(Pattern::quote).collect(Collectors.joining("|")) + ")(:[0-9]+)?$");
+
+            if (regex.matcher(domain).find()) {
+                String target = domain.replaceAll(regex.pattern(), "").strip();
+                if (!target.isEmpty()) {
+                    String address = "";
+                    int port = 25565;
+                    boolean online = true;
+
+                    // Parse the address used
+                    String[] domainParts = target.split("\\._");
+                    for (int i = 0; i < domainParts.length; i++) {
+                        String part = domainParts[i];
+                        if (i == 0) {
+                            address = part;
+                        } else if (part.startsWith("p")) {
+                            port = Integer.parseInt(part.substring(1));
+                        } else if (part.startsWith("o")) {
+                            online = false;
+                        }
                     }
-                }
 
-                // They didn't specify an address so disconnect them
-                if (address.startsWith("_")) {
-                    session.disconnect("disconnectionScreen.invalidIP");
+                    // They didn't specify an address so disconnect them
+                    if (address.startsWith("_")) {
+                        session.disconnect("disconnectionScreen.invalidIP");
+                        return PacketSignal.HANDLED;
+                    }
+
+                    // Log the virtual host usage
+                    geyserConnect.logger().info(Utils.displayName(session) + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
+
+                    // Send the player to the wanted server
+                    Utils.sendToServer(session, originalPacketHandler, new Server(address, port, online, false, null, null, null));
+
                     return PacketSignal.HANDLED;
                 }
-
-                // Log the virtual host usage
-                geyserConnect.logger().info(Utils.displayName(session) + " is using virtualhost: " + address + ":" + port + (!online ? " (offline)" : ""));
-
-                // Send the player to the wanted server
-                Utils.sendToServer(session, originalPacketHandler, new Server(address, port, online, false, null, null, null));
-
-                return PacketSignal.HANDLED;
             }
         }
 
