@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,27 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.extension.config;
+package org.geysermc.extension.connect.storage;
 
-public record MySQLConnectionSection(
-    String user,
-    String pass,
-    String database,
-    String host,
-    int port) {
+import org.geysermc.extension.connect.utils.Server;
+import org.geysermc.geyser.session.GeyserSession;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DisabledStorageManager extends AbstractStorageManager {
+
+    @Override
+    public void setupStorage() {
+    }
+
+    @Override
+    public void saveServers(GeyserSession session) {
+
+    }
+
+    @Override
+    public List<Server> loadServers(GeyserSession session) {
+        return new ArrayList<>();
+    }
 }

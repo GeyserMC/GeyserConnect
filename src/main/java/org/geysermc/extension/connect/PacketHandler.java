@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.extension;
+package org.geysermc.extension.connect;
 
 import org.cloudburstmc.protocol.bedrock.data.AttributeData;
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
@@ -32,11 +32,11 @@ import org.cloudburstmc.protocol.bedrock.packet.NetworkStackLatencyPacket;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.UpdateAttributesPacket;
 import org.cloudburstmc.protocol.common.PacketSignal;
-import org.geysermc.connect.extension.config.VirtualHostSection;
-import org.geysermc.connect.extension.ui.UIHandler;
-import org.geysermc.connect.extension.utils.Server;
-import org.geysermc.connect.extension.utils.ServerManager;
-import org.geysermc.connect.extension.utils.Utils;
+import org.geysermc.extension.connect.config.VirtualHostSection;
+import org.geysermc.extension.connect.ui.UIHandler;
+import org.geysermc.extension.connect.utils.Server;
+import org.geysermc.extension.connect.utils.ServerManager;
+import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
 import org.geysermc.geyser.session.GeyserSession;

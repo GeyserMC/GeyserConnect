@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group 'org.geysermc.connect.extension'
+group 'org.geysermc.extension.connect'
 version '1.0.0'
 
 repositories {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,20 +23,19 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.extension.utils;
+package org.geysermc.extension.connect.storage;
 
-public enum ServerCategory {
-    OFFICIAL("Official"),
-    GEYSER("Geyser"),
-    CUSTOM("Custom");
+import org.geysermc.extension.connect.GeyserConnect;
+import org.geysermc.extension.connect.config.MySQLConnectionSection;
 
-    private final String title;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-    ServerCategory(String title) {
-        this.title = title;
-    }
-
-    public String title() {
-        return title;
+public class MySQLStorageManager extends AbstractSQLStorageManager {
+    @Override
+    protected void connectToDatabase() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        MySQLConnectionSection connectionInformation = GeyserConnect.instance().config().customServers().mysql();
+        connection = DriverManager.getConnection("jdbc:mysql://" + connectionInformation.host() + ":" + connectionInformation.port() + "/" + connectionInformation.database(), connectionInformation.user(), connectionInformation.pass());
     }
 }

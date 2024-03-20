@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,13 +23,13 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.extension.storage;
+package org.geysermc.extension.connect.storage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.geysermc.connect.extension.GeyserConnect;
-import org.geysermc.connect.extension.utils.Server;
-import org.geysermc.connect.extension.utils.ServerManager;
-import org.geysermc.connect.extension.utils.Utils;
+import org.geysermc.extension.connect.GeyserConnect;
+import org.geysermc.extension.connect.utils.Server;
+import org.geysermc.extension.connect.utils.ServerManager;
+import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.io.IOException;

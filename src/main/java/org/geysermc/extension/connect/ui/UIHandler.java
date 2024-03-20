@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,14 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.extension.ui;
+package org.geysermc.extension.connect.ui;
 
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
-import org.geysermc.connect.extension.GeyserConnect;
-import org.geysermc.connect.extension.utils.Server;
-import org.geysermc.connect.extension.utils.ServerCategory;
-import org.geysermc.connect.extension.utils.ServerManager;
-import org.geysermc.connect.extension.utils.Utils;
+import org.geysermc.extension.connect.GeyserConnect;
+import org.geysermc.extension.connect.utils.Server;
+import org.geysermc.extension.connect.utils.ServerCategory;
+import org.geysermc.extension.connect.utils.ServerManager;
+import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.ModalForm;
 import org.geysermc.cumulus.form.SimpleForm;

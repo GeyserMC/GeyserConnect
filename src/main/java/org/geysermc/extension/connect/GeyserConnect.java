@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2023 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,15 +23,15 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.connect.extension;
+package org.geysermc.extension.connect;
 
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
 import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
-import org.geysermc.connect.extension.config.Config;
-import org.geysermc.connect.extension.config.ConfigLoader;
-import org.geysermc.connect.extension.storage.AbstractStorageManager;
-import org.geysermc.connect.extension.storage.DisabledStorageManager;
-import org.geysermc.connect.extension.utils.Utils;
+import org.geysermc.extension.connect.config.Config;
+import org.geysermc.extension.connect.config.ConfigLoader;
+import org.geysermc.extension.connect.storage.AbstractStorageManager;
+import org.geysermc.extension.connect.storage.DisabledStorageManager;
+import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.GeyserImpl;
