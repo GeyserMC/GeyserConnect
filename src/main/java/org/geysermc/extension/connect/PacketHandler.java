@@ -27,8 +27,9 @@ package org.geysermc.extension.connect;
 
 import org.cloudburstmc.protocol.bedrock.data.AttributeData;
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
-import org.cloudburstmc.protocol.bedrock.packet.LoginPacket;
 import org.cloudburstmc.protocol.bedrock.packet.NetworkStackLatencyPacket;
+import org.cloudburstmc.protocol.bedrock.packet.ResourcePackChunkRequestPacket;
+import org.cloudburstmc.protocol.bedrock.packet.ResourcePackClientResponsePacket;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.UpdateAttributesPacket;
 import org.cloudburstmc.protocol.common.PacketSignal;
@@ -72,19 +73,6 @@ public class PacketHandler extends UpstreamPacketHandler {
             geyserConnect.logger().info(Utils.displayName(session) + " has disconnected (" + reason + ")");
             ServerManager.unloadServers(session);
         }
-    }
-
-    @Override
-    public PacketSignal handle(LoginPacket loginPacket) {
-        // Check to see if the server is full and we have a hard player cap
-        if (geyserConnect.config().hardPlayerLimit()) {
-            if (session.getGeyser().getSessionManager().size() >= session.getGeyser().getConfig().getMaxPlayers()) {
-                session.disconnect("disconnectionScreen.serverFull");
-                return PacketSignal.HANDLED;
-            }
-        }
-
-        return super.handle(loginPacket);
     }
 
     @Override
@@ -164,6 +152,16 @@ public class PacketHandler extends UpstreamPacketHandler {
         session.getGeyser().getScheduledThread().schedule(() -> session.sendUpstreamPacket(updateAttributesPacket), 500, TimeUnit.MILLISECONDS);
 
         return super.handle(packet);
+    }
+
+    @Override
+    public PacketSignal handle(ResourcePackClientResponsePacket packet) {
+        return originalPacketHandler.handle(packet);
+    }
+
+    @Override
+    public PacketSignal handle(ResourcePackChunkRequestPacket packet) {
+        return originalPacketHandler.handle(packet);
     }
 }
 

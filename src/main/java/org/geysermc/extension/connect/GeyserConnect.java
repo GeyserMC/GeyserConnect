@@ -119,6 +119,11 @@ public class GeyserConnect implements Extension {
     @Subscribe
     public void onSessionInitialize(SessionInitializeEvent event) {
         GeyserSession session = (GeyserSession) event.connection();
+        if (config().hardPlayerLimit()) {
+            if (session.getGeyser().getSessionManager().size() >= session.getGeyser().getConfig().getMaxPlayers()) {
+                session.disconnect("disconnectionScreen.serverFull");
+            }
+        }
 
         // Change the packet handler to our own
         BedrockPacketHandler packetHandler = session.getUpstream().getSession().getPacketHandler();
