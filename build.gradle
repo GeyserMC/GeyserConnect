@@ -30,9 +30,10 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 
-    compileOnly 'org.geysermc.geyser:api:2.2.0-SNAPSHOT'
-    compileOnly('org.geysermc.geyser:core:2.2.0-SNAPSHOT') {
+    compileOnly 'org.geysermc.geyser:api:2.3.0-SNAPSHOT'
+    compileOnly('org.geysermc.geyser:core:2.3.0-SNAPSHOT') {
         exclude group: 'io.netty'
+        exclude group: 'io.netty.incubator'
     }
 
     implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
