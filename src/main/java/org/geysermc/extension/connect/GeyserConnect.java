@@ -134,6 +134,8 @@ public class GeyserConnect implements Extension {
     public void onCommandDefine(GeyserDefineCommandsEvent event) {
         event.register(Command.builder(this)
             .source(GeyserConnection.class)
+            .playerOnly(true)
+            .bedrockOnly(true)
             .name("menu")
             .description("Take you back to the GeyserConnect menu.")
             .executor((source, command, args) -> {

@@ -39,6 +39,7 @@ import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
+import org.geysermc.geyser.level.JavaDimension;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.util.DimensionUtils;
@@ -55,6 +56,8 @@ public class PacketHandler extends UpstreamPacketHandler {
     private final GeyserConnect geyserConnect;
     private final BedrockPacketHandler originalPacketHandler;
 
+    private static final JavaDimension END_DIMENSION = new JavaDimension(0, 256, false, 1.0, 2, false);
+
     public PacketHandler(GeyserConnect geyserConnect, GeyserSession session, BedrockPacketHandler packetHandler) {
         super(session.getGeyser(), session);
 
@@ -63,8 +66,8 @@ public class PacketHandler extends UpstreamPacketHandler {
         this.originalPacketHandler = packetHandler;
 
         // Spawn the player in the end (it just looks better)
-        session.setDimension(DimensionUtils.THE_END);
-        DimensionUtils.setBedrockDimension(session, DimensionUtils.THE_END);
+        session.setDimensionType(END_DIMENSION);
+        DimensionUtils.setBedrockDimension(session, END_DIMENSION.bedrockId());
     }
 
     @Override
