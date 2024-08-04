@@ -30,7 +30,6 @@ import org.geysermc.extension.connect.GeyserConnect;
 import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
-import org.geysermc.geyser.session.GeyserSession;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -69,23 +68,23 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
     }
 
     @Override
-    public void saveServers(GeyserSession session) {
+    public void saveServers(org.geysermc.api.connection.Connection session) {
         // replace into works on MySQL and SQLite
         try (PreparedStatement updatePlayersServers = connection.prepareStatement("REPLACE INTO players(xuid, servers) VALUES(?, ?)")) {
-            updatePlayersServers.setString(1, session.getAuthData().xuid());
+            updatePlayersServers.setString(1, session.xuid());
             updatePlayersServers.setString(2, Utils.OBJECT_MAPPER.writeValueAsString(ServerManager.getServers(session)));
             updatePlayersServers.executeUpdate();
         } catch (IOException | SQLException exception) {
-            GeyserConnect.instance().logger().error("Couldn't save servers for " + session.getAuthData().name(), exception);
+            GeyserConnect.instance().logger().error("Couldn't save servers for " + session.bedrockUsername(), exception);
         }
     }
 
     @Override
-    public List<Server> loadServers(GeyserSession session) {
+    public List<Server> loadServers(org.geysermc.api.connection.Connection session) {
         List<Server> servers = new ArrayList<>();
 
         try (PreparedStatement getPlayersServers = connection.prepareStatement("SELECT servers FROM players WHERE xuid=?")) {
-            getPlayersServers.setString(1, session.getAuthData().xuid());
+            getPlayersServers.setString(1, session.xuid());
             ResultSet rs = getPlayersServers.executeQuery();
 
             while (rs.next()) {
@@ -96,7 +95,7 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
                 }
             }
         } catch (IOException | SQLException exception) {
-            GeyserConnect.instance().logger().error("Couldn't load servers for " + session.getAuthData().name(), exception);
+            GeyserConnect.instance().logger().error("Couldn't load servers for " + session.bedrockUsername(), exception);
         }
 
         return servers;

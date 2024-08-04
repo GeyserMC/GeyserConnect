@@ -39,7 +39,6 @@ import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
-import org.geysermc.geyser.level.JavaDimension;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.util.DimensionUtils;

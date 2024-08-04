@@ -26,11 +26,11 @@
 package org.geysermc.extension.connect.storage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.GeyserConnect;
 import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
-import org.geysermc.geyser.session.GeyserSession;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -49,19 +49,19 @@ public class JsonStorageManager extends AbstractStorageManager {
     }
 
     @Override
-    public void saveServers(GeyserSession session) {
+    public void saveServers(Connection session) {
         try {
-            Utils.OBJECT_MAPPER.writeValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), ServerManager.getServers(session));
+            Utils.OBJECT_MAPPER.writeValue(dataFolder.resolve(session.xuid() + ".json").toFile(), ServerManager.getServers(session));
         } catch (IOException ignored) {
         }
     }
 
     @Override
-    public List<Server> loadServers(GeyserSession session) {
+    public List<Server> loadServers(Connection session) {
         List<Server> servers = new ArrayList<>();
 
         try {
-            List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(dataFolder.resolve(session.getAuthData().xuid() + ".json").toFile(), new TypeReference<>() {
+            List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(dataFolder.resolve(session.xuid() + ".json").toFile(), new TypeReference<>() {
             });
             if (loadedServers != null) {
                 servers.addAll(loadedServers);

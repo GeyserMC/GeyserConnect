@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
+import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.GeyserConnect;
 import org.geysermc.geyser.session.GeyserSession;
 
@@ -75,7 +76,7 @@ public class Utils {
         return file;
     }
 
-    public static String displayName(GeyserSession session) {
+    public static String displayName(Connection session) {
         return session.bedrockUsername() + " (" + session.xuid() + ")";
     }
 

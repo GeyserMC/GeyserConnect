@@ -25,8 +25,8 @@
 
 package org.geysermc.extension.connect.storage;
 
+import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.utils.Server;
-import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +38,12 @@ public class DisabledStorageManager extends AbstractStorageManager {
     }
 
     @Override
-    public void saveServers(GeyserSession session) {
+    public void saveServers(Connection session) {
 
     }
 
     @Override
-    public List<Server> loadServers(GeyserSession session) {
+    public List<Server> loadServers(Connection session) {
         return new ArrayList<>();
     }
 }
