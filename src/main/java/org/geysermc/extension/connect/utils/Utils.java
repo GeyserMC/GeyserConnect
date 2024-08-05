@@ -84,6 +84,13 @@ public class Utils {
         GeyserConnect.instance().logger().info("Sending " + Utils.displayName(session) + " to " + server.title());
         GeyserConnect.instance().logger().debug(server.toString());
 
+        // Save the player's servers since we are changing packet handlers
+        // (and they are going to disconnect if it is a bedrock server)
+        ServerManager.unloadServers(session);
+
+        // Restore the original packet handler
+        session.getUpstream().getSession().setPacketHandler(originalPacketHandler);
+
         if (server.bedrock()) {
             // Send them to the bedrock server
             TransferPacket transferPacket = new TransferPacket();
@@ -91,12 +98,6 @@ public class Utils {
             transferPacket.setPort(server.port());
             session.sendUpstreamPacket(transferPacket);
         } else {
-            // Save the players servers since we are changing packet handlers
-            ServerManager.unloadServers(session);
-
-            // Restore the original packet handler
-            session.getUpstream().getSession().setPacketHandler(originalPacketHandler);
-
             // Set the remote server and un-initialize the session
             session.remoteServer(server);
             session.getUpstream().setInitialized(false);
