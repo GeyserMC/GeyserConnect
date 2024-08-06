@@ -26,8 +26,8 @@
 package org.geysermc.extension.connect.storage;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.utils.Server;
-import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +40,10 @@ public class AbstractStorageManager {
     public void closeStorage() {
     }
 
-    public void saveServers(GeyserSession session) {
+    public void saveServers(Connection session) {
     }
 
-    public List<Server> loadServers(GeyserSession session) {
+    public List<Server> loadServers(Connection session) {
         return new ArrayList<>();
     }
 

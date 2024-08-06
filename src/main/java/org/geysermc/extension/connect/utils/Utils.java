@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
+import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.GeyserConnect;
 import org.geysermc.geyser.session.GeyserSession;
 
@@ -75,13 +76,20 @@ public class Utils {
         return file;
     }
 
-    public static String displayName(GeyserSession session) {
+    public static String displayName(Connection session) {
         return session.bedrockUsername() + " (" + session.xuid() + ")";
     }
 
     public static void sendToServer(GeyserSession session, BedrockPacketHandler originalPacketHandler, Server server) {
         GeyserConnect.instance().logger().info("Sending " + Utils.displayName(session) + " to " + server.title());
         GeyserConnect.instance().logger().debug(server.toString());
+
+        // Save the player's servers since we are changing packet handlers
+        // (and they are going to disconnect if it is a bedrock server)
+        ServerManager.unloadServers(session);
+
+        // Restore the original packet handler
+        session.getUpstream().getSession().setPacketHandler(originalPacketHandler);
 
         if (server.bedrock()) {
             // Send them to the bedrock server
@@ -90,12 +98,6 @@ public class Utils {
             transferPacket.setPort(server.port());
             session.sendUpstreamPacket(transferPacket);
         } else {
-            // Save the players servers since we are changing packet handlers
-            ServerManager.unloadServers(session);
-
-            // Restore the original packet handler
-            session.getUpstream().getSession().setPacketHandler(originalPacketHandler);
-
             // Set the remote server and un-initialize the session
             session.remoteServer(server);
             session.getUpstream().setInitialized(false);

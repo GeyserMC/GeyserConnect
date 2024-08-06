@@ -109,9 +109,11 @@ public class GeyserConnect implements Extension {
             this.logger().warning("Either `passthrough-motd` or `passthrough-player-counts` is enabled in the config, this will likely produce errors");
         }
 
-        // If we are using floodgate then disable the extension
-        if (geyserInstance.getConfig().getRemote().authType() == AuthType.FLOODGATE) {
-            this.logger().error("auth-type set to floodgate in the config, this will break GeyserConnect. Disabling!");
+        // If we are using floodgate then disable the extension.
+        // GeyserConnect also doesn't support the connection sequence that occurs when the default RemoteServer
+        // auth-type is offline (and there is no reason to change it when GeyserConnect is in use).
+        if (geyserInstance.getConfig().getRemote().authType() != AuthType.ONLINE) {
+            this.logger().error("auth-type is not set to 'online' in the Geyser config, this will break GeyserConnect. Disabling!");
             this.disable();
         }
     }

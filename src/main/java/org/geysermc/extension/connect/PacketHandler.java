@@ -39,7 +39,6 @@ import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
 import org.geysermc.geyser.entity.attribute.GeyserAttributeType;
-import org.geysermc.geyser.level.JavaDimension;
 import org.geysermc.geyser.network.UpstreamPacketHandler;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.util.DimensionUtils;
@@ -69,10 +68,10 @@ public class PacketHandler extends UpstreamPacketHandler {
 
     @Override
     public void onDisconnect(String reason) {
-        if (session.getAuthData() != null) {
-            geyserConnect.logger().info(Utils.displayName(session) + " has disconnected (" + reason + ")");
-            ServerManager.unloadServers(session);
-        }
+        // The user has disconnected without having connected to an actual server. If they have connected to
+        // a server (transfer packet or geyser proxy), then the original packet handler has been restored.
+        ServerManager.unloadServers(session);
+        originalPacketHandler.onDisconnect(reason);
     }
 
     @Override
@@ -156,12 +155,12 @@ public class PacketHandler extends UpstreamPacketHandler {
 
     @Override
     public PacketSignal handle(ResourcePackClientResponsePacket packet) {
-        return originalPacketHandler.handle(packet);
+        return originalPacketHandler.handle(packet); // relies on state in the original handler
     }
 
     @Override
     public PacketSignal handle(ResourcePackChunkRequestPacket packet) {
-        return originalPacketHandler.handle(packet);
+        return originalPacketHandler.handle(packet); // relies on state in the original handler
     }
 }
 
