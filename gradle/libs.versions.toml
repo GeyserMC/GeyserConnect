@@ -1,7 +1,7 @@
 [versions]
 geyser = "2.7.0-SNAPSHOT"
-sqlite = "3.46.0.0"
-mysql = "9.0.0"
+sqlite = "3.49.1.0"
+mysql = "9.2.0"
 
 [libraries]
 geyser-core = { group = "org.geysermc.geyser", name = "core", version.ref = "geyser" }
