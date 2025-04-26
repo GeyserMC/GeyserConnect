@@ -27,17 +27,13 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
-
-    compileOnly 'org.geysermc.geyser:api:2.4.1-SNAPSHOT'
-    compileOnly('org.geysermc.geyser:core:2.4.1-SNAPSHOT') {
+    compileOnly(libs.bundles.geyser) {
         exclude group: 'io.netty'
         exclude group: 'io.netty.incubator'
     }
 
-    implementation 'org.xerial:sqlite-jdbc:3.46.0.0'
-    implementation 'com.mysql:mysql-connector-j:9.0.0'
+    implementation libs.sqlite
+    implementation libs.mysql
 }
 
 jar {

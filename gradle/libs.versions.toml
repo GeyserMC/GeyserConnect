@@ -1,0 +1,16 @@
+[versions]
+geyser = "2.7.0-SNAPSHOT"
+sqlite = "3.46.0.0"
+mysql = "9.0.0"
+
+[libraries]
+geyser-core = { group = "org.geysermc.geyser", name = "core", version.ref = "geyser" }
+geyser-api = { group = "org.geysermc.geyser", name = "api", version.ref = "geyser" }
+sqlite = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite" }
+mysql = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql" }
+
+[bundles]
+geyser = [
+    "geyser-core",
+    "geyser-api"
+]
