@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'java'
+    id 'com.modrinth.minotaur' version "2.8.10"
 }
 
 group 'org.geysermc.extension.connect'
@@ -54,3 +55,25 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+tasks.getByName("modrinth") {
+    dependsOn("modrinthSyncBody")
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN") ?: ""
+    debugMode = (System.getenv("MODRINTH_TOKEN") == null)
+    projectId = "geyserconnect"
+    def versionDisplay = "${project.version}-b${System.getenv("BUILD_NUMBER")}"
+    versionName = "GeyserConnect ${versionDisplay}"
+    versionNumber = versionDisplay
+    versionType = "release"
+    changelog = System.getenv("CHANGELOG") ?: ""
+    gameVersions.addAll(["1.21.10"])
+    loaders.addAll(["geyser"])
+    failSilently = true
+
+    syncBodyFrom = file("README.md").text
+    uploadFile.set(tasks.getByPath("jar"))
+}
+

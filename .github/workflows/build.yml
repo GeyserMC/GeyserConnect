@@ -24,13 +24,10 @@ jobs:
         run: ./gradlew build
 
       - name: Archive artifacts
-        # See https://github.com/actions/upload-artifact/commits
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: GeyserMC/actions/upload-multi-artifact@master
         if: success()
         with:
-          name: GeyserConnect
-          path: build/libs/GeyserConnect.jar
-          if-no-files-found: error
+          artifacts: build/libs/GeyserConnect.jar
 
       - name: Get Version
         if: ${{ success() && github.repository == 'GeyserMC/GeyserConnect' && github.ref_name == 'master' }}
@@ -62,3 +59,20 @@ jobs:
           host: ${{ secrets.DOWNLOADS_SERVER_IP }}
           files: |
             build/libs/GeyserConnect.jar
+          changelog: ${{ steps.metadata.outputs.body }}
+
+      - name: Publish to Modrinth
+        if: ${{ success() && github.repository == 'GeyserMC/GeyserConnect' && github.ref_name == 'master' }}
+        env:
+          CHANGELOG: ${{ steps.metadata.outputs.body }}
+          BUILD_NUMBER: ${{ steps.metadata.outputs.tagBase }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: ./gradlew modrinth
+
+      - name: Notify Discord
+        if: ${{ (success() || failure()) && github.repository == 'GeyserMC/GeyserConnect' }}
+        uses: GeyserMC/actions/notify-discord@master
+        with:
+          discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          body: ${{ steps.metadata.outputs.body }}
