@@ -25,7 +25,6 @@
 
 package org.geysermc.extension.connect.utils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.cumulus.util.FormImage;
 import org.geysermc.geyser.api.network.AuthType;
