@@ -1,13 +1,15 @@
 [versions]
-geyser = "2.7.0-SNAPSHOT"
+geyser = "2.9.1-SNAPSHOT"
 sqlite = "3.49.1.0"
 mysql = "9.2.0"
+yamlConfigurate = "4.2.0-GeyserMC-20251111.004649-11"
 
 [libraries]
 geyser-core = { group = "org.geysermc.geyser", name = "core", version.ref = "geyser" }
 geyser-api = { group = "org.geysermc.geyser", name = "api", version.ref = "geyser" }
 sqlite = { group = "org.xerial", name = "sqlite-jdbc", version.ref = "sqlite" }
 mysql = { group = "com.mysql", name = "mysql-connector-j", version.ref = "mysql" }
+yamlConfigurate = { module = "org.spongepowered:configurate-yaml", version.ref = "yamlConfigurate" }
 
 [bundles]
 geyser = [

@@ -32,6 +32,7 @@ dependencies {
         exclude group: 'io.netty'
         exclude group: 'io.netty.incubator'
     }
+    compileOnly libs.yamlConfigurate
 
     implementation libs.sqlite
     implementation libs.mysql

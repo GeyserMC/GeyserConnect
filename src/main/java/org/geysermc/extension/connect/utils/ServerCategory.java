@@ -25,6 +25,9 @@
 
 package org.geysermc.extension.connect.utils;
 
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+
+@ConfigSerializable
 public enum ServerCategory {
     OFFICIAL("Official"),
     GEYSER("Geyser"),

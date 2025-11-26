@@ -25,20 +25,27 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.geysermc.extension.connect.config.serializers.ServerCategorySerializer;
+import org.geysermc.extension.connect.config.serializers.StorageTypeSerializer;
+import org.geysermc.extension.connect.utils.ServerCategory;
 import org.geysermc.geyser.api.extension.Extension;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 public class ConfigLoader {
     public static <T> T load(Extension extension, Class<?> extensionClass, Class<T> configClass) {
@@ -74,9 +81,21 @@ public class ConfigLoader {
 
         // Load the config file
         try {
-            return new ObjectMapper(new YAMLFactory())
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .readValue(configFile, configClass);
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .file(configFile)
+                    .indent(2)
+                    .nodeStyle(NodeStyle.BLOCK)
+                    .defaultOptions(options ->
+                            options.serializers(builder ->
+                                    builder.register(new StorageTypeSerializer())
+                                            .register(new ServerCategorySerializer())
+                            )
+                    )
+                    .build();
+
+            CommentedConfigurationNode rootNode = loader.load();
+
+            return rootNode.get(configClass);
         } catch (IOException e) {
             extension.logger().error("Failed to load config", e);
             return null;

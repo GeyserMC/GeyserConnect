@@ -25,6 +25,9 @@
 
 package org.geysermc.extension.connect.config;
 
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+
+@ConfigSerializable
 public record MySQLConnectionSection(
     String user,
     String pass,

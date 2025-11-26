@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2024 GeyserMC. http://geysermc.org
+ * Copyright (c) 2019-2025 GeyserMC. http://geysermc.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,29 @@
  * @link https://github.com/GeyserMC/GeyserConnect
  */
 
-package org.geysermc.extension.connect.config;
+package org.geysermc.extension.connect.config.serializers;
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import io.leangen.geantyref.TypeToken;
+import org.geysermc.extension.connect.utils.ServerCategory;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
+import org.spongepowered.configurate.serialize.Scalars;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.function.Predicate;
 
-@ConfigSerializable
-public record VirtualHostSection(
-    boolean enabled,
-    List<String> domains) {
+public class ServerCategorySerializer extends ScalarSerializer<ServerCategory> {
+    public ServerCategorySerializer() {
+        super(new TypeToken<>() {});
+    }
+
+    @Override
+    public ServerCategory deserialize(Type type, Object obj) throws SerializationException {
+        return (ServerCategory) Scalars.ENUM.deserialize(type, obj);
+    }
+
+    @Override
+    protected Object serialize(ServerCategory item, Predicate<Class<?>> typeSupported) {
+        return item.name();
+    }
 }

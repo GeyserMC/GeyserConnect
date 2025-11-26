@@ -25,15 +25,16 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.geysermc.extension.connect.utils.Server;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
 
+@ConfigSerializable
 public record Config(
-    @JsonProperty("welcome-file") String welcomeFile,
-    @JsonProperty("hard-player-limit") boolean hardPlayerLimit,
+    String welcomeFile,
+    boolean hardPlayerLimit,
     List<Server> servers,
-    @JsonProperty("custom-servers") CustomServersSection customServers,
+    CustomServersSection customServers,
     VirtualHostSection vhost) {
 }
