@@ -25,15 +25,16 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.google.gson.annotations.SerializedName;
 import org.geysermc.extension.connect.utils.Server;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
 
+@ConfigSerializable
 public record Config(
-    @SerializedName("welcome-file") String welcomeFile,
-    @SerializedName("hard-player-limit") boolean hardPlayerLimit,
+    String welcomeFile,
+    boolean hardPlayerLimit,
     List<Server> servers,
-    @SerializedName("custom-servers") CustomServersSection customServers,
+    CustomServersSection customServers,
     VirtualHostSection vhost) {
 }

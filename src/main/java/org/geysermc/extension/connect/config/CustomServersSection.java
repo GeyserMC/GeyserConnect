@@ -25,12 +25,13 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.google.gson.annotations.SerializedName;
 import org.geysermc.extension.connect.storage.AbstractStorageManager;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+@ConfigSerializable
 public record CustomServersSection(
     boolean enabled,
     int max,
-    @SerializedName("storage-type") AbstractStorageManager.StorageType storageType,
+    AbstractStorageManager.StorageType storageType,
     MySQLConnectionSection mysql) {
 }

@@ -28,6 +28,7 @@ package org.geysermc.extension.connect.storage;
 import com.google.gson.annotations.SerializedName;
 import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.utils.Server;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +48,11 @@ public class AbstractStorageManager {
         return new ArrayList<>();
     }
 
+    @ConfigSerializable
     public enum StorageType {
-        @SerializedName("json") JSON(JsonStorageManager.class),
-        @SerializedName("sqlite") SQLITE(SQLiteStorageManager.class),
-        @SerializedName("mysql") MYSQL(MySQLStorageManager.class);
+        JSON(JsonStorageManager.class),
+        SQLITE(SQLiteStorageManager.class),
+        MYSQL(MySQLStorageManager.class);
 
         private final Class<? extends AbstractStorageManager> storageManager;
 

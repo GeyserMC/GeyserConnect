@@ -29,7 +29,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.cumulus.util.FormImage;
 import org.geysermc.geyser.api.network.AuthType;
 import org.geysermc.geyser.api.network.RemoteServer;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+@ConfigSerializable
 public record Server(
     String address,
     int port,
