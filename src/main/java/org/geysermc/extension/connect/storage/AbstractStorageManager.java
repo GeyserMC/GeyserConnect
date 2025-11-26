@@ -52,7 +52,6 @@ public class AbstractStorageManager {
         @SerializedName("sqlite") SQLITE(SQLiteStorageManager.class),
         @SerializedName("mysql") MYSQL(MySQLStorageManager.class);
 
-
         private final Class<? extends AbstractStorageManager> storageManager;
 
         StorageType(Class<? extends AbstractStorageManager> storageManager) {
