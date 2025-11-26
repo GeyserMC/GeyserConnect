@@ -25,11 +25,11 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public record VirtualHostSection(
     boolean enabled,
-    @JsonProperty("domains") List<String> domains) {
+    @SerializedName("domains") List<String> domains) {
 }

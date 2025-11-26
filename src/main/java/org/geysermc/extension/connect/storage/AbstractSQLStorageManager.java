@@ -25,13 +25,12 @@
 
 package org.geysermc.extension.connect.storage;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.reflect.TypeToken;
 import org.geysermc.extension.connect.GeyserConnect;
 import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -72,9 +71,9 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
         // replace into works on MySQL and SQLite
         try (PreparedStatement updatePlayersServers = connection.prepareStatement("REPLACE INTO players(xuid, servers) VALUES(?, ?)")) {
             updatePlayersServers.setString(1, session.xuid());
-            updatePlayersServers.setString(2, Utils.OBJECT_MAPPER.writeValueAsString(ServerManager.getServers(session)));
+            updatePlayersServers.setString(2, Utils.GSON.toJson(ServerManager.getServers(session)));
             updatePlayersServers.executeUpdate();
-        } catch (IOException | SQLException exception) {
+        } catch (SQLException exception) {
             GeyserConnect.instance().logger().error("Couldn't save servers for " + session.bedrockUsername(), exception);
         }
     }
@@ -88,13 +87,13 @@ public abstract class AbstractSQLStorageManager extends AbstractStorageManager {
             ResultSet rs = getPlayersServers.executeQuery();
 
             while (rs.next()) {
-                List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(rs.getString("servers"), new TypeReference<>() {
+                List<Server> loadedServers = Utils.GSON.fromJson(rs.getString("servers"), new TypeToken<>() {
                 });
                 if (loadedServers != null) {
                     servers.addAll(loadedServers);
                 }
             }
-        } catch (IOException | SQLException exception) {
+        } catch (SQLException exception) {
             GeyserConnect.instance().logger().error("Couldn't load servers for " + session.bedrockUsername(), exception);
         }
 

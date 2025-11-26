@@ -25,15 +25,15 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import org.geysermc.extension.connect.utils.Server;
 
 import java.util.List;
 
 public record Config(
-    @JsonProperty("welcome-file") String welcomeFile,
-    @JsonProperty("hard-player-limit") boolean hardPlayerLimit,
+    @SerializedName("welcome-file") String welcomeFile,
+    @SerializedName("hard-player-limit") boolean hardPlayerLimit,
     List<Server> servers,
-    @JsonProperty("custom-servers") CustomServersSection customServers,
+    @SerializedName("custom-servers") CustomServersSection customServers,
     VirtualHostSection vhost) {
 }

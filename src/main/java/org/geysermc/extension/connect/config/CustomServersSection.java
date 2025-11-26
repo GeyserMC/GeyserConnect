@@ -25,12 +25,12 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import org.geysermc.extension.connect.storage.AbstractStorageManager;
 
 public record CustomServersSection(
     boolean enabled,
     int max,
-    @JsonProperty("storage-type") AbstractStorageManager.StorageType storageType,
+    @SerializedName("storage-type") AbstractStorageManager.StorageType storageType,
     MySQLConnectionSection mysql) {
 }

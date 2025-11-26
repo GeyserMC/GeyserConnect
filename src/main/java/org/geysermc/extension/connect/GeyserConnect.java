@@ -103,16 +103,16 @@ public class GeyserConnect implements Extension {
 
         // Remove all saved logins to prevent issues connecting
         // Maybe worth adding support for this later
-        geyserInstance.getConfig().getSavedUserLogins().clear();
+        geyserInstance.config().savedUserLogins().clear();
 
-        if (geyserInstance.getConfig().isPassthroughMotd() || geyserInstance.getConfig().isPassthroughPlayerCounts()) {
+        if (geyserInstance.config().motd().passthroughMotd() || geyserInstance.config().motd().passthroughPlayerCounts()) {
             this.logger().warning("Either `passthrough-motd` or `passthrough-player-counts` is enabled in the config, this will likely produce errors");
         }
 
         // If we are using floodgate then disable the extension.
         // GeyserConnect also doesn't support the connection sequence that occurs when the default RemoteServer
         // auth-type is offline (and there is no reason to change it when GeyserConnect is in use).
-        if (geyserInstance.getConfig().getRemote().authType() != AuthType.ONLINE) {
+        if (geyserInstance.config().java().authType() != AuthType.ONLINE) {
             this.logger().error("auth-type is not set to 'online' in the Geyser config, this will break GeyserConnect. Disabling!");
             this.disable();
         }
@@ -122,7 +122,7 @@ public class GeyserConnect implements Extension {
     public void onSessionInitialize(SessionInitializeEvent event) {
         GeyserSession session = (GeyserSession) event.connection();
         if (config().hardPlayerLimit()) {
-            if (session.getGeyser().getSessionManager().size() >= session.getGeyser().getConfig().getMaxPlayers()) {
+            if (session.getGeyser().getSessionManager().size() >= session.getGeyser().config().motd().maxPlayers()) {
                 session.disconnect("disconnectionScreen.serverFull");
             }
         }

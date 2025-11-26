@@ -25,8 +25,8 @@
 
 package org.geysermc.extension.connect.utils;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.cloudburstmc.protocol.bedrock.packet.BedrockPacketHandler;
 import org.cloudburstmc.protocol.bedrock.packet.SetLocalPlayerAsInitializedPacket;
 import org.cloudburstmc.protocol.bedrock.packet.TransferPacket;
@@ -47,7 +47,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Utils {
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static List<Server> getServers(ServerCategory category) {
         return GeyserConnect.instance().config().servers().stream().filter(server -> server.category() == category).toList();

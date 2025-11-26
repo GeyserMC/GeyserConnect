@@ -25,10 +25,9 @@
 
 package org.geysermc.extension.connect.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.geysermc.geyser.api.extension.Extension;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -74,9 +73,12 @@ public class ConfigLoader {
 
         // Load the config file
         try {
-            return new ObjectMapper(new YAMLFactory())
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .readValue(configFile, configClass);
+            YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                    .file(configFile)
+                    .build();
+
+            CommentedConfigurationNode rootNode = loader.load();
+            return rootNode.get(configClass);
         } catch (IOException e) {
             extension.logger().error("Failed to load config", e);
             return null;

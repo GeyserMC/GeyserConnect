@@ -59,7 +59,6 @@ public record Server(
         return true;
     }
 
-    @JsonIgnore
     public FormImage formImage() {
         if (imageUrl != null && !imageUrl.isEmpty()) {
             return FormImage.of(FormImage.Type.URL, imageUrl);
