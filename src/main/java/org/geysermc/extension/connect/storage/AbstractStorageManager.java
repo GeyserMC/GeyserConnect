@@ -25,9 +25,10 @@
 
 package org.geysermc.extension.connect.storage;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.google.gson.annotations.SerializedName;
 import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.utils.Server;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,23 +48,16 @@ public class AbstractStorageManager {
         return new ArrayList<>();
     }
 
+    @ConfigSerializable
     public enum StorageType {
-        JSON("json", JsonStorageManager.class),
-        SQLITE("sqlite", SQLiteStorageManager.class),
-        MYSQL("mysql", MySQLStorageManager.class);
-
-        @JsonValue
-        private final String configName;
+        JSON(JsonStorageManager.class),
+        SQLITE(SQLiteStorageManager.class),
+        MYSQL(MySQLStorageManager.class);
 
         private final Class<? extends AbstractStorageManager> storageManager;
 
-        StorageType(String configName, Class<? extends AbstractStorageManager> storageManager) {
-            this.configName = configName;
+        StorageType(Class<? extends AbstractStorageManager> storageManager) {
             this.storageManager = storageManager;
-        }
-
-        public String configName() {
-            return configName;
         }
 
         public Class<? extends AbstractStorageManager> storageManager() {

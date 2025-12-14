@@ -25,13 +25,15 @@
 
 package org.geysermc.extension.connect.storage;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.gson.reflect.TypeToken;
 import org.geysermc.api.connection.Connection;
 import org.geysermc.extension.connect.GeyserConnect;
 import org.geysermc.extension.connect.utils.Server;
 import org.geysermc.extension.connect.utils.ServerManager;
 import org.geysermc.extension.connect.utils.Utils;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -50,8 +52,8 @@ public class JsonStorageManager extends AbstractStorageManager {
 
     @Override
     public void saveServers(Connection session) {
-        try {
-            Utils.OBJECT_MAPPER.writeValue(dataFolder.resolve(session.xuid() + ".json").toFile(), ServerManager.getServers(session));
+        try (FileWriter writer = new FileWriter(dataFolder.resolve(session.xuid() + ".json").toFile())) {
+            writer.write(Utils.GSON.toJson(ServerManager.getServers(session)));
         } catch (IOException ignored) {
         }
     }
@@ -60,8 +62,8 @@ public class JsonStorageManager extends AbstractStorageManager {
     public List<Server> loadServers(Connection session) {
         List<Server> servers = new ArrayList<>();
 
-        try {
-            List<Server> loadedServers = Utils.OBJECT_MAPPER.readValue(dataFolder.resolve(session.xuid() + ".json").toFile(), new TypeReference<>() {
+        try (FileReader reader = new FileReader(dataFolder.resolve(session.xuid() + ".json").toFile())) {
+            List<Server> loadedServers = Utils.GSON.fromJson(reader, new TypeToken<>() {
             });
             if (loadedServers != null) {
                 servers.addAll(loadedServers);

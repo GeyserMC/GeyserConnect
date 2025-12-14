@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2019-2025 GeyserMC. http://geysermc.org
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * @author GeyserMC
+ * @link https://github.com/GeyserMC/GeyserConnect
+ */
+
+package org.geysermc.extension.connect.config.serializers;
+
+import io.leangen.geantyref.TypeToken;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.geysermc.extension.connect.storage.AbstractStorageManager;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.util.EnumLookup;
+
+import java.lang.reflect.Type;
+import java.util.Locale;
+import java.util.function.Predicate;
+
+public final class StorageTypeSerializer extends ScalarSerializer<AbstractStorageManager.StorageType> {
+    public StorageTypeSerializer() {
+        super(new TypeToken<>() {});
+    }
+
+    @Override
+    public AbstractStorageManager.StorageType deserialize(Type type, Object obj) throws SerializationException {
+        final String enumConstant = obj.toString();
+        final AbstractStorageManager.@Nullable StorageType ret = EnumLookup.lookupEnum(AbstractStorageManager.StorageType.class, enumConstant);
+        if (ret == null) {
+            throw new SerializationException(type, "Invalid enum constant provided, expected a value of enum, got " + enumConstant);
+        }
+        return ret;
+    }
+
+    @Override
+    protected Object serialize(AbstractStorageManager.StorageType item, Predicate<Class<?>> typeSupported) {
+        return item.name().toLowerCase(Locale.ROOT);
+    }
+}

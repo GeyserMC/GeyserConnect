@@ -1,6 +1,6 @@
 id: geyserconnect
 name: GeyserConnect
 main: org.geysermc.extension.connect.GeyserConnect
-api: 2.7.0
+api: 2.9.1
 version: 1.0.0
 authors: [rtm516]
