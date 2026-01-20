@@ -110,7 +110,7 @@ public class Utils {
 
             // Hand back to core geyser
             SetLocalPlayerAsInitializedPacket initializedPacket = new SetLocalPlayerAsInitializedPacket();
-            initializedPacket.setRuntimeEntityId(session.getPlayerEntity().getGeyserId());
+            initializedPacket.setRuntimeEntityId(session.getPlayerEntity().geyserId());
             originalPacketHandler.handle(initializedPacket);
         }
     }

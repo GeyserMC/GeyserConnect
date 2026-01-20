@@ -124,7 +124,7 @@ public class PacketHandler extends UpstreamPacketHandler {
         }
 
         // Handle normal connections
-        if (session.getPlayerEntity().getGeyserId() == packet.getRuntimeEntityId()) {
+        if (session.getPlayerEntity().geyserId() == packet.getRuntimeEntityId()) {
             if (!session.getUpstream().isInitialized()) {
                 session.getUpstream().setInitialized(true);
 

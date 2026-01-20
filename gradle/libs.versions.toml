@@ -1,5 +1,5 @@
 [versions]
-geyser = "2.9.1-SNAPSHOT"
+geyser = "2.9.2-SNAPSHOT"
 sqlite = "3.49.1.0"
 mysql = "9.2.0"
 yamlConfigurate = "4.2.0-GeyserMC-20251111.004649-11"
